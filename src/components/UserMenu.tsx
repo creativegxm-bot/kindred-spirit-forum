@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface UserMenuProps {
   onOpenAuth: (mode: "login" | "signup") => void;
@@ -16,6 +17,7 @@ interface UserMenuProps {
 
 const UserMenu = ({ onOpenAuth }: UserMenuProps) => {
   const { user, profile, signOut, loading } = useAuth();
+  const navigate = useNavigate();
 
   if (loading) {
     return (
@@ -77,7 +79,7 @@ const UserMenu = ({ onOpenAuth }: UserMenuProps) => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate(`/u/${profile?.username}`)}>
           <User className="mr-2 h-4 w-4" />
           Profile
         </DropdownMenuItem>
@@ -85,7 +87,7 @@ const UserMenu = ({ onOpenAuth }: UserMenuProps) => {
           <Bookmark className="mr-2 h-4 w-4" />
           Saved Posts
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate(`/u/${profile?.username}`)}>
           <Settings className="mr-2 h-4 w-4" />
           Settings
         </DropdownMenuItem>

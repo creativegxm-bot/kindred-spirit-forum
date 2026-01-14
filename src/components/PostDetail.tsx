@@ -2,18 +2,17 @@ import { X, MessageSquare, Share, Bookmark, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import VoteButtons from "./VoteButtons";
-import CommentItem from "./CommentItem";
-import { Post } from "@/types";
-import { comments } from "@/data/mockData";
+import { Post } from "@/hooks/usePosts";
 import { formatDistanceToNow } from "date-fns";
 
 interface PostDetailProps {
   post: Post;
   onClose: () => void;
+  onAuthRequired: () => void;
 }
 
-const PostDetail = ({ post, onClose }: PostDetailProps) => {
-  const timeAgo = formatDistanceToNow(post.createdAt, { addSuffix: true });
+const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
+  const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true });
 
   return (
     <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm overflow-y-auto">
@@ -22,8 +21,8 @@ const PostDetail = ({ post, onClose }: PostDetailProps) => {
           <div className="card-gradient rounded-lg border border-border animate-scale-in">
             <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b border-border bg-card/95 backdrop-blur rounded-t-lg">
               <div className="flex items-center gap-2 text-sm">
-                <span className="text-lg">{post.communityIcon}</span>
-                <span className="font-medium">r/{post.community}</span>
+                <span className="text-lg">{post.community?.icon || "💬"}</span>
+                <span className="font-medium">r/{post.community?.name || "unknown"}</span>
               </div>
               <Button variant="ghost" size="icon" onClick={onClose}>
                 <X className="h-5 w-5" />
@@ -33,26 +32,34 @@ const PostDetail = ({ post, onClose }: PostDetailProps) => {
             <div className="p-4">
               <div className="flex gap-4">
                 <div className="hidden sm:block">
-                  <VoteButtons upvotes={post.upvotes} downvotes={post.downvotes} />
+                  <VoteButtons
+                    postId={post.id}
+                    upvotes={post.upvotes}
+                    downvotes={post.downvotes}
+                    userVote={post.user_vote}
+                    onAuthRequired={onAuthRequired}
+                  />
                 </div>
 
                 <div className="flex-1">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>Posted by u/{post.author}</span>
+                    <span>Posted by u/{post.author?.username || "deleted"}</span>
                     <span>•</span>
                     <span>{timeAgo}</span>
                   </div>
 
                   <h1 className="mt-2 text-xl font-bold">{post.title}</h1>
 
-                  <p className="mt-3 text-foreground whitespace-pre-wrap">
-                    {post.content}
-                  </p>
+                  {post.content && (
+                    <p className="mt-3 text-foreground whitespace-pre-wrap">
+                      {post.content}
+                    </p>
+                  )}
 
-                  {post.imageUrl && (
+                  {post.image_url && (
                     <div className="mt-4 overflow-hidden rounded-md">
                       <img
-                        src={post.imageUrl}
+                        src={post.image_url}
                         alt=""
                         className="w-full h-auto"
                       />
@@ -62,9 +69,12 @@ const PostDetail = ({ post, onClose }: PostDetailProps) => {
                   <div className="mt-4 flex items-center gap-1">
                     <div className="sm:hidden">
                       <VoteButtons
+                        postId={post.id}
                         upvotes={post.upvotes}
                         downvotes={post.downvotes}
+                        userVote={post.user_vote}
                         orientation="horizontal"
+                        onAuthRequired={onAuthRequired}
                       />
                     </div>
 
@@ -74,7 +84,7 @@ const PostDetail = ({ post, onClose }: PostDetailProps) => {
                       className="gap-1.5 text-muted-foreground"
                     >
                       <MessageSquare className="h-4 w-4" />
-                      <span>{post.commentCount} Comments</span>
+                      <span>{post.comment_count} Comments</span>
                     </Button>
 
                     <Button
@@ -117,10 +127,10 @@ const PostDetail = ({ post, onClose }: PostDetailProps) => {
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  {comments.map((comment) => (
-                    <CommentItem key={comment.id} comment={comment} />
-                  ))}
+                <div className="text-center py-8 text-muted-foreground">
+                  <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <p className="font-medium">No comments yet</p>
+                  <p className="text-sm">Be the first to share your thoughts!</p>
                 </div>
               </div>
             </div>

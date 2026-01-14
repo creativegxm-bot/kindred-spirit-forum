@@ -1,6 +1,6 @@
 import { TrendingUp, Flame, Clock, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { communities } from "@/data/mockData";
+import { useCommunities } from "@/hooks/usePosts";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
@@ -9,6 +9,8 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+  const { data: communities = [] } = useCommunities();
+
   const formatMembers = (count: number) => {
     if (count >= 1000000) {
       return (count / 1000000).toFixed(1) + "M members";
@@ -68,11 +70,11 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
               variant="ghost"
               className="justify-start gap-3 h-auto py-2"
             >
-              <span className="text-xl">{community.icon}</span>
+              <span className="text-xl">{community.icon || "💬"}</span>
               <div className="flex flex-col items-start">
                 <span className="text-sm font-medium">r/{community.name}</span>
                 <span className="text-xs text-muted-foreground">
-                  {formatMembers(community.memberCount)}
+                  {formatMembers(community.member_count)}
                 </span>
               </div>
             </Button>

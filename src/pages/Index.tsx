@@ -5,19 +5,30 @@ import TrendingSidebar from "@/components/TrendingSidebar";
 import PostCard from "@/components/PostCard";
 import PostDetail from "@/components/PostDetail";
 import CreatePostModal from "@/components/CreatePostModal";
-import { posts } from "@/data/mockData";
-import { Post } from "@/types";
+import AuthModal from "@/components/AuthModal";
+import { usePosts, Post } from "@/hooks/usePosts";
+import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+
+  const { data: posts = [], isLoading, error } = usePosts();
+
+  const openAuth = (mode: "login" | "signup") => {
+    setAuthMode(mode);
+    setAuthModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <Header
         onCreatePost={() => setCreateModalOpen(true)}
         onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
+        onOpenAuth={openAuth}
       />
 
       <div className="flex">
@@ -26,13 +37,31 @@ const Index = () => {
         <main className="flex-1 py-4 px-4 lg:px-6">
           <div className="flex gap-6 justify-center">
             <div className="w-full max-w-2xl space-y-4">
-              {posts.map((post) => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  onClick={() => setSelectedPost(post)}
-                />
-              ))}
+              {isLoading ? (
+                <div className="flex items-center justify-center py-20">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : error ? (
+                <div className="text-center py-20">
+                  <p className="text-destructive">Failed to load posts</p>
+                </div>
+              ) : posts.length === 0 ? (
+                <div className="card-gradient rounded-lg border border-border p-8 text-center">
+                  <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Be the first to share something with the community!
+                  </p>
+                </div>
+              ) : (
+                posts.map((post) => (
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    onClick={() => setSelectedPost(post)}
+                    onAuthRequired={() => openAuth("login")}
+                  />
+                ))
+              )}
             </div>
 
             <TrendingSidebar />
@@ -41,12 +70,23 @@ const Index = () => {
       </div>
 
       {selectedPost && (
-        <PostDetail post={selectedPost} onClose={() => setSelectedPost(null)} />
+        <PostDetail
+          post={selectedPost}
+          onClose={() => setSelectedPost(null)}
+          onAuthRequired={() => openAuth("login")}
+        />
       )}
 
       <CreatePostModal
         isOpen={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
+        onAuthRequired={() => openAuth("login")}
+      />
+
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        defaultMode={authMode}
       />
     </div>
   );

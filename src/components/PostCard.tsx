@@ -6,6 +6,7 @@ import { useSavePost } from "@/hooks/usePosts";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 interface PostCardProps {
   post: Post;
@@ -17,6 +18,7 @@ const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
   const { user } = useAuth();
   const savePostMutation = useSavePost();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true });
 
   const handleSave = async (e: React.MouseEvent) => {
@@ -72,7 +74,17 @@ const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
               r/{post.community?.name || "unknown"}
             </span>
             <span>•</span>
-            <span>Posted by u/{post.author?.username || "deleted"}</span>
+            <span
+              className="hover:underline cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (post.author?.username) {
+                  navigate(`/u/${post.author.username}`);
+                }
+              }}
+            >
+              Posted by u/{post.author?.username || "deleted"}
+            </span>
             <span>•</span>
             <span>{timeAgo}</span>
           </div>

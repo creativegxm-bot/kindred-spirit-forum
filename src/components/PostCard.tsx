@@ -1,16 +1,53 @@
-import { MessageSquare, Share, Bookmark, MoreHorizontal } from "lucide-react";
+import { MessageSquare, Share, Bookmark, MoreHorizontal, BookmarkCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import VoteButtons from "./VoteButtons";
-import { Post } from "@/types";
+import { Post } from "@/hooks/usePosts";
+import { useSavePost } from "@/hooks/usePosts";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 
 interface PostCardProps {
   post: Post;
   onClick: () => void;
+  onAuthRequired: () => void;
 }
 
-const PostCard = ({ post, onClick }: PostCardProps) => {
-  const timeAgo = formatDistanceToNow(post.createdAt, { addSuffix: true });
+const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
+  const { user } = useAuth();
+  const savePostMutation = useSavePost();
+  const { toast } = useToast();
+  const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true });
+
+  const handleSave = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) {
+      onAuthRequired();
+      toast({
+        title: "Login required",
+        description: "Please log in to save posts",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await savePostMutation.mutateAsync({
+        post_id: post.id,
+        save: !post.is_saved,
+      });
+      toast({
+        title: post.is_saved ? "Post unsaved" : "Post saved",
+        description: post.is_saved ? "Removed from saved posts" : "Added to saved posts",
+      });
+    } catch {
+      toast({
+        title: "Error",
+        description: "Could not save post",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <article
@@ -19,17 +56,23 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
     >
       <div className="flex">
         <div className="hidden sm:flex flex-col items-center gap-1 p-3 bg-secondary/30 rounded-l-lg">
-          <VoteButtons upvotes={post.upvotes} downvotes={post.downvotes} />
+          <VoteButtons
+            postId={post.id}
+            upvotes={post.upvotes}
+            downvotes={post.downvotes}
+            userVote={post.user_vote}
+            onAuthRequired={onAuthRequired}
+          />
         </div>
 
         <div className="flex-1 p-4">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span className="text-lg">{post.communityIcon}</span>
+            <span className="text-lg">{post.community?.icon || "💬"}</span>
             <span className="font-medium text-foreground hover:underline">
-              r/{post.community}
+              r/{post.community?.name || "unknown"}
             </span>
             <span>•</span>
-            <span>Posted by u/{post.author}</span>
+            <span>Posted by u/{post.author?.username || "deleted"}</span>
             <span>•</span>
             <span>{timeAgo}</span>
           </div>
@@ -38,14 +81,16 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
             {post.title}
           </h2>
 
-          <p className="mt-2 text-sm text-muted-foreground line-clamp-3">
-            {post.content}
-          </p>
+          {post.content && (
+            <p className="mt-2 text-sm text-muted-foreground line-clamp-3">
+              {post.content}
+            </p>
+          )}
 
-          {post.imageUrl && (
+          {post.image_url && (
             <div className="mt-3 overflow-hidden rounded-md">
               <img
-                src={post.imageUrl}
+                src={post.image_url}
                 alt=""
                 className="w-full h-auto max-h-96 object-cover"
               />
@@ -55,9 +100,12 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
           <div className="mt-3 flex items-center gap-1">
             <div className="sm:hidden">
               <VoteButtons
+                postId={post.id}
                 upvotes={post.upvotes}
                 downvotes={post.downvotes}
+                userVote={post.user_vote}
                 orientation="horizontal"
+                onAuthRequired={onAuthRequired}
               />
             </div>
 
@@ -68,7 +116,7 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
               onClick={(e) => e.stopPropagation()}
             >
               <MessageSquare className="h-4 w-4" />
-              <span>{post.commentCount}</span>
+              <span>{post.comment_count}</span>
             </Button>
 
             <Button
@@ -84,11 +132,15 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
             <Button
               variant="ghost"
               size="sm"
-              className="gap-1.5 text-muted-foreground"
-              onClick={(e) => e.stopPropagation()}
+              className={`gap-1.5 ${post.is_saved ? "text-primary" : "text-muted-foreground"}`}
+              onClick={handleSave}
             >
-              <Bookmark className="h-4 w-4" />
-              <span className="hidden sm:inline">Save</span>
+              {post.is_saved ? (
+                <BookmarkCheck className="h-4 w-4" />
+              ) : (
+                <Bookmark className="h-4 w-4" />
+              )}
+              <span className="hidden sm:inline">{post.is_saved ? "Saved" : "Save"}</span>
             </Button>
 
             <Button

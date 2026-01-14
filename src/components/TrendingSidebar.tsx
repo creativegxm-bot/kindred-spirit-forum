@@ -1,8 +1,10 @@
 import { TrendingUp, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { communities } from "@/data/mockData";
+import { useCommunities } from "@/hooks/usePosts";
 
 const TrendingSidebar = () => {
+  const { data: communities = [] } = useCommunities();
+
   const formatMembers = (count: number) => {
     if (count >= 1000000) {
       return (count / 1000000).toFixed(1) + "M";
@@ -29,14 +31,14 @@ const TrendingSidebar = () => {
               <span className="text-sm font-medium text-muted-foreground w-4">
                 {index + 1}
               </span>
-              <span className="text-2xl">{community.icon}</span>
+              <span className="text-2xl">{community.icon || "💬"}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium group-hover:text-primary transition-colors truncate">
                   r/{community.name}
                 </p>
                 <p className="text-xs text-muted-foreground flex items-center gap-1">
                   <Users className="h-3 w-3" />
-                  {formatMembers(community.memberCount)}
+                  {formatMembers(community.member_count)}
                 </p>
               </div>
               <Button

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useVote } from "@/hooks/usePosts";
+import { useCommentVote } from "@/hooks/useComments";
 import { useToast } from "@/hooks/use-toast";
 
 interface VoteButtonsProps {
@@ -26,10 +27,13 @@ const VoteButtons = ({
   onAuthRequired,
 }: VoteButtonsProps) => {
   const { user } = useAuth();
-  const voteMutation = useVote();
+  const postVoteMutation = useVote();
+  const commentVoteMutation = useCommentVote();
   const { toast } = useToast();
-  
-  const [optimisticVote, setOptimisticVote] = useState<number | null>(initialUserVote ?? null);
+
+  const [optimisticVote, setOptimisticVote] = useState<number | null>(
+    initialUserVote ?? null
+  );
   const [optimisticScore, setOptimisticScore] = useState(upvotes - downvotes);
 
   const handleVote = async (voteType: 1 | -1) => {
@@ -43,7 +47,7 @@ const VoteButtons = ({
       return;
     }
 
-    if (!postId) return;
+    if (!postId && !commentId) return;
 
     const previousVote = optimisticVote;
     const previousScore = optimisticScore;
@@ -69,7 +73,18 @@ const VoteButtons = ({
     setOptimisticScore(previousScore + scoreDelta);
 
     try {
-      await voteMutation.mutateAsync({ post_id: postId, vote_type: newVote });
+      if (commentId && postId) {
+        await commentVoteMutation.mutateAsync({
+          comment_id: commentId,
+          post_id: postId,
+          vote_type: newVote,
+        });
+      } else if (postId) {
+        await postVoteMutation.mutateAsync({
+          post_id: postId,
+          vote_type: newVote,
+        });
+      }
     } catch (error) {
       // Rollback on error
       setOptimisticVote(previousVote);
@@ -136,7 +151,9 @@ const VoteButtons = ({
         <ArrowBigDown
           className={cn(
             "h-6 w-6 transition-colors",
-            optimisticVote === -1 ? "fill-downvote text-downvote" : "hover:text-downvote"
+            optimisticVote === -1
+              ? "fill-downvote text-downvote"
+              : "hover:text-downvote"
           )}
         />
       </Button>

@@ -1,8 +1,13 @@
-import { X, MessageSquare, Share, Bookmark, MoreHorizontal } from "lucide-react";
+import { useState } from "react";
+import { X, MessageSquare, Share, Bookmark, MoreHorizontal, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import VoteButtons from "./VoteButtons";
+import CommentItem from "./CommentItem";
 import { Post } from "@/hooks/usePosts";
+import { useComments, useCreateComment } from "@/hooks/useComments";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 
 interface PostDetailProps {
@@ -12,7 +17,54 @@ interface PostDetailProps {
 }
 
 const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
+  const [commentContent, setCommentContent] = useState("");
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const { data: comments = [], isLoading: commentsLoading } = useComments(post.id);
+  const createComment = useCreateComment();
+  
   const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true });
+
+  const handleSubmitComment = async () => {
+    if (!user) {
+      onAuthRequired();
+      return;
+    }
+
+    if (!commentContent.trim()) {
+      toast({
+        title: "Empty comment",
+        description: "Please write something before submitting",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await createComment.mutateAsync({
+        post_id: post.id,
+        content: commentContent.trim(),
+      });
+      setCommentContent("");
+      toast({
+        title: "Comment posted",
+        description: "Your comment has been added",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to post comment",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const totalComments = comments.reduce((acc, comment) => {
+    const countReplies = (c: typeof comment): number => {
+      return 1 + (c.replies?.reduce((sum, reply) => sum + countReplies(reply), 0) || 0);
+    };
+    return acc + countReplies(comment);
+  }, 0);
 
   return (
     <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm overflow-y-auto">
@@ -113,24 +165,52 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </div>
-                </div>
-              </div>
 
-              <div className="mt-6 border-t border-border pt-6">
-                <div className="mb-4">
-                  <Textarea
-                    placeholder="What are your thoughts?"
-                    className="min-h-24 bg-secondary border-none resize-none focus-visible:ring-primary"
-                  />
-                  <div className="flex justify-end mt-2">
-                    <Button size="sm">Comment</Button>
+                  {/* Comments Section */}
+                  <div className="mt-6 border-t border-border pt-6">
+                    <div className="mb-6">
+                      <Textarea
+                        placeholder={user ? "What are your thoughts?" : "Log in to comment"}
+                        value={commentContent}
+                        onChange={(e) => setCommentContent(e.target.value)}
+                        className="min-h-24 bg-secondary border-none resize-none focus-visible:ring-primary"
+                        disabled={!user}
+                        onClick={() => !user && onAuthRequired()}
+                      />
+                      <div className="flex justify-end mt-2">
+                        <Button
+                          size="sm"
+                          onClick={handleSubmitComment}
+                          disabled={createComment.isPending || !commentContent.trim()}
+                        >
+                          {createComment.isPending ? "Posting..." : "Comment"}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {commentsLoading ? (
+                      <div className="flex items-center justify-center py-8">
+                        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                      </div>
+                    ) : comments.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                        <p className="font-medium">No comments yet</p>
+                        <p className="text-sm">Be the first to share your thoughts!</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {comments.map((comment) => (
+                          <CommentItem
+                            key={comment.id}
+                            comment={comment}
+                            postId={post.id}
+                            onAuthRequired={onAuthRequired}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </div>
-
-                <div className="text-center py-8 text-muted-foreground">
-                  <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                  <p className="font-medium">No comments yet</p>
-                  <p className="text-sm">Be the first to share your thoughts!</p>
                 </div>
               </div>
             </div>

@@ -1,15 +1,21 @@
-import { TrendingUp, Flame, Clock, Star } from "lucide-react";
+import { useState } from "react";
+import { TrendingUp, Flame, Clock, Star, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCommunities } from "@/hooks/usePosts";
+import { useAuth } from "@/hooks/useAuth";
+import CreateCommunityModal from "./CreateCommunityModal";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenAuth: (mode: "login" | "signup") => void;
 }
 
-const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
+  const { user } = useAuth();
   const { data: communities = [] } = useCommunities();
+  const [createModalOpen, setCreateModalOpen] = useState(false);
 
   const formatMembers = (count: number) => {
     if (count >= 1000000) {
@@ -19,6 +25,14 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
       return (count / 1000).toFixed(0) + "k members";
     }
     return count + " members";
+  };
+
+  const handleCreateCommunity = () => {
+    if (!user) {
+      onOpenAuth("login");
+      return;
+    }
+    setCreateModalOpen(true);
   };
 
   return (
@@ -61,9 +75,30 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
         <div className="mt-2 border-t border-border" />
 
         <div className="flex flex-col gap-1 p-3">
-          <h3 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Popular Communities
-          </h3>
+          <div className="flex items-center justify-between px-3 py-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Communities
+            </h3>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={handleCreateCommunity}
+              title="Create Community"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+          
+          <Button
+            variant="ghost"
+            className="justify-start gap-3 text-primary hover:text-primary"
+            onClick={handleCreateCommunity}
+          >
+            <Plus className="h-5 w-5" />
+            Create Community
+          </Button>
+
           {communities.map((community) => (
             <Button
               key={community.id}
@@ -81,6 +116,12 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           ))}
         </div>
       </aside>
+
+      <CreateCommunityModal
+        isOpen={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onAuthRequired={() => onOpenAuth("login")}
+      />
     </>
   );
 };

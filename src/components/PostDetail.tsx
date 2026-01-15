@@ -6,6 +6,7 @@ import VoteButtons from "./VoteButtons";
 import CommentItem from "./CommentItem";
 import { Post } from "@/hooks/usePosts";
 import { useComments, useCreateComment } from "@/hooks/useComments";
+import { useRealtimeComments } from "@/hooks/useRealtimeSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
@@ -22,6 +23,9 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
   const { toast } = useToast();
   const { data: comments = [], isLoading: commentsLoading } = useComments(post.id);
   const createComment = useCreateComment();
+  
+  // Enable real-time updates for comments and votes
+  useRealtimeComments(post.id);
   
   const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true });
 

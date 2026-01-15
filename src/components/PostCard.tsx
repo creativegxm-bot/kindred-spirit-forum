@@ -6,6 +6,7 @@ import { useSavePost } from "@/hooks/usePosts";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
+import { tr } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 
 interface PostCardProps {
@@ -19,15 +20,15 @@ const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
   const savePostMutation = useSavePost();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true });
+  const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: tr });
 
   const handleSave = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!user) {
       onAuthRequired();
       toast({
-        title: "Login required",
-        description: "Please log in to save posts",
+        title: "Giriş gerekli",
+        description: "Gönderi kaydetmek için lütfen giriş yapın",
         variant: "destructive",
       });
       return;
@@ -39,13 +40,13 @@ const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
         save: !post.is_saved,
       });
       toast({
-        title: post.is_saved ? "Post unsaved" : "Post saved",
-        description: post.is_saved ? "Removed from saved posts" : "Added to saved posts",
+        title: post.is_saved ? "Gönderi kaldırıldı" : "Gönderi kaydedildi",
+        description: post.is_saved ? "Kaydedilenlerden kaldırıldı" : "Kaydedilenlere eklendi",
       });
     } catch {
       toast({
-        title: "Error",
-        description: "Could not save post",
+        title: "Hata",
+        description: "Gönderi kaydedilemedi",
         variant: "destructive",
       });
     }
@@ -71,7 +72,7 @@ const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="text-lg">{post.community?.icon || "💬"}</span>
             <span className="font-medium text-foreground hover:underline">
-              r/{post.community?.name || "unknown"}
+              r/{post.community?.name || "bilinmiyor"}
             </span>
             <span>•</span>
             <span
@@ -83,7 +84,7 @@ const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
                 }
               }}
             >
-              Posted by u/{post.author?.username || "deleted"}
+              u/{post.author?.username || "silindi"} tarafından
             </span>
             <span>•</span>
             <span>{timeAgo}</span>
@@ -138,7 +139,7 @@ const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
               onClick={(e) => e.stopPropagation()}
             >
               <Share className="h-4 w-4" />
-              <span className="hidden sm:inline">Share</span>
+              <span className="hidden sm:inline">Paylaş</span>
             </Button>
 
             <Button
@@ -152,7 +153,7 @@ const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
               ) : (
                 <Bookmark className="h-4 w-4" />
               )}
-              <span className="hidden sm:inline">{post.is_saved ? "Saved" : "Save"}</span>
+              <span className="hidden sm:inline">{post.is_saved ? "Kaydedildi" : "Kaydet"}</span>
             </Button>
 
             <Button

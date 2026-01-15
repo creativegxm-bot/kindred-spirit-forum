@@ -33,14 +33,14 @@ const ProfileSettings = () => {
         avatar_url: avatarUrl || undefined,
       });
       toast({
-        title: "Profile updated",
-        description: "Your changes have been saved",
+        title: "Profil güncellendi",
+        description: "Değişiklikleriniz kaydedildi",
       });
       setOpen(false);
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to update profile",
+        title: "Hata",
+        description: "Profil güncellenemedi",
         variant: "destructive",
       });
     }
@@ -51,32 +51,32 @@ const ProfileSettings = () => {
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
           <Settings className="h-4 w-4" />
-          Edit Profile
+          Profili Düzenle
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit Profile</DialogTitle>
+          <DialogTitle>Profili Düzenle</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="displayName">Display Name</Label>
+            <Label htmlFor="displayName">Görünen Ad</Label>
             <Input
               id="displayName"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="Your display name"
+              placeholder="Görünen adınız"
               className="bg-secondary border-none"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bio">Bio</Label>
+            <Label htmlFor="bio">Biyografi</Label>
             <Textarea
               id="bio"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="Tell us about yourself..."
+              placeholder="Kendinizden bahsedin..."
               className="bg-secondary border-none resize-none min-h-24"
               maxLength={200}
             />
@@ -91,7 +91,7 @@ const ProfileSettings = () => {
               id="avatarUrl"
               value={avatarUrl}
               onChange={(e) => setAvatarUrl(e.target.value)}
-              placeholder="https://example.com/avatar.png"
+              placeholder="https://ornek.com/avatar.png"
               className="bg-secondary border-none"
             />
           </div>
@@ -106,7 +106,7 @@ const ProfileSettings = () => {
             ) : (
               <Save className="h-4 w-4" />
             )}
-            Save Changes
+            Değişiklikleri Kaydet
           </Button>
         </div>
       </DialogContent>

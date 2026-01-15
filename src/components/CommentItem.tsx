@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import VoteButtons from "./VoteButtons";
 import { Comment, useCreateComment } from "@/hooks/useComments";
 import { formatDistanceToNow } from "date-fns";
+import { tr } from "date-fns/locale";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 
@@ -23,7 +24,7 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
   const { toast } = useToast();
   const createComment = useCreateComment();
   
-  const timeAgo = formatDistanceToNow(new Date(comment.created_at), { addSuffix: true });
+  const timeAgo = formatDistanceToNow(new Date(comment.created_at), { addSuffix: true, locale: tr });
 
   const handleReply = async () => {
     if (!user) {
@@ -33,8 +34,8 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
 
     if (!replyContent.trim()) {
       toast({
-        title: "Empty reply",
-        description: "Please write something before submitting",
+        title: "Boş yanıt",
+        description: "Lütfen göndermeden önce bir şeyler yazın",
         variant: "destructive",
       });
       return;
@@ -49,13 +50,13 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
       setReplyContent("");
       setIsReplying(false);
       toast({
-        title: "Reply posted",
-        description: "Your reply has been added",
+        title: "Yanıt gönderildi",
+        description: "Yanıtın eklendi",
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to post reply",
+        title: "Hata",
+        description: "Yanıt gönderilemedi",
         variant: "destructive",
       });
     }
@@ -83,7 +84,7 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 text-xs">
             <span className="font-medium text-foreground">
-              u/{comment.author?.username || "deleted"}
+              u/{comment.author?.username || "silindi"}
             </span>
             <span className="text-muted-foreground">•</span>
             <span className="text-muted-foreground">{timeAgo}</span>
@@ -96,7 +97,7 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
               className="text-xs text-muted-foreground mt-1"
               onClick={() => setIsCollapsed(false)}
             >
-              [+] Expand thread
+              [+] Konuyu genişlet
             </Button>
           ) : (
             <>
@@ -127,7 +128,7 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
                   }}
                 >
                   <MessageSquare className="h-3.5 w-3.5" />
-                  Reply
+                  Yanıtla
                 </Button>
                 <Button
                   variant="ghost"
@@ -141,7 +142,7 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
               {isReplying && (
                 <div className="mt-3 space-y-2">
                   <Textarea
-                    placeholder="Write your reply..."
+                    placeholder="Yanıtını yaz..."
                     value={replyContent}
                     onChange={(e) => setReplyContent(e.target.value)}
                     className="min-h-20 bg-secondary border-none resize-none focus-visible:ring-primary text-sm"
@@ -155,14 +156,14 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
                         setReplyContent("");
                       }}
                     >
-                      Cancel
+                      İptal
                     </Button>
                     <Button
                       size="sm"
                       onClick={handleReply}
                       disabled={createComment.isPending || !replyContent.trim()}
                     >
-                      {createComment.isPending ? "Posting..." : "Reply"}
+                      {createComment.isPending ? "Gönderiliyor..." : "Yanıtla"}
                     </Button>
                   </div>
                 </div>

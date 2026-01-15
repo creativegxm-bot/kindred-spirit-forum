@@ -3,6 +3,7 @@ import { ArrowBigUp, ArrowBigDown, MessageSquare } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserPost, UserComment } from "@/hooks/useProfile";
 import { formatDistanceToNow } from "date-fns";
+import { tr } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 
 interface ProfileTabsProps {
@@ -28,14 +29,14 @@ const ProfileTabs = ({ posts, comments, isLoading }: ProfileTabsProps) => {
   return (
     <Tabs defaultValue="posts" className="w-full">
       <TabsList className="w-full grid grid-cols-2 bg-secondary">
-        <TabsTrigger value="posts">Posts ({posts?.length || 0})</TabsTrigger>
-        <TabsTrigger value="comments">Comments ({comments?.length || 0})</TabsTrigger>
+        <TabsTrigger value="posts">Gönderiler ({posts?.length || 0})</TabsTrigger>
+        <TabsTrigger value="comments">Yorumlar ({comments?.length || 0})</TabsTrigger>
       </TabsList>
 
       <TabsContent value="posts" className="mt-4 space-y-3">
         {posts?.length === 0 ? (
           <div className="card-gradient rounded-lg border border-border p-8 text-center text-muted-foreground">
-            No posts yet
+            Henüz gönderi yok
           </div>
         ) : (
           posts?.map((post) => (
@@ -55,7 +56,7 @@ const ProfileTabs = ({ posts, comments, isLoading }: ProfileTabsProps) => {
                     <span>{post.community?.icon}</span>
                     <span>r/{post.community?.name}</span>
                     <span>•</span>
-                    <span>{formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}</span>
+                    <span>{formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: tr })}</span>
                   </div>
                   <h3 className="font-semibold mt-1 line-clamp-2">{post.title}</h3>
                   {post.content && (
@@ -66,7 +67,7 @@ const ProfileTabs = ({ posts, comments, isLoading }: ProfileTabsProps) => {
                   <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <MessageSquare className="h-3.5 w-3.5" />
-                      {post.comment_count} comments
+                      {post.comment_count} yorum
                     </span>
                   </div>
                 </div>
@@ -79,7 +80,7 @@ const ProfileTabs = ({ posts, comments, isLoading }: ProfileTabsProps) => {
       <TabsContent value="comments" className="mt-4 space-y-3">
         {comments?.length === 0 ? (
           <div className="card-gradient rounded-lg border border-border p-8 text-center text-muted-foreground">
-            No comments yet
+            Henüz yorum yok
           </div>
         ) : (
           comments?.map((comment) => (
@@ -90,12 +91,12 @@ const ProfileTabs = ({ posts, comments, isLoading }: ProfileTabsProps) => {
             >
               <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
                 <MessageSquare className="h-3.5 w-3.5" />
-                <span>Comment on</span>
+                <span>Şuna yorum yapıldı:</span>
                 <span className="font-medium text-foreground truncate">
-                  {comment.post?.title || "deleted post"}
+                  {comment.post?.title || "silinen gönderi"}
                 </span>
                 <span>•</span>
-                <span>{formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}</span>
+                <span>{formatDistanceToNow(new Date(comment.created_at), { addSuffix: true, locale: tr })}</span>
               </div>
               <p className="text-sm line-clamp-3">{comment.content}</p>
               <div className="flex items-center gap-2 mt-2 text-xs">

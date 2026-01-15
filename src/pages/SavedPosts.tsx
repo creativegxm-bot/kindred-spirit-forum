@@ -55,9 +55,9 @@ const SavedPosts = () => {
                 <Bookmark className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold">Saved Posts</h1>
+                <h1 className="text-2xl font-bold">Kaydedilen Gönderiler</h1>
                 <p className="text-sm text-muted-foreground">
-                  Posts you've bookmarked for later
+                  Daha sonra okumak için kaydettiğiniz gönderiler
                 </p>
               </div>
             </div>
@@ -69,16 +69,16 @@ const SavedPosts = () => {
                 </div>
               ) : error ? (
                 <div className="text-center py-20">
-                  <p className="text-destructive">Failed to load saved posts</p>
+                  <p className="text-destructive">Kaydedilen gönderiler yüklenemedi</p>
                 </div>
               ) : posts.length === 0 ? (
                 <div className="card-gradient rounded-lg border border-border p-8 text-center">
                   <Bookmark className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-lg font-semibold mb-2">
-                    No saved posts yet
+                    Henüz kaydedilen gönderi yok
                   </h3>
                   <p className="text-muted-foreground">
-                    Click the bookmark icon on any post to save it for later.
+                    Daha sonra okumak için herhangi bir gönderideki yer imi simgesine tıklayın.
                   </p>
                 </div>
               ) : (

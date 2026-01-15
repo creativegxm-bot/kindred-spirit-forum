@@ -36,7 +36,7 @@ const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
           <div className="relative w-full max-w-xl">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search readit"
+              placeholder="Readit'te ara"
               className="w-full bg-secondary border-none pl-10 focus-visible:ring-primary"
             />
           </div>
@@ -50,7 +50,7 @@ const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
             onClick={onCreatePost}
           >
             <Plus className="h-4 w-4" />
-            Create
+            Oluştur
           </Button>
           <Button
             variant="create"

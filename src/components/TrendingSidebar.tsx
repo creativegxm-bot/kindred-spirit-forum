@@ -20,7 +20,7 @@ const TrendingSidebar = () => {
       <div className="card-gradient rounded-lg border border-border p-4">
         <div className="flex items-center gap-2 mb-4">
           <TrendingUp className="h-5 w-5 text-primary" />
-          <h3 className="font-semibold">Trending Communities</h3>
+          <h3 className="font-semibold">Trend Topluluklar</h3>
         </div>
         <div className="space-y-3">
           {communities.slice(0, 5).map((community, index) => (
@@ -46,7 +46,7 @@ const TrendingSidebar = () => {
                 size="sm"
                 className="text-xs h-7 opacity-0 group-hover:opacity-100 transition-opacity"
               >
-                Join
+                Katıl
               </Button>
             </div>
           ))}
@@ -54,25 +54,25 @@ const TrendingSidebar = () => {
       </div>
 
       <div className="card-gradient rounded-lg border border-border p-4">
-        <h3 className="font-semibold mb-3">About Readit</h3>
+        <h3 className="font-semibold mb-3">Readit Hakkında</h3>
         <p className="text-sm text-muted-foreground mb-4">
-          Your front page of the internet. Join communities, share content, and
-          connect with millions of users.
+          İnternetin ön sayfası. Topluluklara katıl, içerik paylaş ve milyonlarca
+          kullanıcıyla bağlantı kur.
         </p>
         <Button className="w-full" variant="create">
-          Create Community
+          Topluluk Oluştur
         </Button>
       </div>
 
       <div className="text-xs text-muted-foreground p-4 space-y-2">
         <div className="flex flex-wrap gap-x-2 gap-y-1">
-          <a href="#" className="hover:underline">Help</a>
-          <a href="#" className="hover:underline">About</a>
-          <a href="#" className="hover:underline">Careers</a>
-          <a href="#" className="hover:underline">Press</a>
+          <a href="#" className="hover:underline">Yardım</a>
+          <a href="#" className="hover:underline">Hakkında</a>
+          <a href="#" className="hover:underline">Kariyer</a>
+          <a href="#" className="hover:underline">Basın</a>
           <a href="#" className="hover:underline">Blog</a>
         </div>
-        <p>© 2024 Readit, Inc. All rights reserved.</p>
+        <p>© 2024 Readit, Inc. Tüm hakları saklıdır.</p>
       </div>
     </aside>
   );

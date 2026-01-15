@@ -34,6 +34,7 @@ export interface Community {
   icon: string | null;
   banner_url: string | null;
   member_count: number;
+  created_by: string | null;
   created_at: string;
 }
 

@@ -12,6 +12,7 @@ import AuthModal from "@/components/AuthModal";
 import PostCard from "@/components/PostCard";
 import PostDetail from "@/components/PostDetail";
 import CreatePostModal from "@/components/CreatePostModal";
+import CommunityRules from "@/components/CommunityRules";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -333,8 +334,15 @@ const CommunityPage = () => {
               )}
             </div>
 
-            {/* Member List Sidebar */}
-            <div className="hidden lg:block w-72">
+            {/* Sidebar with Rules and Members */}
+            <div className="hidden lg:block w-72 space-y-4">
+              {/* Community Rules */}
+              <CommunityRules 
+                communityId={community.id} 
+                createdBy={community.created_by} 
+              />
+              
+              {/* Member List */}
               <div className="bg-card rounded-lg p-4 border sticky top-20">
                 <h3 className="font-semibold mb-4">{t("communityMembers")}</h3>
                 <div className="space-y-3">

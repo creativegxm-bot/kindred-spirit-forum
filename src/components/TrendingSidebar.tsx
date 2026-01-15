@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { TrendingUp, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCommunities } from "@/hooks/usePosts";
@@ -26,8 +27,9 @@ const TrendingSidebar = () => {
         </div>
         <div className="space-y-3">
           {communities.slice(0, 5).map((community, index) => (
-            <div
+            <Link
               key={community.id}
+              to={`/r/${community.name}`}
               className="flex items-center gap-3 group cursor-pointer"
             >
               <span className="text-sm font-medium text-muted-foreground w-4">
@@ -50,7 +52,7 @@ const TrendingSidebar = () => {
               >
                 {t("join")}
               </Button>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

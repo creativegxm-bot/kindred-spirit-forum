@@ -128,6 +128,18 @@ export const translations = {
     filterNew: "Yeni",
     filterTop: "En Çok Oy",
     
+    // Community Page
+    members: "üye",
+    createdOn: "Oluşturulma:",
+    leave: "Ayrıl",
+    communityMembers: "Topluluk Üyeleri",
+    moreMembers: "üye daha",
+    noCommunityPosts: "Bu toplulukta henüz gönderi yok",
+    createFirstPost: "İlk Gönderiyi Oluştur",
+    communityNotFound: "Topluluk Bulunamadı",
+    communityNotFoundDesc: "Aradığınız topluluk mevcut değil veya silinmiş olabilir.",
+    deletedUser: "Silinmiş Kullanıcı",
+    
     // Not Found
     notFoundTitle: "Sayfa Bulunamadı",
     notFoundDesc: "Aradığınız sayfa mevcut değil veya taşınmış olabilir.",
@@ -269,6 +281,18 @@ export const translations = {
     filterHot: "Hot",
     filterNew: "New",
     filterTop: "Top",
+    
+    // Community Page
+    members: "members",
+    createdOn: "Created:",
+    leave: "Leave",
+    communityMembers: "Community Members",
+    moreMembers: "more members",
+    noCommunityPosts: "No posts in this community yet",
+    createFirstPost: "Create First Post",
+    communityNotFound: "Community Not Found",
+    communityNotFoundDesc: "The community you're looking for doesn't exist or has been deleted.",
+    deletedUser: "Deleted User",
     
     // Not Found
     notFoundTitle: "Page Not Found",

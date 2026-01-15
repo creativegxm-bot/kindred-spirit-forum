@@ -83,7 +83,7 @@ const UserMenu = ({ onOpenAuth }: UserMenuProps) => {
           <User className="mr-2 h-4 w-4" />
           Profile
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/saved")}>
           <Bookmark className="mr-2 h-4 w-4" />
           Saved Posts
         </DropdownMenuItem>

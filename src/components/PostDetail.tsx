@@ -8,9 +8,10 @@ import { Post } from "@/hooks/usePosts";
 import { useComments, useCreateComment } from "@/hooks/useComments";
 import { useRealtimeComments } from "@/hooks/useRealtimeSubscription";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
-import { tr } from "date-fns/locale";
+import { tr, enUS } from "date-fns/locale";
 
 interface PostDetailProps {
   post: Post;
@@ -21,6 +22,7 @@ interface PostDetailProps {
 const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
   const [commentContent, setCommentContent] = useState("");
   const { user } = useAuth();
+  const { t, language } = useLanguage();
   const { toast } = useToast();
   const { data: comments = [], isLoading: commentsLoading } = useComments(post.id);
   const createComment = useCreateComment();
@@ -28,7 +30,10 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
   // Enable real-time updates for comments and votes
   useRealtimeComments(post.id);
   
-  const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: tr });
+  const timeAgo = formatDistanceToNow(new Date(post.created_at), { 
+    addSuffix: true, 
+    locale: language === "tr" ? tr : enUS 
+  });
 
   const handleSubmitComment = async () => {
     if (!user) {
@@ -38,8 +43,8 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
 
     if (!commentContent.trim()) {
       toast({
-        title: "Boş yorum",
-        description: "Lütfen göndermeden önce bir şeyler yazın",
+        title: language === "tr" ? "Boş yorum" : "Empty comment",
+        description: language === "tr" ? "Lütfen göndermeden önce bir şeyler yazın" : "Please write something before posting",
         variant: "destructive",
       });
       return;
@@ -52,13 +57,13 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
       });
       setCommentContent("");
       toast({
-        title: "Yorum gönderildi",
-        description: "Yorumun eklendi",
+        title: language === "tr" ? "Yorum gönderildi" : "Comment posted",
+        description: language === "tr" ? "Yorumun eklendi" : "Your comment has been added",
       });
     } catch (error) {
       toast({
-        title: "Hata",
-        description: "Yorum gönderilemedi",
+        title: language === "tr" ? "Hata" : "Error",
+        description: language === "tr" ? "Yorum gönderilemedi" : "Could not post comment",
         variant: "destructive",
       });
     }
@@ -79,7 +84,7 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
             <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b border-border bg-card/95 backdrop-blur rounded-t-lg">
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-lg">{post.community?.icon || "💬"}</span>
-                <span className="font-medium">r/{post.community?.name || "bilinmiyor"}</span>
+                <span className="font-medium">r/{post.community?.name || (language === "tr" ? "bilinmiyor" : "unknown")}</span>
               </div>
               <Button variant="ghost" size="icon" onClick={onClose}>
                 <X className="h-5 w-5" />
@@ -100,7 +105,7 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
 
                 <div className="flex-1">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>u/{post.author?.username || "silindi"} tarafından</span>
+                    <span>u/{post.author?.username || (language === "tr" ? "silindi" : "deleted")} {language === "tr" ? "tarafından" : ""}</span>
                     <span>•</span>
                     <span>{timeAgo}</span>
                   </div>
@@ -141,7 +146,7 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                       className="gap-1.5 text-muted-foreground"
                     >
                       <MessageSquare className="h-4 w-4" />
-                      <span>{post.comment_count} Yorum</span>
+                      <span>{post.comment_count} {t("comments")}</span>
                     </Button>
 
                     <Button
@@ -150,7 +155,7 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                       className="gap-1.5 text-muted-foreground"
                     >
                       <Share className="h-4 w-4" />
-                      Paylaş
+                      {t("share")}
                     </Button>
 
                     <Button
@@ -159,7 +164,7 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                       className="gap-1.5 text-muted-foreground"
                     >
                       <Bookmark className="h-4 w-4" />
-                      Kaydet
+                      {t("save")}
                     </Button>
 
                     <Button
@@ -175,7 +180,7 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                   <div className="mt-6 border-t border-border pt-6">
                     <div className="mb-6">
                       <Textarea
-                        placeholder={user ? "Düşüncelerin neler?" : "Yorum yapmak için giriş yap"}
+                        placeholder={user ? t("addComment") : t("loginToComment")}
                         value={commentContent}
                         onChange={(e) => setCommentContent(e.target.value)}
                         className="min-h-24 bg-secondary border-none resize-none focus-visible:ring-primary"
@@ -188,7 +193,9 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                           onClick={handleSubmitComment}
                           disabled={createComment.isPending || !commentContent.trim()}
                         >
-                          {createComment.isPending ? "Gönderiliyor..." : "Yorum Yap"}
+                          {createComment.isPending 
+                            ? (language === "tr" ? "Gönderiliyor..." : "Posting...")
+                            : t("postComment")}
                         </Button>
                       </div>
                     </div>
@@ -200,8 +207,8 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                     ) : comments.length === 0 ? (
                       <div className="text-center py-8 text-muted-foreground">
                         <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                        <p className="font-medium">Henüz yorum yok</p>
-                        <p className="text-sm">Düşüncelerini paylaşan ilk kişi ol!</p>
+                        <p className="font-medium">{language === "tr" ? "Henüz yorum yok" : "No comments yet"}</p>
+                        <p className="text-sm">{language === "tr" ? "Düşüncelerini paylaşan ilk kişi ol!" : "Be the first to share your thoughts!"}</p>
                       </div>
                     ) : (
                       <div className="space-y-4">

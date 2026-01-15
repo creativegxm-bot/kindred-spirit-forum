@@ -8,6 +8,7 @@ import CreatePostModal from "@/components/CreatePostModal";
 import AuthModal from "@/components/AuthModal";
 import { usePosts, Post } from "@/hooks/usePosts";
 import { useRealtimePosts } from "@/hooks/useRealtimeSubscription";
+import { useLanguage } from "@/hooks/useLanguage";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
@@ -18,6 +19,7 @@ const Index = () => {
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
 
   const { data: posts = [], isLoading, error } = usePosts();
+  const { language } = useLanguage();
   
   // Enable real-time updates for posts and votes
   useRealtimePosts();
@@ -47,13 +49,17 @@ const Index = () => {
                 </div>
               ) : error ? (
                 <div className="text-center py-20">
-                  <p className="text-destructive">Gönderiler yüklenemedi</p>
+                  <p className="text-destructive">
+                    {language === "tr" ? "Gönderiler yüklenemedi" : "Failed to load posts"}
+                  </p>
                 </div>
               ) : posts.length === 0 ? (
                 <div className="card-gradient rounded-lg border border-border p-8 text-center">
-                  <h3 className="text-lg font-semibold mb-2">Henüz gönderi yok</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    {language === "tr" ? "Henüz gönderi yok" : "No posts yet"}
+                  </h3>
                   <p className="text-muted-foreground mb-4">
-                    Toplulukla bir şeyler paylaşan ilk kişi ol!
+                    {language === "tr" ? "Toplulukla bir şeyler paylaşan ilk kişi ol!" : "Be the first to share something with the community!"}
                   </p>
                 </div>
               ) : (

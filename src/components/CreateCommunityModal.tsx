@@ -17,6 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useCreateCommunity } from "@/hooks/useCommunities";
+import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
 
 interface CreateCommunityModalProps {
@@ -41,6 +42,7 @@ const CreateCommunityModal = ({
   const [icon, setIcon] = useState("💬");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   
+  const { t, language } = useLanguage();
   const createCommunity = useCreateCommunity();
   const { toast } = useToast();
 
@@ -49,8 +51,8 @@ const CreateCommunityModal = ({
 
     if (!name.trim()) {
       toast({
-        title: "Ad gerekli",
-        description: "Lütfen bir topluluk adı girin",
+        title: language === "tr" ? "Ad gerekli" : "Name required",
+        description: language === "tr" ? "Lütfen bir topluluk adı girin" : "Please enter a community name",
         variant: "destructive",
       });
       return;
@@ -64,8 +66,8 @@ const CreateCommunityModal = ({
       });
       
       toast({
-        title: "Topluluk oluşturuldu!",
-        description: `r/${name} artık yayında`,
+        title: language === "tr" ? "Topluluk oluşturuldu!" : "Community created!",
+        description: language === "tr" ? `r/${name} artık yayında` : `r/${name} is now live`,
       });
       
       setName("");
@@ -74,8 +76,8 @@ const CreateCommunityModal = ({
       onClose();
     } catch (error: any) {
       toast({
-        title: "Hata",
-        description: error.message || "Topluluk oluşturulamadı",
+        title: language === "tr" ? "Hata" : "Error",
+        description: error.message || (language === "tr" ? "Topluluk oluşturulamadı" : "Could not create community"),
         variant: "destructive",
       });
     }
@@ -85,16 +87,17 @@ const CreateCommunityModal = ({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Topluluk Oluştur</DialogTitle>
+          <DialogTitle>{t("createCommunity")}</DialogTitle>
           <DialogDescription>
-            İlgi alanların etrafında bir topluluk oluştur. Topluluklar, insanların
-            içerik paylaştığı ve konuları tartıştığı yerlerdir.
+            {language === "tr" 
+              ? "İlgi alanların etrafında bir topluluk oluştur. Topluluklar, insanların içerik paylaştığı ve konuları tartıştığı yerlerdir."
+              : "Create a community around your interests. Communities are where people share content and discuss topics."}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="icon">Topluluk Simgesi</Label>
+            <Label htmlFor="icon">{t("communityIcon")}</Label>
             <div className="flex items-center gap-3">
               <Popover open={emojiPickerOpen} onOpenChange={setEmojiPickerOpen}>
                 <PopoverTrigger asChild>
@@ -126,13 +129,13 @@ const CreateCommunityModal = ({
                 </PopoverContent>
               </Popover>
               <div className="text-sm text-muted-foreground">
-                Topluluğun için bir simge seçmek için tıkla
+                {language === "tr" ? "Topluluğun için bir simge seçmek için tıkla" : "Click to choose an icon for your community"}
               </div>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="name">Topluluk Adı</Label>
+            <Label htmlFor="name">{t("communityName")}</Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                 r/
@@ -141,23 +144,23 @@ const CreateCommunityModal = ({
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value.replace(/[^a-zA-Z0-9_]/g, ""))}
-                placeholder="topluluk_adi"
+                placeholder={t("communityNamePlaceholder")}
                 className="pl-8 bg-secondary border-none"
                 maxLength={21}
               />
             </div>
             <p className="text-xs text-muted-foreground">
-              3-21 karakter. Sadece harf, rakam ve alt çizgi.
+              {language === "tr" ? "3-21 karakter. Sadece harf, rakam ve alt çizgi." : "3-21 characters. Letters, numbers and underscores only."}
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Açıklama</Label>
+            <Label htmlFor="description">{t("communityDescription")}</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Topluluğun ne hakkında?"
+              placeholder={t("communityDescriptionPlaceholder")}
               className="bg-secondary border-none resize-none min-h-24"
               maxLength={500}
             />
@@ -173,7 +176,7 @@ const CreateCommunityModal = ({
               onClick={onClose}
               className="flex-1"
             >
-              İptal
+              {t("cancel")}
             </Button>
             <Button
               type="submit"
@@ -183,7 +186,7 @@ const CreateCommunityModal = ({
               {createCommunity.isPending && (
                 <Loader2 className="h-4 w-4 animate-spin" />
               )}
-              Topluluk Oluştur
+              {t("createCommunity")}
             </Button>
           </div>
         </form>

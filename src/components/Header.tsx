@@ -1,8 +1,9 @@
-import { useState } from "react";
 import { Search, Plus, Bell, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import UserMenu from "./UserMenu";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface HeaderProps {
   onCreatePost: () => void;
@@ -11,6 +12,8 @@ interface HeaderProps {
 }
 
 const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
+  const { t } = useLanguage();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center gap-4">
@@ -36,7 +39,7 @@ const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
           <div className="relative w-full max-w-xl">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Readit'te ara"
+              placeholder={t("searchPlaceholder")}
               className="w-full bg-secondary border-none pl-10 focus-visible:ring-primary"
             />
           </div>
@@ -50,7 +53,7 @@ const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
             onClick={onCreatePost}
           >
             <Plus className="h-4 w-4" />
-            Oluştur
+            {t("create")}
           </Button>
           <Button
             variant="create"
@@ -63,6 +66,7 @@ const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
           <Button variant="ghost" size="icon" className="hidden sm:flex">
             <Bell className="h-5 w-5" />
           </Button>
+          <LanguageSwitcher />
           <UserMenu onOpenAuth={onOpenAuth} />
         </div>
       </div>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
 
 interface AuthModalProps {
@@ -19,6 +20,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
+  const { t, language } = useLanguage();
   const { toast } = useToast();
 
   if (!isOpen) return null;
@@ -31,8 +33,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
       if (mode === "signup") {
         if (!username.trim()) {
           toast({
-            title: "Kullanıcı adı gerekli",
-            description: "Lütfen bir kullanıcı adı girin",
+            title: language === "tr" ? "Kullanıcı adı gerekli" : "Username required",
+            description: language === "tr" ? "Lütfen bir kullanıcı adı girin" : "Please enter a username",
             variant: "destructive",
           });
           setLoading(false);
@@ -41,14 +43,14 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
         const { error } = await signUp(email, password, username);
         if (error) {
           toast({
-            title: "Kayıt başarısız",
+            title: language === "tr" ? "Kayıt başarısız" : "Sign up failed",
             description: error.message,
             variant: "destructive",
           });
         } else {
           toast({
-            title: "Readit'e hoş geldin!",
-            description: "Hesabın başarıyla oluşturuldu.",
+            title: language === "tr" ? "Readit'e hoş geldin!" : "Welcome to Readit!",
+            description: language === "tr" ? "Hesabın başarıyla oluşturuldu." : "Your account has been created.",
           });
           onClose();
         }
@@ -56,14 +58,14 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
         const { error } = await signIn(email, password);
         if (error) {
           toast({
-            title: "Giriş başarısız",
+            title: language === "tr" ? "Giriş başarısız" : "Login failed",
             description: error.message,
             variant: "destructive",
           });
         } else {
           toast({
-            title: "Tekrar hoş geldin!",
-            description: "Başarıyla giriş yaptın.",
+            title: language === "tr" ? "Tekrar hoş geldin!" : "Welcome back!",
+            description: language === "tr" ? "Başarıyla giriş yaptın." : "You have successfully logged in.",
           });
           onClose();
         }
@@ -78,7 +80,9 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
       <div className="w-full max-w-md card-gradient rounded-lg border border-border animate-scale-in">
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h2 className="text-xl font-bold">
-            {mode === "login" ? "Tekrar hoş geldin" : "Readit'e Katıl"}
+            {mode === "login" 
+              ? (language === "tr" ? "Tekrar hoş geldin" : "Welcome back")
+              : (language === "tr" ? "Readit'e Katıl" : "Join Readit")}
           </h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-5 w-5" />
@@ -88,13 +92,13 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {mode === "signup" && (
             <div className="space-y-2">
-              <Label htmlFor="username">Kullanıcı Adı</Label>
+              <Label htmlFor="username">{t("username")}</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="username"
                   type="text"
-                  placeholder="havalıkullanıcı123"
+                  placeholder={language === "tr" ? "havalıkullanıcı123" : "cooluser123"}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="pl-10 bg-secondary border-none"
@@ -105,13 +109,13 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="email">E-posta</Label>
+            <Label htmlFor="email">{t("email")}</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 id="email"
                 type="email"
-                placeholder="sen@ornek.com"
+                placeholder={language === "tr" ? "sen@ornek.com" : "you@example.com"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="pl-10 bg-secondary border-none"
@@ -121,7 +125,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Şifre</Label>
+            <Label htmlFor="password">{t("password")}</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -141,36 +145,38 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {mode === "login" ? "Giriş yapılıyor..." : "Hesap oluşturuluyor..."}
+                {mode === "login" 
+                  ? (language === "tr" ? "Giriş yapılıyor..." : "Logging in...")
+                  : (language === "tr" ? "Hesap oluşturuluyor..." : "Creating account...")}
               </>
             ) : mode === "login" ? (
-              "Giriş Yap"
+              t("login")
             ) : (
-              "Kayıt Ol"
+              t("signup")
             )}
           </Button>
 
           <div className="text-center text-sm text-muted-foreground">
             {mode === "login" ? (
               <>
-                Readit'te yeni misin?{" "}
+                {t("noAccount")}{" "}
                 <button
                   type="button"
                   className="text-primary hover:underline"
                   onClick={() => setMode("signup")}
                 >
-                  Kayıt ol
+                  {t("signup")}
                 </button>
               </>
             ) : (
               <>
-                Zaten hesabın var mı?{" "}
+                {t("haveAccount")}{" "}
                 <button
                   type="button"
                   className="text-primary hover:underline"
                   onClick={() => setMode("login")}
                 >
-                  Giriş yap
+                  {t("login")}
                 </button>
               </>
             )}

@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { useNavigate } from "react-router-dom";
 
 interface UserMenuProps {
@@ -17,6 +18,7 @@ interface UserMenuProps {
 
 const UserMenu = ({ onOpenAuth }: UserMenuProps) => {
   const { user, profile, signOut, loading } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   if (loading) {
@@ -36,14 +38,14 @@ const UserMenu = ({ onOpenAuth }: UserMenuProps) => {
           className="hidden sm:flex"
           onClick={() => onOpenAuth("login")}
         >
-          Giriş Yap
+          {t("login")}
         </Button>
         <Button
           variant="create"
           size="sm"
           onClick={() => onOpenAuth("signup")}
         >
-          Kayıt Ol
+          {t("signup")}
         </Button>
       </div>
     );
@@ -60,11 +62,11 @@ const UserMenu = ({ onOpenAuth }: UserMenuProps) => {
           </div>
           <div className="hidden sm:flex flex-col items-start">
             <span className="text-sm font-medium">
-              {profile?.username || "Kullanıcı"}
+              {profile?.username || t("profile")}
             </span>
             <span className="text-xs text-muted-foreground flex items-center gap-1">
               <TrendingUp className="h-3 w-3" />
-              {profile?.karma || 0} karma
+              {profile?.karma || 0} {t("karma").toLowerCase()}
             </span>
           </div>
         </Button>
@@ -81,20 +83,20 @@ const UserMenu = ({ onOpenAuth }: UserMenuProps) => {
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => navigate(`/u/${profile?.username}`)}>
           <User className="mr-2 h-4 w-4" />
-          Profil
+          {t("profile")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate("/saved")}>
           <Bookmark className="mr-2 h-4 w-4" />
-          Kaydedilen Gönderiler
+          {t("savedPosts")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate(`/u/${profile?.username}`)}>
           <Settings className="mr-2 h-4 w-4" />
-          Ayarlar
+          {t("settings")}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={signOut} className="text-destructive">
           <LogOut className="mr-2 h-4 w-4" />
-          Çıkış Yap
+          {t("logout")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

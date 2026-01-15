@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { useCommunities, useCreatePost } from "@/hooks/usePosts";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +33,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
   const [linkUrl, setLinkUrl] = useState("");
 
   const { user } = useAuth();
+  const { t, language } = useLanguage();
   const { data: communities = [] } = useCommunities();
   const createPostMutation = useCreatePost();
   const { toast } = useToast();
@@ -47,8 +49,8 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
   const handleSubmit = async () => {
     if (!title.trim() || !communityId) {
       toast({
-        title: "Eksik bilgi",
-        description: "Lütfen başlığı doldurun ve bir topluluk seçin",
+        title: language === "tr" ? "Eksik bilgi" : "Missing information",
+        description: language === "tr" ? "Lütfen başlığı doldurun ve bir topluluk seçin" : "Please fill in the title and select a community",
         variant: "destructive",
       });
       return;
@@ -64,8 +66,8 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
       });
 
       toast({
-        title: "Gönderi oluşturuldu!",
-        description: "Gönderiniz yayınlandı",
+        title: language === "tr" ? "Gönderi oluşturuldu!" : "Post created!",
+        description: language === "tr" ? "Gönderiniz yayınlandı" : "Your post has been published",
       });
 
       setTitle("");
@@ -76,18 +78,18 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
       onClose();
     } catch (error) {
       toast({
-        title: "Gönderi oluşturulamadı",
-        description: "Lütfen tekrar deneyin",
+        title: language === "tr" ? "Gönderi oluşturulamadı" : "Failed to create post",
+        description: language === "tr" ? "Lütfen tekrar deneyin" : "Please try again",
         variant: "destructive",
       });
     }
   };
 
   const postTypes: { type: PostType; icon: React.ReactNode; label: string }[] = [
-    { type: "text", icon: <FileText className="h-4 w-4" />, label: "Gönderi" },
-    { type: "image", icon: <Image className="h-4 w-4" />, label: "Görsel" },
-    { type: "link", icon: <Link className="h-4 w-4" />, label: "Link" },
-    { type: "poll", icon: <List className="h-4 w-4" />, label: "Anket" },
+    { type: "text", icon: <FileText className="h-4 w-4" />, label: t("post") },
+    { type: "image", icon: <Image className="h-4 w-4" />, label: t("image") },
+    { type: "link", icon: <Link className="h-4 w-4" />, label: t("link") },
+    { type: "poll", icon: <List className="h-4 w-4" />, label: t("poll") },
   ];
 
   return (
@@ -95,7 +97,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
       <div className="min-h-screen flex items-start justify-center py-8 px-4">
         <div className="w-full max-w-2xl card-gradient rounded-lg border border-border animate-scale-in">
           <div className="flex items-center justify-between p-4 border-b border-border">
-            <h2 className="text-lg font-semibold">Gönderi oluştur</h2>
+            <h2 className="text-lg font-semibold">{t("createPost")}</h2>
             <Button variant="ghost" size="icon" onClick={onClose}>
               <X className="h-5 w-5" />
             </Button>
@@ -104,7 +106,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
           <div className="p-4 space-y-4">
             <Select value={communityId} onValueChange={setCommunityId}>
               <SelectTrigger className="w-full bg-secondary border-none">
-                <SelectValue placeholder="Bir topluluk seç" />
+                <SelectValue placeholder={t("selectCommunity")} />
               </SelectTrigger>
               <SelectContent>
                 {communities.map((community) => (
@@ -137,7 +139,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
             </div>
 
             <Input
-              placeholder="Başlık"
+              placeholder={t("postTitle")}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="bg-secondary border-none text-lg font-medium focus-visible:ring-primary"
@@ -149,7 +151,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
 
             {postType === "text" && (
               <Textarea
-                placeholder="Metin (isteğe bağlı)"
+                placeholder={t("postContentPlaceholder")}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 className="min-h-32 bg-secondary border-none resize-none focus-visible:ring-primary"
@@ -159,7 +161,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
             {postType === "image" && (
               <div className="space-y-3">
                 <Input
-                  placeholder="Görsel URL'si"
+                  placeholder={t("imageUrlPlaceholder")}
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
                   className="bg-secondary border-none focus-visible:ring-primary"
@@ -168,7 +170,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
                   <div className="border border-border rounded-lg overflow-hidden">
                     <img
                       src={imageUrl}
-                      alt="Önizleme"
+                      alt={language === "tr" ? "Önizleme" : "Preview"}
                       className="w-full h-auto max-h-64 object-cover"
                       onError={(e) => (e.currentTarget.style.display = "none")}
                     />
@@ -179,7 +181,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
 
             {postType === "link" && (
               <Input
-                placeholder="URL"
+                placeholder={t("linkUrlPlaceholder")}
                 value={linkUrl}
                 onChange={(e) => setLinkUrl(e.target.value)}
                 className="bg-secondary border-none focus-visible:ring-primary"
@@ -189,15 +191,15 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
             {postType === "poll" && (
               <div className="space-y-2">
                 <Input
-                  placeholder="Seçenek 1"
+                  placeholder={language === "tr" ? "Seçenek 1" : "Option 1"}
                   className="bg-secondary border-none focus-visible:ring-primary"
                 />
                 <Input
-                  placeholder="Seçenek 2"
+                  placeholder={language === "tr" ? "Seçenek 2" : "Option 2"}
                   className="bg-secondary border-none focus-visible:ring-primary"
                 />
                 <Button variant="ghost" size="sm" className="text-primary">
-                  + Seçenek ekle
+                  {language === "tr" ? "+ Seçenek ekle" : "+ Add option"}
                 </Button>
               </div>
             )}
@@ -205,7 +207,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
 
           <div className="flex justify-end gap-2 p-4 border-t border-border">
             <Button variant="outline" onClick={onClose}>
-              İptal
+              {t("cancel")}
             </Button>
             <Button
               variant="create"
@@ -215,10 +217,10 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
               {createPostMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Gönderiliyor...
+                  {language === "tr" ? "Gönderiliyor..." : "Posting..."}
                 </>
               ) : (
-                "Gönder"
+                t("publish")
               )}
             </Button>
           </div>

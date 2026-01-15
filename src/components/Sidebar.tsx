@@ -3,6 +3,7 @@ import { TrendingUp, Flame, Clock, Star, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCommunities } from "@/hooks/usePosts";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import CreateCommunityModal from "./CreateCommunityModal";
 import { cn } from "@/lib/utils";
 
@@ -14,17 +15,19 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
   const { user } = useAuth();
+  const { t, language } = useLanguage();
   const { data: communities = [] } = useCommunities();
   const [createModalOpen, setCreateModalOpen] = useState(false);
 
   const formatMembers = (count: number) => {
+    const suffix = language === "tr" ? " üye" : " members";
     if (count >= 1000000) {
-      return (count / 1000000).toFixed(1) + "M üye";
+      return (count / 1000000).toFixed(1) + "M" + suffix;
     }
     if (count >= 1000) {
-      return (count / 1000).toFixed(0) + "k üye";
+      return (count / 1000).toFixed(0) + "k" + suffix;
     }
-    return count + " üye";
+    return count + suffix;
   };
 
   const handleCreateCommunity = () => {
@@ -52,23 +55,23 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
       >
         <div className="flex flex-col gap-1 p-3">
           <h3 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Akışlar
+            {language === "tr" ? "Akışlar" : "Feeds"}
           </h3>
           <Button variant="ghost" className="justify-start gap-3">
             <Flame className="h-5 w-5 text-upvote" />
-            Popüler
+            {t("popular")}
           </Button>
           <Button variant="ghost" className="justify-start gap-3">
             <TrendingUp className="h-5 w-5 text-green-500" />
-            Trend
+            {language === "tr" ? "Trend" : "Trending"}
           </Button>
           <Button variant="ghost" className="justify-start gap-3">
             <Clock className="h-5 w-5 text-comment" />
-            Yeni
+            {t("new")}
           </Button>
           <Button variant="ghost" className="justify-start gap-3">
             <Star className="h-5 w-5 text-yellow-500" />
-            En İyi
+            {t("best")}
           </Button>
         </div>
 
@@ -77,14 +80,14 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
         <div className="flex flex-col gap-1 p-3">
           <div className="flex items-center justify-between px-3 py-2">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Topluluklar
+              {t("communities")}
             </h3>
             <Button
               variant="ghost"
               size="icon"
               className="h-6 w-6"
               onClick={handleCreateCommunity}
-              title="Topluluk Oluştur"
+              title={t("createCommunity")}
             >
               <Plus className="h-4 w-4" />
             </Button>
@@ -96,7 +99,7 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
             onClick={handleCreateCommunity}
           >
             <Plus className="h-5 w-5" />
-            Topluluk Oluştur
+            {t("createCommunity")}
           </Button>
 
           {communities.map((community) => (

@@ -8,6 +8,7 @@ import AuthModal from "@/components/AuthModal";
 import { useSavedPosts } from "@/hooks/useSavedPosts";
 import { useRealtimePosts } from "@/hooks/useRealtimeSubscription";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { Post } from "@/hooks/usePosts";
 import { Loader2, Bookmark } from "lucide-react";
 
@@ -18,6 +19,7 @@ const SavedPosts = () => {
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
 
   const { user, loading: authLoading } = useAuth();
+  const { t, language } = useLanguage();
   const { data: posts = [], isLoading, error } = useSavedPosts();
 
   // Enable real-time updates
@@ -55,9 +57,9 @@ const SavedPosts = () => {
                 <Bookmark className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold">Kaydedilen Gönderiler</h1>
+                <h1 className="text-2xl font-bold">{t("savedPostsTitle")}</h1>
                 <p className="text-sm text-muted-foreground">
-                  Daha sonra okumak için kaydettiğiniz gönderiler
+                  {language === "tr" ? "Daha sonra okumak için kaydettiğiniz gönderiler" : "Posts you saved for later"}
                 </p>
               </div>
             </div>
@@ -69,16 +71,18 @@ const SavedPosts = () => {
                 </div>
               ) : error ? (
                 <div className="text-center py-20">
-                  <p className="text-destructive">Kaydedilen gönderiler yüklenemedi</p>
+                  <p className="text-destructive">
+                    {language === "tr" ? "Kaydedilen gönderiler yüklenemedi" : "Failed to load saved posts"}
+                  </p>
                 </div>
               ) : posts.length === 0 ? (
                 <div className="card-gradient rounded-lg border border-border p-8 text-center">
                   <Bookmark className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-lg font-semibold mb-2">
-                    Henüz kaydedilen gönderi yok
+                    {t("noSavedPosts")}
                   </h3>
                   <p className="text-muted-foreground">
-                    Daha sonra okumak için herhangi bir gönderideki yer imi simgesine tıklayın.
+                    {t("noSavedPostsDesc")}
                   </p>
                 </div>
               ) : (

@@ -5,8 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import VoteButtons from "./VoteButtons";
 import { Comment, useCreateComment } from "@/hooks/useComments";
 import { formatDistanceToNow } from "date-fns";
-import { tr } from "date-fns/locale";
+import { tr, enUS } from "date-fns/locale";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
 
 interface CommentItemProps {
@@ -21,10 +22,14 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
   const [isReplying, setIsReplying] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const { user } = useAuth();
+  const { t, language } = useLanguage();
   const { toast } = useToast();
   const createComment = useCreateComment();
   
-  const timeAgo = formatDistanceToNow(new Date(comment.created_at), { addSuffix: true, locale: tr });
+  const timeAgo = formatDistanceToNow(new Date(comment.created_at), { 
+    addSuffix: true, 
+    locale: language === "tr" ? tr : enUS 
+  });
 
   const handleReply = async () => {
     if (!user) {
@@ -34,8 +39,8 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
 
     if (!replyContent.trim()) {
       toast({
-        title: "Boş yanıt",
-        description: "Lütfen göndermeden önce bir şeyler yazın",
+        title: language === "tr" ? "Boş yanıt" : "Empty reply",
+        description: language === "tr" ? "Lütfen göndermeden önce bir şeyler yazın" : "Please write something before posting",
         variant: "destructive",
       });
       return;
@@ -50,13 +55,13 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
       setReplyContent("");
       setIsReplying(false);
       toast({
-        title: "Yanıt gönderildi",
-        description: "Yanıtın eklendi",
+        title: language === "tr" ? "Yanıt gönderildi" : "Reply posted",
+        description: language === "tr" ? "Yanıtın eklendi" : "Your reply has been added",
       });
     } catch (error) {
       toast({
-        title: "Hata",
-        description: "Yanıt gönderilemedi",
+        title: language === "tr" ? "Hata" : "Error",
+        description: language === "tr" ? "Yanıt gönderilemedi" : "Could not post reply",
         variant: "destructive",
       });
     }
@@ -84,7 +89,7 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 text-xs">
             <span className="font-medium text-foreground">
-              u/{comment.author?.username || "silindi"}
+              u/{comment.author?.username || (language === "tr" ? "silindi" : "deleted")}
             </span>
             <span className="text-muted-foreground">•</span>
             <span className="text-muted-foreground">{timeAgo}</span>
@@ -97,7 +102,7 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
               className="text-xs text-muted-foreground mt-1"
               onClick={() => setIsCollapsed(false)}
             >
-              [+] Konuyu genişlet
+              {language === "tr" ? "[+] Konuyu genişlet" : "[+] Expand thread"}
             </Button>
           ) : (
             <>
@@ -128,7 +133,7 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
                   }}
                 >
                   <MessageSquare className="h-3.5 w-3.5" />
-                  Yanıtla
+                  {t("reply")}
                 </Button>
                 <Button
                   variant="ghost"
@@ -142,7 +147,7 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
               {isReplying && (
                 <div className="mt-3 space-y-2">
                   <Textarea
-                    placeholder="Yanıtını yaz..."
+                    placeholder={language === "tr" ? "Yanıtını yaz..." : "Write your reply..."}
                     value={replyContent}
                     onChange={(e) => setReplyContent(e.target.value)}
                     className="min-h-20 bg-secondary border-none resize-none focus-visible:ring-primary text-sm"
@@ -156,14 +161,16 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
                         setReplyContent("");
                       }}
                     >
-                      İptal
+                      {t("cancel")}
                     </Button>
                     <Button
                       size="sm"
                       onClick={handleReply}
                       disabled={createComment.isPending || !replyContent.trim()}
                     >
-                      {createComment.isPending ? "Gönderiliyor..." : "Yanıtla"}
+                      {createComment.isPending 
+                        ? (language === "tr" ? "Gönderiliyor..." : "Posting...")
+                        : t("reply")}
                     </Button>
                   </div>
                 </div>

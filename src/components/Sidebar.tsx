@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { TrendingUp, Flame, Clock, Star, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCommunities } from "@/hooks/usePosts";
@@ -103,19 +104,20 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
           </Button>
 
           {communities.map((community) => (
-            <Button
-              key={community.id}
-              variant="ghost"
-              className="justify-start gap-3 h-auto py-2"
-            >
-              <span className="text-xl">{community.icon || "💬"}</span>
-              <div className="flex flex-col items-start">
-                <span className="text-sm font-medium">r/{community.name}</span>
-                <span className="text-xs text-muted-foreground">
-                  {formatMembers(community.member_count)}
-                </span>
-              </div>
-            </Button>
+            <Link key={community.id} to={`/r/${community.name}`}>
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-3 h-auto py-2"
+              >
+                <span className="text-xl">{community.icon || "💬"}</span>
+                <div className="flex flex-col items-start">
+                  <span className="text-sm font-medium">r/{community.name}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {formatMembers(community.member_count)}
+                  </span>
+                </div>
+              </Button>
+            </Link>
           ))}
         </div>
       </aside>

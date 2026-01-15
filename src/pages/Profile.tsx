@@ -53,13 +53,13 @@ const Profile = () => {
           onOpenAuth={openAuth}
         />
         <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-          <h1 className="text-2xl font-bold mb-2">User not found</h1>
+          <h1 className="text-2xl font-bold mb-2">Kullanıcı bulunamadı</h1>
           <p className="text-muted-foreground mb-6">
-            The user u/{username} doesn't exist or has been deleted.
+            u/{username} kullanıcısı mevcut değil veya silinmiş.
           </p>
           <Button onClick={() => navigate("/")} variant="outline">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
+            Ana Sayfaya Dön
           </Button>
         </div>
         <AuthModal
@@ -88,7 +88,7 @@ const Profile = () => {
             className="gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back
+            Geri
           </Button>
           {isOwnProfile && <ProfileSettings />}
         </div>

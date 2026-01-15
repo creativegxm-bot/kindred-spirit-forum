@@ -49,8 +49,8 @@ const CreateCommunityModal = ({
 
     if (!name.trim()) {
       toast({
-        title: "Name required",
-        description: "Please enter a community name",
+        title: "Ad gerekli",
+        description: "Lütfen bir topluluk adı girin",
         variant: "destructive",
       });
       return;
@@ -64,8 +64,8 @@ const CreateCommunityModal = ({
       });
       
       toast({
-        title: "Community created!",
-        description: `r/${name} is now live`,
+        title: "Topluluk oluşturuldu!",
+        description: `r/${name} artık yayında`,
       });
       
       setName("");
@@ -74,8 +74,8 @@ const CreateCommunityModal = ({
       onClose();
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message || "Failed to create community",
+        title: "Hata",
+        description: error.message || "Topluluk oluşturulamadı",
         variant: "destructive",
       });
     }
@@ -85,16 +85,16 @@ const CreateCommunityModal = ({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Create a Community</DialogTitle>
+          <DialogTitle>Topluluk Oluştur</DialogTitle>
           <DialogDescription>
-            Build a community around your interests. Communities are where people
-            gather to share content and discuss topics.
+            İlgi alanların etrafında bir topluluk oluştur. Topluluklar, insanların
+            içerik paylaştığı ve konuları tartıştığı yerlerdir.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="icon">Community Icon</Label>
+            <Label htmlFor="icon">Topluluk Simgesi</Label>
             <div className="flex items-center gap-3">
               <Popover open={emojiPickerOpen} onOpenChange={setEmojiPickerOpen}>
                 <PopoverTrigger asChild>
@@ -126,13 +126,13 @@ const CreateCommunityModal = ({
                 </PopoverContent>
               </Popover>
               <div className="text-sm text-muted-foreground">
-                Click to choose an icon for your community
+                Topluluğun için bir simge seçmek için tıkla
               </div>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="name">Community Name</Label>
+            <Label htmlFor="name">Topluluk Adı</Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                 r/
@@ -141,23 +141,23 @@ const CreateCommunityModal = ({
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value.replace(/[^a-zA-Z0-9_]/g, ""))}
-                placeholder="community_name"
+                placeholder="topluluk_adi"
                 className="pl-8 bg-secondary border-none"
                 maxLength={21}
               />
             </div>
             <p className="text-xs text-muted-foreground">
-              3-21 characters. Letters, numbers, and underscores only.
+              3-21 karakter. Sadece harf, rakam ve alt çizgi.
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Açıklama</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="What is your community about?"
+              placeholder="Topluluğun ne hakkında?"
               className="bg-secondary border-none resize-none min-h-24"
               maxLength={500}
             />
@@ -173,7 +173,7 @@ const CreateCommunityModal = ({
               onClick={onClose}
               className="flex-1"
             >
-              Cancel
+              İptal
             </Button>
             <Button
               type="submit"
@@ -183,7 +183,7 @@ const CreateCommunityModal = ({
               {createCommunity.isPending && (
                 <Loader2 className="h-4 w-4 animate-spin" />
               )}
-              Create Community
+              Topluluk Oluştur
             </Button>
           </div>
         </form>

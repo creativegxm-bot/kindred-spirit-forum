@@ -36,14 +36,14 @@ const UserMenu = ({ onOpenAuth }: UserMenuProps) => {
           className="hidden sm:flex"
           onClick={() => onOpenAuth("login")}
         >
-          Log In
+          Giriş Yap
         </Button>
         <Button
           variant="create"
           size="sm"
           onClick={() => onOpenAuth("signup")}
         >
-          Sign Up
+          Kayıt Ol
         </Button>
       </div>
     );
@@ -60,7 +60,7 @@ const UserMenu = ({ onOpenAuth }: UserMenuProps) => {
           </div>
           <div className="hidden sm:flex flex-col items-start">
             <span className="text-sm font-medium">
-              {profile?.username || "User"}
+              {profile?.username || "Kullanıcı"}
             </span>
             <span className="text-xs text-muted-foreground flex items-center gap-1">
               <TrendingUp className="h-3 w-3" />
@@ -81,20 +81,20 @@ const UserMenu = ({ onOpenAuth }: UserMenuProps) => {
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => navigate(`/u/${profile?.username}`)}>
           <User className="mr-2 h-4 w-4" />
-          Profile
+          Profil
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate("/saved")}>
           <Bookmark className="mr-2 h-4 w-4" />
-          Saved Posts
+          Kaydedilen Gönderiler
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate(`/u/${profile?.username}`)}>
           <Settings className="mr-2 h-4 w-4" />
-          Settings
+          Ayarlar
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={signOut} className="text-destructive">
           <LogOut className="mr-2 h-4 w-4" />
-          Log Out
+          Çıkış Yap
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

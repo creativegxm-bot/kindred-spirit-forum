@@ -31,8 +31,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
       if (mode === "signup") {
         if (!username.trim()) {
           toast({
-            title: "Username required",
-            description: "Please enter a username",
+            title: "Kullanıcı adı gerekli",
+            description: "Lütfen bir kullanıcı adı girin",
             variant: "destructive",
           });
           setLoading(false);
@@ -41,14 +41,14 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
         const { error } = await signUp(email, password, username);
         if (error) {
           toast({
-            title: "Sign up failed",
+            title: "Kayıt başarısız",
             description: error.message,
             variant: "destructive",
           });
         } else {
           toast({
-            title: "Welcome to Readit!",
-            description: "Your account has been created successfully.",
+            title: "Readit'e hoş geldin!",
+            description: "Hesabın başarıyla oluşturuldu.",
           });
           onClose();
         }
@@ -56,14 +56,14 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
         const { error } = await signIn(email, password);
         if (error) {
           toast({
-            title: "Login failed",
+            title: "Giriş başarısız",
             description: error.message,
             variant: "destructive",
           });
         } else {
           toast({
-            title: "Welcome back!",
-            description: "You've successfully logged in.",
+            title: "Tekrar hoş geldin!",
+            description: "Başarıyla giriş yaptın.",
           });
           onClose();
         }
@@ -78,7 +78,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
       <div className="w-full max-w-md card-gradient rounded-lg border border-border animate-scale-in">
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h2 className="text-xl font-bold">
-            {mode === "login" ? "Welcome back" : "Join Readit"}
+            {mode === "login" ? "Tekrar hoş geldin" : "Readit'e Katıl"}
           </h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-5 w-5" />
@@ -88,13 +88,13 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {mode === "signup" && (
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">Kullanıcı Adı</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="username"
                   type="text"
-                  placeholder="cooluser123"
+                  placeholder="havalıkullanıcı123"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="pl-10 bg-secondary border-none"
@@ -105,13 +105,13 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">E-posta</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="sen@ornek.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="pl-10 bg-secondary border-none"
@@ -121,7 +121,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Şifre</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -141,36 +141,36 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {mode === "login" ? "Logging in..." : "Creating account..."}
+                {mode === "login" ? "Giriş yapılıyor..." : "Hesap oluşturuluyor..."}
               </>
             ) : mode === "login" ? (
-              "Log In"
+              "Giriş Yap"
             ) : (
-              "Sign Up"
+              "Kayıt Ol"
             )}
           </Button>
 
           <div className="text-center text-sm text-muted-foreground">
             {mode === "login" ? (
               <>
-                New to Readit?{" "}
+                Readit'te yeni misin?{" "}
                 <button
                   type="button"
                   className="text-primary hover:underline"
                   onClick={() => setMode("signup")}
                 >
-                  Sign up
+                  Kayıt ol
                 </button>
               </>
             ) : (
               <>
-                Already have an account?{" "}
+                Zaten hesabın var mı?{" "}
                 <button
                   type="button"
                   className="text-primary hover:underline"
                   onClick={() => setMode("login")}
                 >
-                  Log in
+                  Giriş yap
                 </button>
               </>
             )}

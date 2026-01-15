@@ -47,8 +47,8 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
   const handleSubmit = async () => {
     if (!title.trim() || !communityId) {
       toast({
-        title: "Missing information",
-        description: "Please fill in the title and select a community",
+        title: "Eksik bilgi",
+        description: "Lütfen başlığı doldurun ve bir topluluk seçin",
         variant: "destructive",
       });
       return;
@@ -64,8 +64,8 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
       });
 
       toast({
-        title: "Post created!",
-        description: "Your post has been published",
+        title: "Gönderi oluşturuldu!",
+        description: "Gönderiniz yayınlandı",
       });
 
       setTitle("");
@@ -76,18 +76,18 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
       onClose();
     } catch (error) {
       toast({
-        title: "Failed to create post",
-        description: "Please try again",
+        title: "Gönderi oluşturulamadı",
+        description: "Lütfen tekrar deneyin",
         variant: "destructive",
       });
     }
   };
 
   const postTypes: { type: PostType; icon: React.ReactNode; label: string }[] = [
-    { type: "text", icon: <FileText className="h-4 w-4" />, label: "Post" },
-    { type: "image", icon: <Image className="h-4 w-4" />, label: "Image" },
+    { type: "text", icon: <FileText className="h-4 w-4" />, label: "Gönderi" },
+    { type: "image", icon: <Image className="h-4 w-4" />, label: "Görsel" },
     { type: "link", icon: <Link className="h-4 w-4" />, label: "Link" },
-    { type: "poll", icon: <List className="h-4 w-4" />, label: "Poll" },
+    { type: "poll", icon: <List className="h-4 w-4" />, label: "Anket" },
   ];
 
   return (
@@ -95,7 +95,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
       <div className="min-h-screen flex items-start justify-center py-8 px-4">
         <div className="w-full max-w-2xl card-gradient rounded-lg border border-border animate-scale-in">
           <div className="flex items-center justify-between p-4 border-b border-border">
-            <h2 className="text-lg font-semibold">Create a post</h2>
+            <h2 className="text-lg font-semibold">Gönderi oluştur</h2>
             <Button variant="ghost" size="icon" onClick={onClose}>
               <X className="h-5 w-5" />
             </Button>
@@ -104,7 +104,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
           <div className="p-4 space-y-4">
             <Select value={communityId} onValueChange={setCommunityId}>
               <SelectTrigger className="w-full bg-secondary border-none">
-                <SelectValue placeholder="Choose a community" />
+                <SelectValue placeholder="Bir topluluk seç" />
               </SelectTrigger>
               <SelectContent>
                 {communities.map((community) => (
@@ -137,7 +137,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
             </div>
 
             <Input
-              placeholder="Title"
+              placeholder="Başlık"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="bg-secondary border-none text-lg font-medium focus-visible:ring-primary"
@@ -149,7 +149,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
 
             {postType === "text" && (
               <Textarea
-                placeholder="Text (optional)"
+                placeholder="Metin (isteğe bağlı)"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 className="min-h-32 bg-secondary border-none resize-none focus-visible:ring-primary"
@@ -159,7 +159,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
             {postType === "image" && (
               <div className="space-y-3">
                 <Input
-                  placeholder="Image URL"
+                  placeholder="Görsel URL'si"
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
                   className="bg-secondary border-none focus-visible:ring-primary"
@@ -168,7 +168,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
                   <div className="border border-border rounded-lg overflow-hidden">
                     <img
                       src={imageUrl}
-                      alt="Preview"
+                      alt="Önizleme"
                       className="w-full h-auto max-h-64 object-cover"
                       onError={(e) => (e.currentTarget.style.display = "none")}
                     />
@@ -189,15 +189,15 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
             {postType === "poll" && (
               <div className="space-y-2">
                 <Input
-                  placeholder="Option 1"
+                  placeholder="Seçenek 1"
                   className="bg-secondary border-none focus-visible:ring-primary"
                 />
                 <Input
-                  placeholder="Option 2"
+                  placeholder="Seçenek 2"
                   className="bg-secondary border-none focus-visible:ring-primary"
                 />
                 <Button variant="ghost" size="sm" className="text-primary">
-                  + Add option
+                  + Seçenek ekle
                 </Button>
               </div>
             )}
@@ -205,7 +205,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
 
           <div className="flex justify-end gap-2 p-4 border-t border-border">
             <Button variant="outline" onClick={onClose}>
-              Cancel
+              İptal
             </Button>
             <Button
               variant="create"
@@ -215,10 +215,10 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
               {createPostMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Posting...
+                  Gönderiliyor...
                 </>
               ) : (
-                "Post"
+                "Gönder"
               )}
             </Button>
           </div>

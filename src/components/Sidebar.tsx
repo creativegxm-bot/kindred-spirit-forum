@@ -19,12 +19,12 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
 
   const formatMembers = (count: number) => {
     if (count >= 1000000) {
-      return (count / 1000000).toFixed(1) + "M members";
+      return (count / 1000000).toFixed(1) + "M üye";
     }
     if (count >= 1000) {
-      return (count / 1000).toFixed(0) + "k members";
+      return (count / 1000).toFixed(0) + "k üye";
     }
-    return count + " members";
+    return count + " üye";
   };
 
   const handleCreateCommunity = () => {
@@ -52,23 +52,23 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
       >
         <div className="flex flex-col gap-1 p-3">
           <h3 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Feeds
+            Akışlar
           </h3>
           <Button variant="ghost" className="justify-start gap-3">
             <Flame className="h-5 w-5 text-upvote" />
-            Hot
+            Popüler
           </Button>
           <Button variant="ghost" className="justify-start gap-3">
             <TrendingUp className="h-5 w-5 text-green-500" />
-            Trending
+            Trend
           </Button>
           <Button variant="ghost" className="justify-start gap-3">
             <Clock className="h-5 w-5 text-comment" />
-            New
+            Yeni
           </Button>
           <Button variant="ghost" className="justify-start gap-3">
             <Star className="h-5 w-5 text-yellow-500" />
-            Top
+            En İyi
           </Button>
         </div>
 
@@ -77,14 +77,14 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
         <div className="flex flex-col gap-1 p-3">
           <div className="flex items-center justify-between px-3 py-2">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Communities
+              Topluluklar
             </h3>
             <Button
               variant="ghost"
               size="icon"
               className="h-6 w-6"
               onClick={handleCreateCommunity}
-              title="Create Community"
+              title="Topluluk Oluştur"
             >
               <Plus className="h-4 w-4" />
             </Button>
@@ -96,7 +96,7 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
             onClick={handleCreateCommunity}
           >
             <Plus className="h-5 w-5" />
-            Create Community
+            Topluluk Oluştur
           </Button>
 
           {communities.map((community) => (

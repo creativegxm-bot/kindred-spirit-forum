@@ -47,13 +47,13 @@ const Index = () => {
                 </div>
               ) : error ? (
                 <div className="text-center py-20">
-                  <p className="text-destructive">Failed to load posts</p>
+                  <p className="text-destructive">Gönderiler yüklenemedi</p>
                 </div>
               ) : posts.length === 0 ? (
                 <div className="card-gradient rounded-lg border border-border p-8 text-center">
-                  <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
+                  <h3 className="text-lg font-semibold mb-2">Henüz gönderi yok</h3>
                   <p className="text-muted-foreground mb-4">
-                    Be the first to share something with the community!
+                    Toplulukla bir şeyler paylaşan ilk kişi ol!
                   </p>
                 </div>
               ) : (

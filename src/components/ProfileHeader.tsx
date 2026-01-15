@@ -2,6 +2,7 @@ import { Calendar, Award, FileText, MessageSquare } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserProfile } from "@/hooks/useProfile";
 import { formatDistanceToNow, format } from "date-fns";
+import { tr } from "date-fns/locale";
 
 interface ProfileHeaderProps {
   profile: UserProfile;
@@ -15,7 +16,7 @@ interface ProfileHeaderProps {
 }
 
 const ProfileHeader = ({ profile, karma }: ProfileHeaderProps) => {
-  const memberSince = format(new Date(profile.created_at), "MMMM yyyy");
+  const memberSince = format(new Date(profile.created_at), "MMMM yyyy", { locale: tr });
 
   return (
     <div className="card-gradient rounded-lg border border-border p-6">
@@ -45,7 +46,7 @@ const ProfileHeader = ({ profile, karma }: ProfileHeaderProps) => {
             </div>
             <div className="flex items-center gap-2 text-sm">
               <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span className="text-muted-foreground">Joined {memberSince}</span>
+              <span className="text-muted-foreground">{memberSince} tarihinde katıldı</span>
             </div>
           </div>
         </div>
@@ -55,25 +56,25 @@ const ProfileHeader = ({ profile, karma }: ProfileHeaderProps) => {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-border">
         <div className="text-center">
           <p className="text-2xl font-bold text-primary">{karma?.postKarma ?? 0}</p>
-          <p className="text-xs text-muted-foreground">Post Karma</p>
+          <p className="text-xs text-muted-foreground">Gönderi Karması</p>
         </div>
         <div className="text-center">
           <p className="text-2xl font-bold text-primary">{karma?.commentKarma ?? 0}</p>
-          <p className="text-xs text-muted-foreground">Comment Karma</p>
+          <p className="text-xs text-muted-foreground">Yorum Karması</p>
         </div>
         <div className="text-center">
           <div className="flex items-center justify-center gap-1">
             <FileText className="h-4 w-4 text-muted-foreground" />
             <p className="text-2xl font-bold">{karma?.postCount ?? 0}</p>
           </div>
-          <p className="text-xs text-muted-foreground">Posts</p>
+          <p className="text-xs text-muted-foreground">Gönderi</p>
         </div>
         <div className="text-center">
           <div className="flex items-center justify-center gap-1">
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
             <p className="text-2xl font-bold">{karma?.commentCount ?? 0}</p>
           </div>
-          <p className="text-xs text-muted-foreground">Comments</p>
+          <p className="text-xs text-muted-foreground">Yorum</p>
         </div>
       </div>
     </div>

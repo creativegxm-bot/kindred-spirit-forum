@@ -10,6 +10,7 @@ import { useRealtimeComments } from "@/hooks/useRealtimeSubscription";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
+import { tr } from "date-fns/locale";
 
 interface PostDetailProps {
   post: Post;
@@ -27,7 +28,7 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
   // Enable real-time updates for comments and votes
   useRealtimeComments(post.id);
   
-  const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true });
+  const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: tr });
 
   const handleSubmitComment = async () => {
     if (!user) {
@@ -37,8 +38,8 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
 
     if (!commentContent.trim()) {
       toast({
-        title: "Empty comment",
-        description: "Please write something before submitting",
+        title: "Boş yorum",
+        description: "Lütfen göndermeden önce bir şeyler yazın",
         variant: "destructive",
       });
       return;
@@ -51,13 +52,13 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
       });
       setCommentContent("");
       toast({
-        title: "Comment posted",
-        description: "Your comment has been added",
+        title: "Yorum gönderildi",
+        description: "Yorumun eklendi",
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to post comment",
+        title: "Hata",
+        description: "Yorum gönderilemedi",
         variant: "destructive",
       });
     }
@@ -78,7 +79,7 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
             <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b border-border bg-card/95 backdrop-blur rounded-t-lg">
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-lg">{post.community?.icon || "💬"}</span>
-                <span className="font-medium">r/{post.community?.name || "unknown"}</span>
+                <span className="font-medium">r/{post.community?.name || "bilinmiyor"}</span>
               </div>
               <Button variant="ghost" size="icon" onClick={onClose}>
                 <X className="h-5 w-5" />
@@ -99,7 +100,7 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
 
                 <div className="flex-1">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>Posted by u/{post.author?.username || "deleted"}</span>
+                    <span>u/{post.author?.username || "silindi"} tarafından</span>
                     <span>•</span>
                     <span>{timeAgo}</span>
                   </div>
@@ -140,7 +141,7 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                       className="gap-1.5 text-muted-foreground"
                     >
                       <MessageSquare className="h-4 w-4" />
-                      <span>{post.comment_count} Comments</span>
+                      <span>{post.comment_count} Yorum</span>
                     </Button>
 
                     <Button
@@ -149,7 +150,7 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                       className="gap-1.5 text-muted-foreground"
                     >
                       <Share className="h-4 w-4" />
-                      Share
+                      Paylaş
                     </Button>
 
                     <Button
@@ -158,7 +159,7 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                       className="gap-1.5 text-muted-foreground"
                     >
                       <Bookmark className="h-4 w-4" />
-                      Save
+                      Kaydet
                     </Button>
 
                     <Button
@@ -174,7 +175,7 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                   <div className="mt-6 border-t border-border pt-6">
                     <div className="mb-6">
                       <Textarea
-                        placeholder={user ? "What are your thoughts?" : "Log in to comment"}
+                        placeholder={user ? "Düşüncelerin neler?" : "Yorum yapmak için giriş yap"}
                         value={commentContent}
                         onChange={(e) => setCommentContent(e.target.value)}
                         className="min-h-24 bg-secondary border-none resize-none focus-visible:ring-primary"
@@ -187,7 +188,7 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                           onClick={handleSubmitComment}
                           disabled={createComment.isPending || !commentContent.trim()}
                         >
-                          {createComment.isPending ? "Posting..." : "Comment"}
+                          {createComment.isPending ? "Gönderiliyor..." : "Yorum Yap"}
                         </Button>
                       </div>
                     </div>
@@ -199,8 +200,8 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                     ) : comments.length === 0 ? (
                       <div className="text-center py-8 text-muted-foreground">
                         <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                        <p className="font-medium">No comments yet</p>
-                        <p className="text-sm">Be the first to share your thoughts!</p>
+                        <p className="font-medium">Henüz yorum yok</p>
+                        <p className="text-sm">Düşüncelerini paylaşan ilk kişi ol!</p>
                       </div>
                     ) : (
                       <div className="space-y-4">

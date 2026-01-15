@@ -124,6 +124,44 @@ export type Database = {
           },
         ]
       }
+      community_rules: {
+        Row: {
+          community_id: string
+          created_at: string
+          description: string | null
+          id: string
+          rule_number: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          community_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          rule_number: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          community_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          rule_number?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_rules_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           author_id: string

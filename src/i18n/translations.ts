@@ -140,6 +140,22 @@ export const translations = {
     communityNotFoundDesc: "Aradığınız topluluk mevcut değil veya silinmiş olabilir.",
     deletedUser: "Silinmiş Kullanıcı",
     
+    // Community Rules
+    communityRules: "Topluluk Kuralları",
+    noRulesYet: "Henüz kural eklenmemiş",
+    addRule: "Kural Ekle",
+    editRule: "Kuralı Düzenle",
+    ruleTitle: "Kural Başlığı",
+    ruleTitlePlaceholder: "Örn: Saygılı olun",
+    ruleDescription: "Açıklama (isteğe bağlı)",
+    ruleDescriptionPlaceholder: "Kural hakkında detaylı açıklama",
+    ruleAdded: "Kural eklendi",
+    ruleUpdated: "Kural güncellendi",
+    ruleDeleted: "Kural silindi",
+    ruleAddError: "Kural eklenirken hata oluştu",
+    ruleUpdateError: "Kural güncellenirken hata oluştu",
+    ruleDeleteError: "Kural silinirken hata oluştu",
+    
     // Not Found
     notFoundTitle: "Sayfa Bulunamadı",
     notFoundDesc: "Aradığınız sayfa mevcut değil veya taşınmış olabilir.",
@@ -293,6 +309,22 @@ export const translations = {
     communityNotFound: "Community Not Found",
     communityNotFoundDesc: "The community you're looking for doesn't exist or has been deleted.",
     deletedUser: "Deleted User",
+    
+    // Community Rules
+    communityRules: "Community Rules",
+    noRulesYet: "No rules added yet",
+    addRule: "Add Rule",
+    editRule: "Edit Rule",
+    ruleTitle: "Rule Title",
+    ruleTitlePlaceholder: "E.g. Be respectful",
+    ruleDescription: "Description (optional)",
+    ruleDescriptionPlaceholder: "Detailed description of the rule",
+    ruleAdded: "Rule added",
+    ruleUpdated: "Rule updated",
+    ruleDeleted: "Rule deleted",
+    ruleAddError: "Error adding rule",
+    ruleUpdateError: "Error updating rule",
+    ruleDeleteError: "Error deleting rule",
     
     // Not Found
     notFoundTitle: "Page Not Found",

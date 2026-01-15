@@ -7,6 +7,7 @@ import PostDetail from "@/components/PostDetail";
 import CreatePostModal from "@/components/CreatePostModal";
 import AuthModal from "@/components/AuthModal";
 import { usePosts, Post } from "@/hooks/usePosts";
+import { useRealtimePosts } from "@/hooks/useRealtimeSubscription";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
@@ -17,6 +18,9 @@ const Index = () => {
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
 
   const { data: posts = [], isLoading, error } = usePosts();
+  
+  // Enable real-time updates for posts and votes
+  useRealtimePosts();
 
   const openAuth = (mode: "login" | "signup") => {
     setAuthMode(mode);

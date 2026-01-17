@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import UserMenu from "./UserMenu";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useLanguage } from "@/hooks/useLanguage";
+import ondabirLogo from "@/assets/ondabir-logo.png";
 
 interface HeaderProps {
   onCreatePost: () => void;
@@ -27,11 +28,9 @@ const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
         </Button>
 
         <a href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
-            <span className="text-lg font-bold text-primary-foreground">R</span>
-          </div>
+          <img src={ondabirLogo} alt="ondabir" className="h-8 w-8 rounded" />
           <span className="hidden text-xl font-bold text-gradient sm:block">
-            readit
+            ondabir
           </span>
         </a>
 

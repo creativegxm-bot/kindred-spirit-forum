@@ -1,7 +1,7 @@
 export const translations = {
   tr: {
     // Header
-    searchPlaceholder: "Readit'te ara",
+    searchPlaceholder: "ondabir'de ara",
     create: "Oluştur",
     
     // Sidebar
@@ -14,8 +14,8 @@ export const translations = {
     // Trending Sidebar
     trendingCommunities: "Trend Topluluklar",
     join: "Katıl",
-    aboutReadit: "Readit Hakkında",
-    aboutDescription: "İnternetin ön sayfası. Topluluklara katıl, içerik paylaş ve milyonlarca kullanıcıyla bağlantı kur.",
+    aboutReadit: "ondabir Hakkında",
+    aboutDescription: "Toplulukların buluşma noktası. Topluluklara katıl, içerik paylaş ve milyonlarca kullanıcıyla bağlantı kur.",
     help: "Yardım",
     about: "Hakkında",
     careers: "Kariyer",
@@ -171,7 +171,7 @@ export const translations = {
   },
   en: {
     // Header
-    searchPlaceholder: "Search Readit",
+    searchPlaceholder: "Search ondabir",
     create: "Create",
     
     // Sidebar
@@ -184,8 +184,8 @@ export const translations = {
     // Trending Sidebar
     trendingCommunities: "Trending Communities",
     join: "Join",
-    aboutReadit: "About Readit",
-    aboutDescription: "The front page of the internet. Join communities, share content and connect with millions of users.",
+    aboutReadit: "About ondabir",
+    aboutDescription: "Where communities meet. Join communities, share content and connect with millions of users.",
     help: "Help",
     about: "About",
     careers: "Careers",

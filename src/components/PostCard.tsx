@@ -61,6 +61,45 @@ const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
     }
   };
 
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    const shareUrl = `${window.location.origin}/post/${post.id}`;
+    const shareData = {
+      title: post.title,
+      text: post.content || post.title,
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share && navigator.canShare(shareData)) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        toast({
+          title: language === "tr" ? "Bağlantı kopyalandı" : "Link copied",
+          description: language === "tr" ? "Gönderi bağlantısı panoya kopyalandı" : "Post link copied to clipboard",
+        });
+      }
+    } catch (error) {
+      if ((error as Error).name !== "AbortError") {
+        try {
+          await navigator.clipboard.writeText(shareUrl);
+          toast({
+            title: language === "tr" ? "Bağlantı kopyalandı" : "Link copied",
+            description: language === "tr" ? "Gönderi bağlantısı panoya kopyalandı" : "Post link copied to clipboard",
+          });
+        } catch {
+          toast({
+            title: language === "tr" ? "Hata" : "Error",
+            description: language === "tr" ? "Bağlantı kopyalanamadı" : "Could not copy link",
+            variant: "destructive",
+          });
+        }
+      }
+    }
+  };
+
   return (
     <article
       className="group card-gradient rounded-lg border border-border transition-all duration-200 hover:border-primary/30 hover:card-hover-gradient cursor-pointer animate-slide-up"
@@ -144,8 +183,8 @@ const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
             <Button
               variant="ghost"
               size="sm"
-              className="gap-1.5 text-muted-foreground"
-              onClick={(e) => e.stopPropagation()}
+              className="gap-1.5 text-muted-foreground hover:text-primary"
+              onClick={handleShare}
             >
               <Share className="h-4 w-4" />
               <span className="hidden sm:inline">{t("share")}</span>

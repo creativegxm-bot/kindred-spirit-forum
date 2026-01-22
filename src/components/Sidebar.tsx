@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { TrendingUp, Flame, Clock, Star, Plus } from "lucide-react";
+import { TrendingUp, Flame, Clock, Star, Plus, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCommunities } from "@/hooks/usePosts";
 import { useAuth } from "@/hooks/useAuth";
@@ -74,6 +74,12 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
             <Star className="h-5 w-5 text-yellow-500" />
             {t("best")}
           </Button>
+          <Link to="/chat">
+            <Button variant="ghost" className="w-full justify-start gap-3">
+              <MessageSquare className="h-5 w-5 text-primary" />
+              {t("chat")}
+            </Button>
+          </Link>
         </div>
 
         <div className="mt-2 border-t border-border" />

@@ -1,9 +1,11 @@
-import { Search, Plus, Bell, Menu } from "lucide-react";
+import { Search, Plus, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import UserMenu from "./UserMenu";
 import LanguageSwitcher from "./LanguageSwitcher";
+import NotificationDropdown from "./NotificationDropdown";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useAuth } from "@/hooks/useAuth";
 import ondabirLogo from "@/assets/ondabir-logo.png";
 
 interface HeaderProps {
@@ -14,6 +16,7 @@ interface HeaderProps {
 
 const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
   const { t } = useLanguage();
+  const { user } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -62,9 +65,11 @@ const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
           >
             <Plus className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" className="hidden sm:flex">
-            <Bell className="h-5 w-5" />
-          </Button>
+          {user && (
+            <div className="hidden sm:block">
+              <NotificationDropdown />
+            </div>
+          )}
           <LanguageSwitcher />
           <UserMenu onOpenAuth={onOpenAuth} />
         </div>

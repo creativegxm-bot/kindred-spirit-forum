@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Profile from "./pages/Profile";
 import SavedPosts from "./pages/SavedPosts";
 import Community from "./pages/Community";
+import Chat from "./pages/Chat";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,8 @@ const App = () => (
               <Route path="/r/:communityName" element={<Community />} />
               <Route path="/u/:username" element={<Profile />} />
               <Route path="/saved" element={<SavedPosts />} />
+              <Route path="/chat" element={<Chat />} />
+              <Route path="/chat/:roomId" element={<Chat />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

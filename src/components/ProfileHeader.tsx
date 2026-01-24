@@ -1,8 +1,13 @@
-import { Calendar, Award, FileText, MessageSquare } from "lucide-react";
+import { Calendar, Award, FileText, MessageSquare, Mail } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { UserProfile } from "@/hooks/useProfile";
-import { formatDistanceToNow, format } from "date-fns";
+import { useAuth } from "@/hooks/useAuth";
+import { useStartDirectMessage } from "@/hooks/useDirectMessage";
+import { useLanguage } from "@/hooks/useLanguage";
+import { format } from "date-fns";
 import { tr } from "date-fns/locale";
+import { toast } from "sonner";
 
 interface ProfileHeaderProps {
   profile: UserProfile;
@@ -13,10 +18,30 @@ interface ProfileHeaderProps {
     postCount: number;
     commentCount: number;
   } | undefined;
+  onOpenAuth?: (mode: "login" | "signup") => void;
 }
 
-const ProfileHeader = ({ profile, karma }: ProfileHeaderProps) => {
+const ProfileHeader = ({ profile, karma, onOpenAuth }: ProfileHeaderProps) => {
+  const { user } = useAuth();
+  const { t } = useLanguage();
+  const startDM = useStartDirectMessage();
   const memberSince = format(new Date(profile.created_at), "MMMM yyyy", { locale: tr });
+
+  const isOwnProfile = user?.id === profile.user_id;
+
+  const handleSendMessage = async () => {
+    if (!user) {
+      onOpenAuth?.("login");
+      return;
+    }
+
+    try {
+      await startDM.mutateAsync(profile.user_id);
+      toast.success(t("dmStarted"));
+    } catch (error) {
+      toast.error(t("dmStartError"));
+    }
+  };
 
   return (
     <div className="card-gradient rounded-lg border border-border p-6">
@@ -29,10 +54,27 @@ const ProfileHeader = ({ profile, karma }: ProfileHeaderProps) => {
         </Avatar>
 
         <div className="flex-1 text-center sm:text-left">
-          <h1 className="text-2xl font-bold">
-            {profile.display_name || profile.username}
-          </h1>
-          <p className="text-muted-foreground">u/{profile.username}</p>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <div>
+              <h1 className="text-2xl font-bold">
+                {profile.display_name || profile.username}
+              </h1>
+              <p className="text-muted-foreground">u/{profile.username}</p>
+            </div>
+            
+            {!isOwnProfile && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleSendMessage}
+                disabled={startDM.isPending}
+                className="sm:ml-auto"
+              >
+                <Mail className="h-4 w-4 mr-2" />
+                {t("startDM")}
+              </Button>
+            )}
+          </div>
           
           {profile.bio && (
             <p className="mt-3 text-sm text-foreground">{profile.bio}</p>

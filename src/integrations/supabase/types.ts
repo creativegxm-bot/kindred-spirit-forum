@@ -82,6 +82,7 @@ export type Database = {
           description: string | null
           icon: string | null
           id: string
+          is_dm: boolean | null
           is_private: boolean | null
           name: string
         }
@@ -91,6 +92,7 @@ export type Database = {
           description?: string | null
           icon?: string | null
           id?: string
+          is_dm?: boolean | null
           is_private?: boolean | null
           name: string
         }
@@ -100,6 +102,7 @@ export type Database = {
           description?: string | null
           icon?: string | null
           id?: string
+          is_dm?: boolean | null
           is_private?: boolean | null
           name?: string
         }
@@ -485,7 +488,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      find_or_create_dm_room: {
+        Args: { other_user_id: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

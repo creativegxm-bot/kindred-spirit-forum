@@ -14,9 +14,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, Users, LogIn, LogOut } from "lucide-react";
+import { Send, Users, LogIn, LogOut, User } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ChatRoomViewProps {
   roomId: string;
@@ -28,6 +29,11 @@ const ChatRoomView = ({ roomId, onOpenAuth }: ChatRoomViewProps) => {
   const { t } = useLanguage();
   const [message, setMessage] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [otherUser, setOtherUser] = useState<{
+    username: string;
+    display_name: string | null;
+    avatar_url: string | null;
+  } | null>(null);
   
   const { data: room } = useChatRoom(roomId);
   const { data: messages, isLoading: messagesLoading } = useChatMessages(roomId);
@@ -36,6 +42,19 @@ const ChatRoomView = ({ roomId, onOpenAuth }: ChatRoomViewProps) => {
   const sendMessage = useSendMessage();
   const joinRoom = useJoinChatRoom();
   const leaveRoom = useLeaveChatRoom();
+
+  // Fetch other user info for DM rooms
+  useEffect(() => {
+    const fetchOtherUser = async () => {
+      if (!room?.is_dm || !user || !members) return;
+      
+      const otherMember = members.find(m => m.user_id !== user.id);
+      if (otherMember?.profile) {
+        setOtherUser(otherMember.profile);
+      }
+    };
+    fetchOtherUser();
+  }, [room, user, members]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -99,20 +118,38 @@ const ChatRoomView = ({ roomId, onOpenAuth }: ChatRoomViewProps) => {
       {/* Room Header */}
       <div className="p-4 border-b border-border bg-card flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="text-2xl">{room.icon || "💬"}</span>
+          {room.is_dm && otherUser ? (
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={otherUser.avatar_url || undefined} />
+              <AvatarFallback>
+                {otherUser.username?.[0]?.toUpperCase() || <User className="h-4 w-4" />}
+              </AvatarFallback>
+            </Avatar>
+          ) : (
+            <span className="text-2xl">{room.icon || "💬"}</span>
+          )}
           <div>
-            <h2 className="font-semibold text-foreground">{room.name}</h2>
-            {room.description && (
+            <h2 className="font-semibold text-foreground">
+              {room.is_dm && otherUser
+                ? otherUser.display_name || otherUser.username
+                : room.name}
+            </h2>
+            {!room.is_dm && room.description && (
               <p className="text-sm text-muted-foreground">{room.description}</p>
+            )}
+            {room.is_dm && otherUser && (
+              <p className="text-sm text-muted-foreground">@{otherUser.username}</p>
             )}
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-            <Users className="h-4 w-4" />
-            <span>{members?.length || 0}</span>
-          </div>
-          {user && (
+          {!room.is_dm && (
+            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+              <Users className="h-4 w-4" />
+              <span>{members?.length || 0}</span>
+            </div>
+          )}
+          {user && !room.is_dm && (
             isMember ? (
               <Button
                 variant="outline"

@@ -14,10 +14,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, Users, LogIn, LogOut, User } from "lucide-react";
+import { Send, Users, LogIn, LogOut, User, UserPlus } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import InviteUsersModal from "./InviteUsersModal";
 
 interface ChatRoomViewProps {
   roomId: string;
@@ -28,6 +29,7 @@ const ChatRoomView = ({ roomId, onOpenAuth }: ChatRoomViewProps) => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [message, setMessage] = useState("");
+  const [showInviteModal, setShowInviteModal] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [otherUser, setOtherUser] = useState<{
     username: string;
@@ -148,6 +150,17 @@ const ChatRoomView = ({ roomId, onOpenAuth }: ChatRoomViewProps) => {
               <Users className="h-4 w-4" />
               <span>{members?.length || 0}</span>
             </div>
+          )}
+          {/* Invite button for private room creators */}
+          {user && room.is_private && room.created_by === user.id && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowInviteModal(true)}
+            >
+              <UserPlus className="h-4 w-4 mr-1" />
+              {t("inviteUsers")}
+            </Button>
           )}
           {user && !room.is_dm && (
             isMember ? (
@@ -270,6 +283,16 @@ const ChatRoomView = ({ roomId, onOpenAuth }: ChatRoomViewProps) => {
           </div>
         )}
       </div>
+
+      {/* Invite Users Modal */}
+      {room.is_private && (
+        <InviteUsersModal
+          open={showInviteModal}
+          onOpenChange={setShowInviteModal}
+          roomId={roomId}
+          roomName={room.name}
+        />
+      )}
     </div>
   );
 };

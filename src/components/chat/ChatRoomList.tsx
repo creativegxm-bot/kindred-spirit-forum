@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Plus, MessageSquare, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
+import PendingInvites from "./PendingInvites";
 
 interface ChatRoomListProps {
   selectedRoomId?: string;
@@ -46,6 +47,9 @@ const ChatRoomList = ({
 
       <ScrollArea className="flex-1">
         <div className="p-2 space-y-1">
+          {/* Pending Invites Section */}
+          {user && <PendingInvites />}
+          
           {isLoading ? (
             <div className="space-y-2 p-2">
               {[...Array(5)].map((_, i) => (

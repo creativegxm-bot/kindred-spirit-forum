@@ -57,6 +57,8 @@ const CreateChatRoomModal = ({
       setIsPrivate(false);
       navigate(`/chat/${room.id}`);
     } catch (error) {
+      // Surface useful debug info in console while keeping the UI message user-friendly.
+      console.error("Create chat room failed:", error);
       toast.error(t("roomCreateError"));
     }
   };

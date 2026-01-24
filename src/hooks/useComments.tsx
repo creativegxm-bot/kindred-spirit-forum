@@ -11,6 +11,8 @@ export interface Comment {
   upvotes: number;
   downvotes: number;
   created_at: string;
+  image_url?: string | null;
+  video_url?: string | null;
   author?: {
     username: string;
     avatar_url: string | null;
@@ -97,10 +99,14 @@ export const useCreateComment = () => {
       post_id,
       content,
       parent_id,
+      image_url,
+      video_url,
     }: {
       post_id: string;
       content: string;
       parent_id?: string | null;
+      image_url?: string | null;
+      video_url?: string | null;
     }) => {
       if (!user) throw new Error("Must be logged in to comment");
 
@@ -111,6 +117,8 @@ export const useCreateComment = () => {
           content,
           parent_id: parent_id || null,
           author_id: user.id,
+          image_url: image_url || null,
+          video_url: video_url || null,
         })
         .select()
         .single();
@@ -121,6 +129,31 @@ export const useCreateComment = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["comments", variables.post_id] });
       queryClient.invalidateQueries({ queryKey: ["posts"] });
+    },
+  });
+};
+
+export const useUploadCommentMedia = () => {
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: async ({ file, type }: { file: File; type: "image" | "video" }) => {
+      if (!user) throw new Error("Must be logged in to upload");
+
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("comment-media")
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from("comment-media")
+        .getPublicUrl(fileName);
+
+      return { url: data.publicUrl, type };
     },
   });
 };

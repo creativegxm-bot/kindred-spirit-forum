@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import VoteButtons from "./VoteButtons";
 import CommentItem from "./CommentItem";
+import CommentMediaUpload from "./CommentMediaUpload";
 import { Post } from "@/hooks/usePosts";
 import { useComments, useCreateComment } from "@/hooks/useComments";
 import { useRealtimeComments } from "@/hooks/useRealtimeSubscription";
@@ -21,6 +22,8 @@ interface PostDetailProps {
 
 const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
   const [commentContent, setCommentContent] = useState("");
+  const [commentImageUrl, setCommentImageUrl] = useState<string | null>(null);
+  const [commentVideoUrl, setCommentVideoUrl] = useState<string | null>(null);
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const { toast } = useToast();
@@ -41,10 +44,10 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
       return;
     }
 
-    if (!commentContent.trim()) {
+    if (!commentContent.trim() && !commentImageUrl && !commentVideoUrl) {
       toast({
         title: language === "tr" ? "Boş yorum" : "Empty comment",
-        description: language === "tr" ? "Lütfen göndermeden önce bir şeyler yazın" : "Please write something before posting",
+        description: language === "tr" ? "Lütfen göndermeden önce bir şeyler yazın veya medya ekleyin" : "Please write something or add media before posting",
         variant: "destructive",
       });
       return;
@@ -54,8 +57,12 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
       await createComment.mutateAsync({
         post_id: post.id,
         content: commentContent.trim(),
+        image_url: commentImageUrl,
+        video_url: commentVideoUrl,
       });
       setCommentContent("");
+      setCommentImageUrl(null);
+      setCommentVideoUrl(null);
       toast({
         title: language === "tr" ? "Yorum gönderildi" : "Comment posted",
         description: language === "tr" ? "Yorumun eklendi" : "Your comment has been added",
@@ -66,6 +73,14 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
         description: language === "tr" ? "Yorum gönderilemedi" : "Could not post comment",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleMediaUploaded = (url: string, type: "image" | "video") => {
+    if (type === "image") {
+      setCommentImageUrl(url);
+    } else {
+      setCommentVideoUrl(url);
     }
   };
 
@@ -187,11 +202,22 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                         disabled={!user}
                         onClick={() => !user && onAuthRequired()}
                       />
+                      {user && (
+                        <div className="mt-2">
+                          <CommentMediaUpload
+                            onMediaUploaded={handleMediaUploaded}
+                            imageUrl={commentImageUrl}
+                            videoUrl={commentVideoUrl}
+                            onClearImage={() => setCommentImageUrl(null)}
+                            onClearVideo={() => setCommentVideoUrl(null)}
+                          />
+                        </div>
+                      )}
                       <div className="flex justify-end mt-2">
                         <Button
                           size="sm"
                           onClick={handleSubmitComment}
-                          disabled={createComment.isPending || !commentContent.trim()}
+                          disabled={createComment.isPending || (!commentContent.trim() && !commentImageUrl && !commentVideoUrl)}
                         >
                           {createComment.isPending 
                             ? (language === "tr" ? "Gönderiliyor..." : "Posting...")

@@ -3,6 +3,7 @@ import { MessageSquare, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import VoteButtons from "./VoteButtons";
+import CommentMediaUpload from "./CommentMediaUpload";
 import { Comment, useCreateComment } from "@/hooks/useComments";
 import { formatDistanceToNow } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
@@ -21,6 +22,8 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
   const [replyContent, setReplyContent] = useState("");
+  const [replyImageUrl, setReplyImageUrl] = useState<string | null>(null);
+  const [replyVideoUrl, setReplyVideoUrl] = useState<string | null>(null);
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const { toast } = useToast();
@@ -37,10 +40,10 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
       return;
     }
 
-    if (!replyContent.trim()) {
+    if (!replyContent.trim() && !replyImageUrl && !replyVideoUrl) {
       toast({
         title: language === "tr" ? "Boş yanıt" : "Empty reply",
-        description: language === "tr" ? "Lütfen göndermeden önce bir şeyler yazın" : "Please write something before posting",
+        description: language === "tr" ? "Lütfen göndermeden önce bir şeyler yazın veya medya ekleyin" : "Please write something or add media before posting",
         variant: "destructive",
       });
       return;
@@ -51,8 +54,12 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
         post_id: postId,
         content: replyContent.trim(),
         parent_id: comment.id,
+        image_url: replyImageUrl,
+        video_url: replyVideoUrl,
       });
       setReplyContent("");
+      setReplyImageUrl(null);
+      setReplyVideoUrl(null);
       setIsReplying(false);
       toast({
         title: language === "tr" ? "Yanıt gönderildi" : "Reply posted",
@@ -64,6 +71,14 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
         description: language === "tr" ? "Yanıt gönderilemedi" : "Could not post reply",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleMediaUploaded = (url: string, type: "image" | "video") => {
+    if (type === "image") {
+      setReplyImageUrl(url);
+    } else {
+      setReplyVideoUrl(url);
     }
   };
 
@@ -110,6 +125,27 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
                 {comment.content}
               </p>
 
+              {/* Display comment media */}
+              {comment.image_url && (
+                <div className="mt-2 overflow-hidden rounded-md">
+                  <img
+                    src={comment.image_url}
+                    alt=""
+                    className="max-h-80 w-auto rounded-md"
+                  />
+                </div>
+              )}
+
+              {comment.video_url && (
+                <div className="mt-2 overflow-hidden rounded-md">
+                  <video
+                    src={comment.video_url}
+                    controls
+                    className="max-h-80 w-auto rounded-md"
+                  />
+                </div>
+              )}
+
               <div className="flex items-center gap-1 mt-2">
                 <VoteButtons
                   commentId={comment.id}
@@ -152,6 +188,13 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
                     onChange={(e) => setReplyContent(e.target.value)}
                     className="min-h-20 bg-secondary border-none resize-none focus-visible:ring-primary text-sm"
                   />
+                  <CommentMediaUpload
+                    onMediaUploaded={handleMediaUploaded}
+                    imageUrl={replyImageUrl}
+                    videoUrl={replyVideoUrl}
+                    onClearImage={() => setReplyImageUrl(null)}
+                    onClearVideo={() => setReplyVideoUrl(null)}
+                  />
                   <div className="flex gap-2 justify-end">
                     <Button
                       variant="ghost"
@@ -159,6 +202,8 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
                       onClick={() => {
                         setIsReplying(false);
                         setReplyContent("");
+                        setReplyImageUrl(null);
+                        setReplyVideoUrl(null);
                       }}
                     >
                       {t("cancel")}
@@ -166,7 +211,7 @@ const CommentItem = ({ comment, postId, depth = 0, onAuthRequired }: CommentItem
                     <Button
                       size="sm"
                       onClick={handleReply}
-                      disabled={createComment.isPending || !replyContent.trim()}
+                      disabled={createComment.isPending || (!replyContent.trim() && !replyImageUrl && !replyVideoUrl)}
                     >
                       {createComment.isPending 
                         ? (language === "tr" ? "Gönderiliyor..." : "Posting...")

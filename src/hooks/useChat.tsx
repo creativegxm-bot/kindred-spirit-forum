@@ -280,6 +280,9 @@ export const useJoinChatRoom = () => {
     },
     onSuccess: (_, roomId) => {
       queryClient.invalidateQueries({ queryKey: ["chat-room-members", roomId] });
+      // Important: ChatRoomView gates the input by this query; without invalidation,
+      // a successful join can still appear as not-a-member.
+      queryClient.invalidateQueries({ queryKey: ["chat-room-membership", roomId] });
     },
   });
 };
@@ -302,6 +305,7 @@ export const useLeaveChatRoom = () => {
     },
     onSuccess: (_, roomId) => {
       queryClient.invalidateQueries({ queryKey: ["chat-room-members", roomId] });
+      queryClient.invalidateQueries({ queryKey: ["chat-room-membership", roomId] });
     },
   });
 };

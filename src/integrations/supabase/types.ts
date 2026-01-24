@@ -153,9 +153,11 @@ export type Database = {
           created_at: string
           downvotes: number
           id: string
+          image_url: string | null
           parent_id: string | null
           post_id: string
           upvotes: number
+          video_url: string | null
         }
         Insert: {
           author_id: string
@@ -163,9 +165,11 @@ export type Database = {
           created_at?: string
           downvotes?: number
           id?: string
+          image_url?: string | null
           parent_id?: string | null
           post_id: string
           upvotes?: number
+          video_url?: string | null
         }
         Update: {
           author_id?: string
@@ -173,9 +177,11 @@ export type Database = {
           created_at?: string
           downvotes?: number
           id?: string
+          image_url?: string | null
           parent_id?: string | null
           post_id?: string
           upvotes?: number
+          video_url?: string | null
         }
         Relationships: [
           {

@@ -196,6 +196,12 @@ export const translations = {
     leaveRoomError: "Odadan ayrılırken hata",
     loading: "Yükleniyor",
     chat: "Sohbet",
+    directMessages: "Direkt Mesajlar",
+    publicRooms: "Sohbet Odaları",
+    sendMessage: "Mesaj Gönder",
+    startDM: "Mesaj Gönder",
+    dmStarted: "Sohbet başlatıldı",
+    dmStartError: "Sohbet başlatılamadı",
   },
   en: {
     // Header
@@ -394,6 +400,12 @@ export const translations = {
     leaveRoomError: "Error leaving room",
     loading: "Loading",
     chat: "Chat",
+    directMessages: "Direct Messages",
+    publicRooms: "Chat Rooms",
+    sendMessage: "Send Message",
+    startDM: "Message",
+    dmStarted: "Chat started",
+    dmStartError: "Failed to start chat",
   },
 } as const;
 

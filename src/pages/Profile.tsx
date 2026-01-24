@@ -94,7 +94,7 @@ const Profile = () => {
         </div>
 
         <div className="space-y-6">
-          <ProfileHeader profile={profile} karma={karma} />
+          <ProfileHeader profile={profile} karma={karma} onOpenAuth={openAuth} />
           <ProfileTabs
             posts={posts}
             comments={comments}

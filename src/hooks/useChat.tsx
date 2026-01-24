@@ -9,6 +9,7 @@ export interface ChatRoom {
   description: string | null;
   icon: string | null;
   is_private: boolean | null;
+  is_dm: boolean | null;
   created_by: string | null;
   created_at: string;
 }
@@ -46,6 +47,7 @@ export const useChatRooms = () => {
         .from("chat_rooms")
         .select("*")
         .eq("is_private", false)
+        .eq("is_dm", false)
         .order("created_at", { ascending: false });
 
       if (error) throw error;

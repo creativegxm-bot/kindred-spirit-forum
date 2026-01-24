@@ -212,15 +212,22 @@ export const useCreateChatRoom = () => {
       if (error) throw error;
 
       // Auto-join the creator to the room
-      await supabase.from("chat_room_members").insert({
+      const { error: memberError } = await supabase.from("chat_room_members").insert({
         room_id: data.id,
         user_id: user.id,
       });
 
+      if (memberError) {
+        console.error("Failed to auto-join room:", memberError);
+        // Don't throw - room was still created successfully
+      }
+
       return data as ChatRoom;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["chat-rooms"] });
+      queryClient.invalidateQueries({ queryKey: ["chat-room-members", data.id] });
+      queryClient.invalidateQueries({ queryKey: ["chat-room-membership", data.id] });
     },
   });
 };

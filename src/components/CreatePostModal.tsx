@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Image, Link, List, FileText, Loader2 } from "lucide-react";
+import { X, Image, Link, List, FileText, Loader2, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import PostMediaUpload from "./PostMediaUpload";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -22,7 +23,7 @@ interface CreatePostModalProps {
   onAuthRequired: () => void;
 }
 
-type PostType = "text" | "image" | "link" | "poll";
+type PostType = "text" | "image" | "video" | "link" | "poll";
 
 const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalProps) => {
   const [postType, setPostType] = useState<PostType>("text");
@@ -30,6 +31,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
   const [content, setContent] = useState("");
   const [communityId, setCommunityId] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
 
   const { user } = useAuth();
@@ -61,7 +63,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
         title: title.trim(),
         content: content.trim() || undefined,
         community_id: communityId,
-        image_url: postType === "image" && imageUrl ? imageUrl : undefined,
+        image_url: postType === "image" && imageUrl ? imageUrl : (postType === "video" && videoUrl ? videoUrl : undefined),
         link_url: postType === "link" && linkUrl ? linkUrl : undefined,
       });
 
@@ -74,6 +76,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
       setContent("");
       setCommunityId("");
       setImageUrl("");
+      setVideoUrl("");
       setLinkUrl("");
       onClose();
     } catch (error) {
@@ -88,6 +91,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
   const postTypes: { type: PostType; icon: React.ReactNode; label: string }[] = [
     { type: "text", icon: <FileText className="h-4 w-4" />, label: t("post") },
     { type: "image", icon: <Image className="h-4 w-4" />, label: t("image") },
+    { type: "video", icon: <Video className="h-4 w-4" />, label: language === "tr" ? "Video" : "Video" },
     { type: "link", icon: <Link className="h-4 w-4" />, label: t("link") },
     { type: "poll", icon: <List className="h-4 w-4" />, label: t("poll") },
   ];
@@ -159,24 +163,21 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
             )}
 
             {postType === "image" && (
-              <div className="space-y-3">
-                <Input
-                  placeholder={t("imageUrlPlaceholder")}
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  className="bg-secondary border-none focus-visible:ring-primary"
-                />
-                {imageUrl && (
-                  <div className="border border-border rounded-lg overflow-hidden">
-                    <img
-                      src={imageUrl}
-                      alt={language === "tr" ? "Önizleme" : "Preview"}
-                      className="w-full h-auto max-h-64 object-cover"
-                      onError={(e) => (e.currentTarget.style.display = "none")}
-                    />
-                  </div>
-                )}
-              </div>
+              <PostMediaUpload
+                type="image"
+                imageUrl={imageUrl}
+                onImageUrlChange={setImageUrl}
+              />
+            )}
+
+            {postType === "video" && (
+              <PostMediaUpload
+                type="video"
+                imageUrl=""
+                onImageUrlChange={() => {}}
+                videoUrl={videoUrl}
+                onVideoUrlChange={setVideoUrl}
+              />
             )}
 
             {postType === "link" && (

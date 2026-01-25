@@ -150,11 +150,20 @@ const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
 
           {post.image_url && (
             <div className="mt-3 overflow-hidden rounded-md">
-              <img
-                src={post.image_url}
-                alt=""
-                className="w-full h-auto max-h-96 object-cover"
-              />
+              {/\.(mp4|webm|mov|avi|mkv)$/i.test(post.image_url) ? (
+                <video
+                  src={post.image_url}
+                  controls
+                  className="w-full h-auto max-h-96"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              ) : (
+                <img
+                  src={post.image_url}
+                  alt=""
+                  className="w-full h-auto max-h-96 object-cover"
+                />
+              )}
             </div>
           )}
 

@@ -135,11 +135,19 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
 
                   {post.image_url && (
                     <div className="mt-4 overflow-hidden rounded-md">
-                      <img
-                        src={post.image_url}
-                        alt=""
-                        className="w-full h-auto"
-                      />
+                      {/\.(mp4|webm|mov|avi|mkv)$/i.test(post.image_url) ? (
+                        <video
+                          src={post.image_url}
+                          controls
+                          className="w-full h-auto"
+                        />
+                      ) : (
+                        <img
+                          src={post.image_url}
+                          alt=""
+                          className="w-full h-auto"
+                        />
+                      )}
                     </div>
                   )}
 

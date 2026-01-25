@@ -216,3 +216,33 @@ export const useSavePost = () => {
     },
   });
 };
+
+export const useUploadPostMedia = () => {
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: async ({ file, type }: { file: File; type: "image" | "video" }) => {
+      if (!user) throw new Error("Must be logged in to upload");
+
+      const maxSize = type === "image" ? 10 * 1024 * 1024 : 100 * 1024 * 1024; // 10MB images, 100MB videos
+      if (file.size > maxSize) {
+        throw new Error(type === "image" ? "Image must be under 10MB" : "Video must be under 100MB");
+      }
+
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("post-media")
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from("post-media")
+        .getPublicUrl(fileName);
+
+      return { url: data.publicUrl, type };
+    },
+  });
+};

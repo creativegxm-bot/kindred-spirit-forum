@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Header from "@/components/Header";
+import PromoBanner from "@/components/PromoBanner";
 import Sidebar from "@/components/Sidebar";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import PostCard from "@/components/PostCard";
@@ -31,6 +32,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <PromoBanner />
       <Header
         onCreatePost={() => setCreateModalOpen(true)}
         onMenuToggle={() => setSidebarOpen(!sidebarOpen)}

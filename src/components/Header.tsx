@@ -35,9 +35,9 @@ const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
             <Menu className="h-5 w-5" />
           </Button>
 
-          <a href="/" className="flex items-center gap-2">
+          <a href="/" className="flex items-center gap-2 shrink-0">
             <img src={ondabirLogo} alt="ondabir" className="h-8 w-8 rounded" />
-            <span className="hidden text-xl font-bold text-gradient sm:block">
+            <span className="text-xl font-bold text-gradient">
               ondabir
             </span>
           </a>

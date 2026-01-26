@@ -226,6 +226,22 @@ export const translations = {
     inviteDeclined: "Davet reddedildi",
     inviteDeclineError: "Davet reddedilemedi",
     inviteUsers: "Kullanıcı Davet Et",
+    
+    // File Converter
+    fileConverter: "Dosya Dönüştürücü",
+    fileConverterDesc: "Görsel ve dosyalarınızı farklı formatlara dönüştürün",
+    selectFormat: "Format seç",
+    convert: "Dönüştür",
+    converting: "Dönüştürülüyor...",
+    conversionComplete: "Dönüşüm tamamlandı",
+    conversionError: "Dönüşüm hatası",
+    download: "İndir",
+    fileTooLarge: "Dosya çok büyük",
+    maxFileSize: "Maksimum dosya boyutu 20MB",
+    dragDropFile: "Dosya yüklemek için tıklayın veya sürükleyin",
+    imageFormats: "Görsel Formatları",
+    documentFormats: "Döküman Formatları",
+    tools: "Araçlar",
   },
   en: {
     // Header
@@ -454,6 +470,22 @@ export const translations = {
     inviteDeclined: "Invite declined",
     inviteDeclineError: "Failed to decline invite",
     inviteUsers: "Invite Users",
+    
+    // File Converter
+    fileConverter: "File Converter",
+    fileConverterDesc: "Convert your images and files to different formats",
+    selectFormat: "Select format",
+    convert: "Convert",
+    converting: "Converting...",
+    conversionComplete: "Conversion complete",
+    conversionError: "Conversion error",
+    download: "Download",
+    fileTooLarge: "File too large",
+    maxFileSize: "Maximum file size is 20MB",
+    dragDropFile: "Click to upload or drag and drop",
+    imageFormats: "Image Formats",
+    documentFormats: "Document Formats",
+    tools: "Tools",
   },
 } as const;
 

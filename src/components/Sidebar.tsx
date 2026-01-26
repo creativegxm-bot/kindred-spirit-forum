@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { TrendingUp, Flame, Clock, Star, Plus, MessageSquare } from "lucide-react";
+import { TrendingUp, Flame, Clock, Star, Plus, MessageSquare, FileImage } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCommunities } from "@/hooks/usePosts";
 import { useAuth } from "@/hooks/useAuth";
@@ -78,6 +78,12 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
             <Button variant="ghost" className="w-full justify-start gap-3">
               <MessageSquare className="h-5 w-5 text-primary" />
               {t("chat")}
+            </Button>
+          </Link>
+          <Link to="/tools/converter">
+            <Button variant="ghost" className="w-full justify-start gap-3">
+              <FileImage className="h-5 w-5 text-orange-500" />
+              {t("fileConverter")}
             </Button>
           </Link>
         </div>

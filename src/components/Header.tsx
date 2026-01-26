@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import UserMenu from "./UserMenu";
 import LanguageSwitcher from "./LanguageSwitcher";
 import NotificationDropdown from "./NotificationDropdown";
+import AgeProgressionTool from "./AgeProgressionTool";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
 import ondabirLogo from "@/assets/ondabir-logo.png";
@@ -48,6 +49,7 @@ const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
         </div>
 
         <div className="flex items-center gap-2">
+          <AgeProgressionTool />
           <Button
             variant="create"
             size="sm"

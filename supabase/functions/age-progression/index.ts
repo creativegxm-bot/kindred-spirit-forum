@@ -78,17 +78,34 @@ Maintain the same background, lighting, and photo style. Keep it realistic and r
     }
 
     const data = await response.json();
-    const agedImageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    console.log("AI response:", JSON.stringify(data, null, 2));
+    
+    // Check multiple possible locations for the image
+    let agedImageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    
+    // Alternative: Check if it's directly in the content
+    if (!agedImageUrl && data.choices?.[0]?.message?.content) {
+      const content = data.choices[0].message.content;
+      // Check if content contains base64 image data
+      if (typeof content === 'string' && content.includes('data:image')) {
+        const match = content.match(/data:image\/[^;]+;base64,[A-Za-z0-9+/=]+/);
+        if (match) {
+          agedImageUrl = match[0];
+        }
+      }
+    }
+    
     const textResponse = data.choices?.[0]?.message?.content;
 
     if (!agedImageUrl) {
-      throw new Error("No image generated");
+      console.error("No image in response:", data);
+      throw new Error("No image generated. The AI model may not have processed the image correctly.");
     }
 
     return new Response(
       JSON.stringify({ 
         agedImageUrl,
-        message: textResponse || "Age transformation complete!"
+        message: typeof textResponse === 'string' ? textResponse : "Age transformation complete!"
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );

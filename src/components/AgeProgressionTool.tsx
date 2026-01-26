@@ -58,6 +58,8 @@ const AgeProgressionTool = () => {
     setAgedImage(null);
 
     try {
+      console.log("Starting age progression for age:", targetAge[0]);
+      
       const { data, error } = await supabase.functions.invoke("age-progression", {
         body: {
           imageBase64: uploadedImage,
@@ -65,10 +67,19 @@ const AgeProgressionTool = () => {
         },
       });
 
-      if (error) throw error;
+      console.log("Response received:", data, error);
 
-      if (data.error) {
+      if (error) {
+        console.error("Function error:", error);
+        throw new Error(error.message || "İşlem başarısız oldu");
+      }
+
+      if (data?.error) {
         throw new Error(data.error);
+      }
+
+      if (!data?.agedImageUrl) {
+        throw new Error("Yaşlandırılmış fotoğraf alınamadı");
       }
 
       setAgedImage(data.agedImageUrl);
@@ -88,15 +99,45 @@ const AgeProgressionTool = () => {
     }
   };
 
-  const downloadImage = () => {
+  const downloadImage = async () => {
     if (!agedImage) return;
     
-    const link = document.createElement("a");
-    link.href = agedImage;
-    link.download = `age-${targetAge[0]}-progression.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      // For base64 images, create a blob and download
+      if (agedImage.startsWith("data:")) {
+        const response = await fetch(agedImage);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `age-${targetAge[0]}-progression.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } else {
+        // For regular URLs
+        const link = document.createElement("a");
+        link.href = agedImage;
+        link.download = `age-${targetAge[0]}-progression.png`;
+        link.target = "_blank";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      
+      toast({
+        title: "İndirildi!",
+        description: "Fotoğraf başarıyla indirildi",
+      });
+    } catch (error) {
+      console.error("Download error:", error);
+      toast({
+        title: "Hata",
+        description: "İndirme başarısız oldu",
+        variant: "destructive",
+      });
+    }
   };
 
   const resetTool = () => {

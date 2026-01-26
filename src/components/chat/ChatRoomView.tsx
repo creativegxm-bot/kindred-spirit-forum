@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import {
   useChatRoom,
   useChatMessages,
@@ -10,6 +10,7 @@ import {
 } from "@/hooks/useChat";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useRoomReactions } from "@/hooks/useMessageReactions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -17,8 +18,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Send, Users, LogIn, LogOut, User, UserPlus } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import InviteUsersModal from "./InviteUsersModal";
+import MessageReactions from "./MessageReactions";
 
 interface ChatRoomViewProps {
   roomId: string;
@@ -44,6 +45,10 @@ const ChatRoomView = ({ roomId, onOpenAuth }: ChatRoomViewProps) => {
   const sendMessage = useSendMessage();
   const joinRoom = useJoinChatRoom();
   const leaveRoom = useLeaveChatRoom();
+
+  // Get all message IDs for fetching reactions
+  const messageIds = useMemo(() => messages?.map(m => m.id) || [], [messages]);
+  const { data: reactionsByMessage } = useRoomReactions(roomId, messageIds);
 
   // Fetch other user info for DM rooms
   useEffect(() => {
@@ -210,7 +215,7 @@ const ChatRoomView = ({ roomId, onOpenAuth }: ChatRoomViewProps) => {
             {messages?.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex gap-3 ${
+                className={`group flex gap-3 ${
                   msg.user_id === user?.id ? "flex-row-reverse" : ""
                 }`}
               >
@@ -244,6 +249,11 @@ const ChatRoomView = ({ roomId, onOpenAuth }: ChatRoomViewProps) => {
                   >
                     {msg.content}
                   </div>
+                  <MessageReactions
+                    messageId={msg.id}
+                    reactions={reactionsByMessage?.[msg.id] || []}
+                    isOwnMessage={msg.user_id === user?.id}
+                  />
                 </div>
               </div>
             ))}

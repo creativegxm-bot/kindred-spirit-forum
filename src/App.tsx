@@ -11,6 +11,7 @@ import SavedPosts from "./pages/SavedPosts";
 import Community from "./pages/Community";
 import Chat from "./pages/Chat";
 import FileConverter from "./pages/FileConverter";
+import MatchFinder from "./pages/MatchFinder";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
               <Route path="/chat" element={<Chat />} />
               <Route path="/chat/:roomId" element={<Chat />} />
               <Route path="/tools/converter" element={<FileConverter />} />
+              <Route path="/tools/match-finder" element={<MatchFinder />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

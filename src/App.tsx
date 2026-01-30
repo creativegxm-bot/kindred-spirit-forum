@@ -12,6 +12,7 @@ import Community from "./pages/Community";
 import Chat from "./pages/Chat";
 import FileConverter from "./pages/FileConverter";
 import MatchFinder from "./pages/MatchFinder";
+import News from "./pages/News";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="/chat/:roomId" element={<Chat />} />
               <Route path="/tools/converter" element={<FileConverter />} />
               <Route path="/tools/match-finder" element={<MatchFinder />} />
+              <Route path="/news" element={<News />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

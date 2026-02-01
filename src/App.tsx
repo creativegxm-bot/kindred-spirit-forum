@@ -13,6 +13,7 @@ import Chat from "./pages/Chat";
 import FileConverter from "./pages/FileConverter";
 import MatchFinder from "./pages/MatchFinder";
 import News from "./pages/News";
+import Advertise from "./pages/Advertise";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
               <Route path="/tools/converter" element={<FileConverter />} />
               <Route path="/tools/match-finder" element={<MatchFinder />} />
               <Route path="/news" element={<News />} />
+              <Route path="/advertise" element={<Advertise />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

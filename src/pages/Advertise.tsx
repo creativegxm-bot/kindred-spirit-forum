@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Mail, Users, TrendingUp, Target, CheckCircle } from "lucide-react";
+import { ArrowLeft, Mail, Users, TrendingUp, Target, CheckCircle, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,10 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Advertise = () => {
   const { language } = useLanguage();
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -19,15 +21,41 @@ const Advertise = () => {
     message: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: language === "tr" ? "Mesajınız gönderildi!" : "Message sent!",
-      description: language === "tr" 
-        ? "En kısa sürede sizinle iletişime geçeceğiz." 
-        : "We'll get back to you soon.",
-    });
-    setFormData({ name: "", email: "", company: "", message: "" });
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase
+        .from("advertise_inquiries")
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          company: formData.company || null,
+          message: formData.message
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: language === "tr" ? "Mesajınız gönderildi!" : "Message sent!",
+        description: language === "tr" 
+          ? "En kısa sürede sizinle iletişime geçeceğiz." 
+          : "We'll get back to you soon.",
+      });
+      setFormData({ name: "", email: "", company: "", message: "" });
+    } catch (error) {
+      console.error("Error submitting inquiry:", error);
+      toast({
+        title: language === "tr" ? "Hata" : "Error",
+        description: language === "tr" 
+          ? "Mesajınız gönderilemedi. Lütfen tekrar deneyin." 
+          : "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const stats = [
@@ -217,8 +245,12 @@ const Advertise = () => {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full">
-                  <Mail className="h-4 w-4 mr-2" />
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Mail className="h-4 w-4 mr-2" />
+                  )}
                   {language === "tr" ? "Mesaj Gönder" : "Send Message"}
                 </Button>
               </form>

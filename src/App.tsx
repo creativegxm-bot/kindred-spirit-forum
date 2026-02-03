@@ -15,6 +15,7 @@ import MatchFinder from "./pages/MatchFinder";
 import News from "./pages/News";
 import Advertise from "./pages/Advertise";
 import Admin from "./pages/Admin";
+import Post from "./pages/Post";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
               <Route path="/saved" element={<SavedPosts />} />
               <Route path="/chat" element={<Chat />} />
               <Route path="/chat/:roomId" element={<Chat />} />
+              <Route path="/post/:postId" element={<Post />} />
               <Route path="/tools/converter" element={<FileConverter />} />
               <Route path="/tools/match-finder" element={<MatchFinder />} />
               <Route path="/news" element={<News />} />

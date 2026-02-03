@@ -1,20 +1,20 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import PromoBanner from "@/components/PromoBanner";
 import Sidebar from "@/components/Sidebar";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import PostCard from "@/components/PostCard";
-import PostDetail from "@/components/PostDetail";
 import CreatePostModal from "@/components/CreatePostModal";
 import AuthModal from "@/components/AuthModal";
-import { usePosts, Post } from "@/hooks/usePosts";
+import { usePosts } from "@/hooks/usePosts";
 import { useRealtimePosts } from "@/hooks/useRealtimeSubscription";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
@@ -69,7 +69,7 @@ const Index = () => {
                   <PostCard
                     key={post.id}
                     post={post}
-                    onClick={() => setSelectedPost(post)}
+                    onClick={() => navigate(`/post/${post.id}`)}
                     onAuthRequired={() => openAuth("login")}
                   />
                 ))
@@ -80,14 +80,6 @@ const Index = () => {
           </div>
         </main>
       </div>
-
-      {selectedPost && (
-        <PostDetail
-          post={selectedPost}
-          onClose={() => setSelectedPost(null)}
-          onAuthRequired={() => openAuth("login")}
-        />
-      )}
 
       <CreatePostModal
         isOpen={createModalOpen}

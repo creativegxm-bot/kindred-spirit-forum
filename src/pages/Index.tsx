@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import PromoBanner from "@/components/PromoBanner";
+import AirbnbBanner from "@/components/AirbnbBanner";
 import Sidebar from "@/components/Sidebar";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import PostCard from "@/components/PostCard";
@@ -32,6 +33,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <AirbnbBanner />
       <PromoBanner />
       <Header
         onCreatePost={() => setCreateModalOpen(true)}

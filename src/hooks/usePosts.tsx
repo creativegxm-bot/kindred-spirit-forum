@@ -38,19 +38,24 @@ export interface Community {
   created_at: string;
 }
 
-export const usePosts = () => {
+export const usePosts = (country?: string) => {
   const { user } = useAuth();
 
   return useQuery({
-    queryKey: ["posts", user?.id],
+    queryKey: ["posts", user?.id, country],
     queryFn: async () => {
-      const { data: posts, error } = await supabase
+      let query = supabase
         .from("posts")
         .select(`
           *,
           community:communities(name, icon)
-        `)
-        .order("created_at", { ascending: false });
+        `);
+      
+      if (country) {
+        query = query.eq("country", country);
+      }
+      
+      const { data: posts, error } = await query.order("created_at", { ascending: false });
 
       if (error) throw error;
 
@@ -119,12 +124,14 @@ export const useCreatePost = () => {
       title,
       content,
       community_id,
+      country,
       image_url,
       link_url,
     }: {
       title: string;
       content?: string;
       community_id: string;
+      country?: string;
       image_url?: string;
       link_url?: string;
     }) => {
@@ -136,6 +143,7 @@ export const useCreatePost = () => {
           title,
           content,
           community_id,
+          country: country || "TR",
           image_url,
           link_url,
           author_id: user.id,

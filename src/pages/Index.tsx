@@ -8,9 +8,11 @@ import TrendingSidebar from "@/components/TrendingSidebar";
 import PostCard from "@/components/PostCard";
 import CreatePostModal from "@/components/CreatePostModal";
 import AuthModal from "@/components/AuthModal";
+import CountryFilter from "@/components/CountryFilter";
 import { usePosts } from "@/hooks/usePosts";
 import { useRealtimePosts } from "@/hooks/useRealtimeSubscription";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useCountry } from "@/hooks/useCountry";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
@@ -20,7 +22,8 @@ const Index = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
 
-  const { data: posts = [], isLoading, error } = usePosts();
+  const { selectedCountry, setSelectedCountry } = useCountry();
+  const { data: posts = [], isLoading, error } = usePosts(selectedCountry);
   const { language } = useLanguage();
   
   // Enable real-time updates for posts and votes
@@ -47,6 +50,10 @@ const Index = () => {
         <main className="flex-1 py-4 px-4 lg:px-6">
           <div className="flex gap-6 justify-center">
             <div className="w-full max-w-2xl space-y-4">
+              <CountryFilter 
+                selectedCountry={selectedCountry} 
+                onCountryChange={setSelectedCountry} 
+              />
               {isLoading ? (
                 <div className="flex items-center justify-center py-20">
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />

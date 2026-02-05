@@ -13,9 +13,11 @@ import {
 import { useCommunities, useCreatePost } from "@/hooks/usePosts";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useCountry } from "@/hooks/useCountry";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import PostMediaUpload from "./PostMediaUpload";
+import { COUNTRIES } from "./CountryFilter";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -36,9 +38,12 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
 
   const { user } = useAuth();
   const { t, language } = useLanguage();
+  const { selectedCountry: defaultCountry } = useCountry();
   const { data: communities = [] } = useCommunities();
   const createPostMutation = useCreatePost();
   const { toast } = useToast();
+
+  const [selectedCountry, setSelectedCountry] = useState(defaultCountry);
 
   if (!isOpen) return null;
 
@@ -49,10 +54,10 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
   }
 
   const handleSubmit = async () => {
-    if (!title.trim() || !communityId) {
+    if (!title.trim() || !communityId || !selectedCountry) {
       toast({
         title: language === "tr" ? "Eksik bilgi" : "Missing information",
-        description: language === "tr" ? "Lütfen başlığı doldurun ve bir topluluk seçin" : "Please fill in the title and select a community",
+        description: language === "tr" ? "Lütfen başlığı doldurun, topluluk ve ülke seçin" : "Please fill in the title and select a community and country",
         variant: "destructive",
       });
       return;
@@ -63,6 +68,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
         title: title.trim(),
         content: content.trim() || undefined,
         community_id: communityId,
+        country: selectedCountry,
         image_url: postType === "image" && imageUrl ? imageUrl : (postType === "video" && videoUrl ? videoUrl : undefined),
         link_url: postType === "link" && linkUrl ? linkUrl : undefined,
       });
@@ -108,21 +114,39 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
           </div>
 
           <div className="p-4 space-y-4">
-            <Select value={communityId} onValueChange={setCommunityId}>
-              <SelectTrigger className="w-full bg-secondary border-none">
-                <SelectValue placeholder={t("selectCommunity")} />
-              </SelectTrigger>
-              <SelectContent>
-                {communities.map((community) => (
-                  <SelectItem key={community.id} value={community.id}>
-                    <div className="flex items-center gap-2">
-                      <span>{community.icon || "💬"}</span>
-                      <span>r/{community.name}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex gap-2">
+              <Select value={communityId} onValueChange={setCommunityId}>
+                <SelectTrigger className="flex-1 bg-secondary border-none">
+                  <SelectValue placeholder={t("selectCommunity")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {communities.map((community) => (
+                    <SelectItem key={community.id} value={community.id}>
+                      <div className="flex items-center gap-2">
+                        <span>{community.icon || "💬"}</span>
+                        <span>r/{community.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+                <SelectTrigger className="w-32 bg-secondary border-none">
+                  <SelectValue placeholder={language === "tr" ? "Ülke" : "Country"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {COUNTRIES.map((country) => (
+                    <SelectItem key={country.code} value={country.code}>
+                      <div className="flex items-center gap-2">
+                        <span>{country.flag}</span>
+                        <span>{country.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
             <div className="flex gap-1 p-1 bg-secondary rounded-lg">
               {postTypes.map(({ type, icon, label }) => (

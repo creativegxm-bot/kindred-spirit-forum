@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode } from "react";
 import { COUNTRIES, Country } from "@/components/CountryFilter";
+import { useLanguage } from "@/hooks/useLanguage";
+import { countryToLanguage, Language } from "@/i18n/translations";
 
 interface CountryContextType {
   selectedCountry: string;
@@ -10,6 +12,8 @@ interface CountryContextType {
 const CountryContext = createContext<CountryContextType | undefined>(undefined);
 
 export const CountryProvider = ({ children }: { children: ReactNode }) => {
+  const { setLanguage } = useLanguage();
+  
   const [selectedCountry, setSelectedCountryState] = useState<string>(() => {
     const saved = localStorage.getItem("selectedCountry");
     return saved || "TR";
@@ -18,6 +22,12 @@ export const CountryProvider = ({ children }: { children: ReactNode }) => {
   const setSelectedCountry = (country: string) => {
     setSelectedCountryState(country);
     localStorage.setItem("selectedCountry", country);
+    
+    // Auto-switch language based on country
+    const targetLanguage = countryToLanguage[country];
+    if (targetLanguage) {
+      setLanguage(targetLanguage);
+    }
   };
 
   const getCountryInfo = (code: string) => {

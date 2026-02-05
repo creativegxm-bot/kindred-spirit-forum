@@ -124,6 +124,27 @@ export const useCreateComment = () => {
         .single();
 
       if (error) throw error;
+
+      // Send email notification asynchronously (don't wait for it)
+      fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-comment-notification`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "INSERT",
+          table: "comments",
+          record: {
+            id: data.id,
+            post_id: data.post_id,
+            author_id: data.author_id,
+            content: data.content,
+            parent_id: data.parent_id,
+            created_at: data.created_at,
+          },
+        }),
+      }).catch((err) => console.error("Email notification error:", err));
+
       return data;
     },
     onSuccess: (_, variables) => {

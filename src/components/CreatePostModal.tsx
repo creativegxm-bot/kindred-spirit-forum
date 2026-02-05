@@ -177,7 +177,8 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
               {title.length}/300
             </div>
 
-            {postType === "text" && (
+            {/* Always show content textarea for text posts, or combined with media */}
+            {(postType === "text" || postType === "image" || postType === "video") && (
               <Textarea
                 placeholder={t("postContentPlaceholder")}
                 value={content}

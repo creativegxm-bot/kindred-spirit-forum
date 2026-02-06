@@ -3,6 +3,7 @@ export const translations = {
     // Header
     searchPlaceholder: "ondabir'de ara",
     create: "Oluştur",
+    slogan: "Toplulukların Buluşma Noktası",
     
     // Sidebar
     home: "Ana Sayfa",
@@ -252,6 +253,7 @@ export const translations = {
     // Header
     searchPlaceholder: "Search ondabir",
     create: "Create",
+    slogan: "Where Communities Meet",
     
     // Sidebar
     home: "Home",
@@ -501,6 +503,7 @@ export const translations = {
     // Header
     searchPlaceholder: "Rechercher sur ondabir",
     create: "Créer",
+    slogan: "Là Où Les Communautés Se Rencontrent",
     
     // Sidebar
     home: "Accueil",
@@ -750,6 +753,7 @@ export const translations = {
     // Header
     searchPlaceholder: "ondabir durchsuchen",
     create: "Erstellen",
+    slogan: "Wo Gemeinschaften Sich Treffen",
     
     // Sidebar
     home: "Startseite",
@@ -999,6 +1003,7 @@ export const translations = {
     // Header
     searchPlaceholder: "Buscar en ondabir",
     create: "Crear",
+    slogan: "Donde Las Comunidades Se Encuentran",
     
     // Sidebar
     home: "Inicio",
@@ -1248,6 +1253,7 @@ export const translations = {
     // Header
     searchPlaceholder: "搜索 ondabir",
     create: "创建",
+    slogan: "社区相遇的地方",
     
     // Sidebar
     home: "首页",
@@ -1497,6 +1503,7 @@ export const translations = {
     // Header
     searchPlaceholder: "ondabir पर खोजें",
     create: "बनाएं",
+    slogan: "जहां समुदाय मिलते हैं",
     
     // Sidebar
     home: "होम",

@@ -37,9 +37,14 @@ const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
 
           <a href="/" className="flex items-center gap-2 shrink-0">
             <img src={ondabirLogo} alt="ondabir" className="h-8 w-8 rounded" />
-            <span className="text-xl font-bold text-gradient">
-              ondabir
-            </span>
+            <div className="flex flex-col">
+              <span className="text-xl font-bold text-gradient leading-tight">
+                ondabir
+              </span>
+              <span className="text-[10px] text-muted-foreground hidden sm:block leading-none">
+                {t("slogan")}
+              </span>
+            </div>
           </a>
 
           <div className="flex flex-1 items-center justify-center px-4">

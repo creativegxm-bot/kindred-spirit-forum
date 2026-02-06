@@ -243,6 +243,10 @@ export const translations = {
     imageFormats: "Görsel Formatları",
     documentFormats: "Döküman Formatları",
     tools: "Araçlar",
+    
+    // Banners
+    promoBanner: "🌍 IP adresinizi ve konumunuzu şimdi öğrenin!",
+    airbnbBanner: "🏠 Evinizi Airbnb'de kiralayarak para kazanın!",
   },
   en: {
     // Header
@@ -488,6 +492,10 @@ export const translations = {
     imageFormats: "Image Formats",
     documentFormats: "Document Formats",
     tools: "Tools",
+    
+    // Banners
+    promoBanner: "🌍 Discover your IP address and location now!",
+    airbnbBanner: "🏠 Earn money by renting your home on Airbnb!",
   },
   fr: {
     // Header
@@ -733,6 +741,10 @@ export const translations = {
     imageFormats: "Formats d'image",
     documentFormats: "Formats de document",
     tools: "Outils",
+    
+    // Banners
+    promoBanner: "🌍 Découvrez votre adresse IP et votre localisation maintenant !",
+    airbnbBanner: "🏠 Gagnez de l'argent en louant votre maison sur Airbnb !",
   },
   zh: {
     // Header
@@ -978,6 +990,10 @@ export const translations = {
     imageFormats: "图片格式",
     documentFormats: "文档格式",
     tools: "工具",
+    
+    // Banners
+    promoBanner: "🌍 立即查看您的IP地址和位置！",
+    airbnbBanner: "🏠 在Airbnb上出租您的房屋赚钱！",
   },
   hi: {
     // Header
@@ -1223,6 +1239,10 @@ export const translations = {
     imageFormats: "इमेज प्रारूप",
     documentFormats: "दस्तावेज़ प्रारूप",
     tools: "उपकरण",
+    
+    // Banners
+    promoBanner: "🌍 अभी अपना IP पता और स्थान जानें!",
+    airbnbBanner: "🏠 Airbnb पर अपना घर किराए पर देकर पैसे कमाएं!",
   },
 } as const;
 

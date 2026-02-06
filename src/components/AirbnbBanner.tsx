@@ -1,9 +1,11 @@
 import { ExternalLink, X, Home } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const AirbnbBanner = () => {
   const [isVisible, setIsVisible] = useState(true);
+  const { t } = useLanguage();
 
   if (!isVisible) return null;
 
@@ -17,7 +19,7 @@ const AirbnbBanner = () => {
           rel="noopener noreferrer"
           className="flex items-center gap-2 hover:underline font-medium group"
         >
-          <span>🏠 Evinizi Airbnb'de kiralayarak para kazanın!</span>
+          <span>{t("airbnbBanner")}</span>
           <ExternalLink className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
         </a>
         <Button

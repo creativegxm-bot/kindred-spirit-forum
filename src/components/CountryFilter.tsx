@@ -12,7 +12,9 @@ export const COUNTRIES: Country[] = [
   { code: "TR", name: "Türkiye", flag: "🇹🇷", language: "tr" },
   { code: "US", name: "USA", flag: "🇺🇸", language: "en" },
   { code: "GB", name: "UK", flag: "🇬🇧", language: "en" },
+  { code: "DE", name: "Deutschland", flag: "🇩🇪", language: "de" },
   { code: "FR", name: "France", flag: "🇫🇷", language: "fr" },
+  { code: "ES", name: "España", flag: "🇪🇸", language: "es" },
   { code: "IN", name: "India", flag: "🇮🇳", language: "hi" },
   { code: "CN", name: "China", flag: "🇨🇳", language: "zh" },
 ];

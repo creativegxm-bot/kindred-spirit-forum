@@ -17,6 +17,10 @@ export const COUNTRIES: Country[] = [
   { code: "ES", name: "España", flag: "🇪🇸", language: "es" },
   { code: "IN", name: "India", flag: "🇮🇳", language: "hi" },
   { code: "CN", name: "China", flag: "🇨🇳", language: "zh" },
+  { code: "JP", name: "Japan", flag: "🇯🇵", language: "ja" },
+  { code: "BR", name: "Brasil", flag: "🇧🇷", language: "pt" },
+  { code: "RU", name: "Россия", flag: "🇷🇺", language: "ru" },
+  { code: "IT", name: "Italia", flag: "🇮🇹", language: "it" },
 ];
 
 interface CountryFilterProps {

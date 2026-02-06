@@ -19,6 +19,10 @@ const countryCodeMapping: Record<string, string> = {
   ES: "ES",
   IN: "IN",
   CN: "CN",
+  JP: "JP",
+  BR: "BR",
+  RU: "RU",
+  IT: "IT",
 };
 
 export const useGeoLocation = () => {

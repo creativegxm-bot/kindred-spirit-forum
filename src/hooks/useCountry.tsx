@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { COUNTRIES, Country } from "@/components/CountryFilter";
 import { useLanguage } from "@/hooks/useLanguage";
 import { countryToLanguage, Language } from "@/i18n/translations";
@@ -7,21 +7,83 @@ interface CountryContextType {
   selectedCountry: string;
   setSelectedCountry: (country: string) => void;
   getCountryInfo: (code: string) => Country | undefined;
+  isDetecting: boolean;
 }
 
 const CountryContext = createContext<CountryContextType | undefined>(undefined);
 
+// Map common country codes to our supported country codes
+const countryCodeMapping: Record<string, string> = {
+  TR: "TR",
+  US: "US",
+  GB: "GB",
+  UK: "GB",
+  DE: "DE",
+  FR: "FR",
+  ES: "ES",
+  IN: "IN",
+  CN: "CN",
+};
+
 export const CountryProvider = ({ children }: { children: ReactNode }) => {
   const { setLanguage } = useLanguage();
+  const [isDetecting, setIsDetecting] = useState(true);
   
   const [selectedCountry, setSelectedCountryState] = useState<string>(() => {
     const saved = localStorage.getItem("selectedCountry");
     return saved || "TR";
   });
 
+  // Auto-detect location on first visit
+  useEffect(() => {
+    const detectLocation = async () => {
+      const hasManualSelection = localStorage.getItem("hasManualCountrySelection");
+      
+      // Skip detection if user has manually selected a country before
+      if (hasManualSelection === "true") {
+        setIsDetecting(false);
+        return;
+      }
+
+      try {
+        // Using ip-api.com for free geolocation (no API key needed)
+        const response = await fetch("http://ip-api.com/json/?fields=status,country,countryCode");
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch location");
+        }
+
+        const data = await response.json();
+        
+        if (data.status === "success") {
+          const detectedCode = countryCodeMapping[data.countryCode] || "US";
+          
+          // Only set if it's a supported country
+          if (COUNTRIES.some(c => c.code === detectedCode)) {
+            setSelectedCountryState(detectedCode);
+            localStorage.setItem("selectedCountry", detectedCode);
+            
+            // Auto-switch language based on detected country
+            const targetLanguage = countryToLanguage[detectedCode];
+            if (targetLanguage) {
+              setLanguage(targetLanguage);
+            }
+          }
+        }
+      } catch (error) {
+        console.log("Geolocation detection failed, using default:", error);
+      } finally {
+        setIsDetecting(false);
+      }
+    };
+
+    detectLocation();
+  }, [setLanguage]);
+
   const setSelectedCountry = (country: string) => {
     setSelectedCountryState(country);
     localStorage.setItem("selectedCountry", country);
+    localStorage.setItem("hasManualCountrySelection", "true"); // Mark as manually selected
     
     // Auto-switch language based on country
     const targetLanguage = countryToLanguage[country];
@@ -35,7 +97,7 @@ export const CountryProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <CountryContext.Provider value={{ selectedCountry, setSelectedCountry, getCountryInfo }}>
+    <CountryContext.Provider value={{ selectedCountry, setSelectedCountry, getCountryInfo, isDetecting }}>
       {children}
     </CountryContext.Provider>
   );

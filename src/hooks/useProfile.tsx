@@ -167,10 +167,14 @@ export const useUpdateProfile = () => {
       display_name,
       bio,
       avatar_url,
+      preferred_country,
+      preferred_language,
     }: {
       display_name?: string;
       bio?: string;
       avatar_url?: string;
+      preferred_country?: string;
+      preferred_language?: string;
     }) => {
       if (!user) throw new Error("Must be logged in");
 
@@ -180,6 +184,8 @@ export const useUpdateProfile = () => {
           display_name,
           bio,
           avatar_url,
+          preferred_country,
+          preferred_language,
         })
         .eq("user_id", user.id);
 

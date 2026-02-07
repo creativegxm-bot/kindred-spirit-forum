@@ -490,6 +490,8 @@ export type Database = {
           display_name: string | null
           id: string
           karma: number
+          preferred_country: string | null
+          preferred_language: string | null
           updated_at: string
           user_id: string
           username: string
@@ -501,6 +503,8 @@ export type Database = {
           display_name?: string | null
           id?: string
           karma?: number
+          preferred_country?: string | null
+          preferred_language?: string | null
           updated_at?: string
           user_id: string
           username: string
@@ -512,6 +516,8 @@ export type Database = {
           display_name?: string | null
           id?: string
           karma?: number
+          preferred_country?: string | null
+          preferred_language?: string | null
           updated_at?: string
           user_id?: string
           username?: string

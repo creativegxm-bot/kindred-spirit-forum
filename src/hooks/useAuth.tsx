@@ -11,6 +11,8 @@ interface Profile {
   bio: string | null;
   karma: number;
   created_at: string;
+  preferred_country: string | null;
+  preferred_language: string | null;
 }
 
 interface AuthContextType {
@@ -54,6 +56,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    const applyUserPreferences = (profileData: Profile | null) => {
+      if (profileData?.preferred_country) {
+        localStorage.setItem("selectedCountry", profileData.preferred_country);
+        localStorage.setItem("hasManualCountrySelection", "true");
+      }
+      if (profileData?.preferred_language) {
+        localStorage.setItem("language", profileData.preferred_language);
+        document.documentElement.lang = profileData.preferred_language;
+      }
+    };
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setSession(session);
@@ -63,6 +76,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setTimeout(async () => {
             const profileData = await fetchProfile(session.user.id);
             setProfile(profileData);
+            if (event === 'SIGNED_IN') {
+              applyUserPreferences(profileData);
+              // Trigger a page reload to apply preferences
+              window.location.reload();
+            }
             setLoading(false);
           }, 0);
         } else {

@@ -50,8 +50,14 @@ export const useGeoLocation = () => {
       }
 
       try {
-        // Using ip-api.com for free geolocation (no API key needed)
-        const response = await fetch("http://ip-api.com/json/?fields=status,country,countryCode");
+        // Using ipapi.co for free geolocation (HTTPS, no API key needed)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+        
+        const response = await fetch("https://ipapi.co/json/", {
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
         
         if (!response.ok) {
           throw new Error("Failed to fetch location");
@@ -59,8 +65,8 @@ export const useGeoLocation = () => {
 
         const data = await response.json();
         
-        if (data.status === "success") {
-          const detectedCode = countryCodeMapping[data.countryCode] || "US";
+        if (data.country_code) {
+          const detectedCode = countryCodeMapping[data.country_code] || "US";
           
           // Save detected country if no manual selection exists
           if (!savedCountry) {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Image, Link, List, FileText, Loader2, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,11 +13,11 @@ import {
 import { useCommunities, useCreatePost } from "@/hooks/usePosts";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
-import { useCountry } from "@/hooks/useCountry";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import PostMediaUpload from "./PostMediaUpload";
-import { COUNTRIES } from "./CountryFilter";
+import { Language } from "@/i18n/translations";
+import { languageToCountry, languageNames, SUPPORTED_LANGUAGES } from "@/i18n/languageCountryMapping";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -35,15 +35,23 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
   const [imageUrl, setImageUrl] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>("tr");
 
   const { user } = useAuth();
   const { t, language } = useLanguage();
-  const { selectedCountry: defaultCountry } = useCountry();
   const { data: communities = [] } = useCommunities();
   const createPostMutation = useCreatePost();
   const { toast } = useToast();
 
-  const [selectedCountry, setSelectedCountry] = useState(defaultCountry);
+  // Auto-assign country based on selected language
+  const autoAssignedCountry = languageToCountry[selectedLanguage] || "US";
+
+  // Initialize selected language based on current UI language
+  useEffect(() => {
+    if (SUPPORTED_LANGUAGES.includes(language as Language)) {
+      setSelectedLanguage(language as Language);
+    }
+  }, [language]);
 
   if (!isOpen) return null;
 
@@ -54,10 +62,10 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
   }
 
   const handleSubmit = async () => {
-    if (!title.trim() || !communityId || !selectedCountry) {
+    if (!title.trim() || !communityId || !selectedLanguage) {
       toast({
         title: language === "tr" ? "Eksik bilgi" : "Missing information",
-        description: language === "tr" ? "Lütfen başlığı doldurun, topluluk ve ülke seçin" : "Please fill in the title and select a community and country",
+        description: language === "tr" ? "Lütfen başlığı doldurun, topluluk ve dil seçin" : "Please fill in the title and select a community and language",
         variant: "destructive",
       });
       return;
@@ -68,7 +76,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
         title: title.trim(),
         content: content.trim() || undefined,
         community_id: communityId,
-        country: selectedCountry,
+        country: autoAssignedCountry, // Auto-assigned based on language
         image_url: postType === "image" && imageUrl ? imageUrl : (postType === "video" && videoUrl ? videoUrl : undefined),
         link_url: postType === "link" && linkUrl ? linkUrl : undefined,
       });
@@ -131,21 +139,28 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
                 </SelectContent>
               </Select>
 
-              <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-                <SelectTrigger className="w-32 bg-secondary border-none">
-                  <SelectValue placeholder={language === "tr" ? "Ülke" : "Country"} />
+              <Select value={selectedLanguage} onValueChange={(val) => setSelectedLanguage(val as Language)}>
+                <SelectTrigger className="w-40 bg-secondary border-none">
+                  <SelectValue placeholder={language === "tr" ? "Dil" : "Language"} />
                 </SelectTrigger>
                 <SelectContent>
-                  {COUNTRIES.map((country) => (
-                    <SelectItem key={country.code} value={country.code}>
+                  {SUPPORTED_LANGUAGES.map((lang) => (
+                    <SelectItem key={lang} value={lang}>
                       <div className="flex items-center gap-2">
-                        <span>{country.flag}</span>
-                        <span>{country.name}</span>
+                        <span>{languageNames[lang].native}</span>
                       </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            {/* Show auto-assigned country info */}
+            <div className="text-xs text-muted-foreground">
+              {language === "tr" 
+                ? `Bu gönderi ${languageNames[selectedLanguage].native} dilinde ${autoAssignedCountry} ülkesine atanacak`
+                : `This post in ${languageNames[selectedLanguage].english} will be assigned to ${autoAssignedCountry}`
+              }
             </div>
 
             <div className="flex gap-1 p-1 bg-secondary rounded-lg">

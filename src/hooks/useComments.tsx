@@ -21,7 +21,7 @@ export interface Comment {
   replies?: Comment[];
 }
 
-export const useComments = (postId: string) => {
+export const useComments = (postId: string | null) => {
   const { user } = useAuth();
 
   return useQuery({
@@ -30,7 +30,7 @@ export const useComments = (postId: string) => {
       const { data: comments, error } = await supabase
         .from("comments")
         .select("*")
-        .eq("post_id", postId)
+        .eq("post_id", postId!)
         .order("created_at", { ascending: true });
 
       if (error) throw error;

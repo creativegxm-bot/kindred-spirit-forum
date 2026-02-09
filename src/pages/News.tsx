@@ -118,7 +118,7 @@ const News = () => {
     <div className="min-h-screen bg-background">
       <Header
         onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
-        onOpenAuth={() => setAuthModalOpen(true)}
+        onOpenAuth={(mode) => setAuthModalOpen(true)}
         onCreatePost={() => {}}
       />
 
@@ -126,7 +126,7 @@ const News = () => {
         <Sidebar
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
-          onOpenAuth={() => setAuthModalOpen(true)}
+          onOpenAuth={(mode) => setAuthModalOpen(true)}
         />
 
         <main className="flex-1 p-4 lg:p-6 max-w-6xl mx-auto">

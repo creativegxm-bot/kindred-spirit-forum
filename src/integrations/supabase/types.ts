@@ -621,6 +621,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      detect_language_and_assign_country: {
+        Args: { post_content: string }
+        Returns: string
+      }
       find_or_create_dm_room: {
         Args: { other_user_id: string }
         Returns: string

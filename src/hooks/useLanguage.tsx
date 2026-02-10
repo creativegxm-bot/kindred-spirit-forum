@@ -11,8 +11,9 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem("language");
-    return (saved as Language) || "tr";
+    // Always default to Turkish
+    localStorage.setItem("language", "tr");
+    return "tr";
   });
 
   const setLanguage = (lang: Language) => {

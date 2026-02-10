@@ -169,7 +169,7 @@ export const useCreatePost = () => {
           title,
           content,
           community_id,
-          country: country || "US",
+          country: country || "TR",
           image_url,
           link_url,
           author_id: user.id,

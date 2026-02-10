@@ -61,16 +61,16 @@ const Index = () => {
               ) : error ? (
                 <div className="text-center py-20">
                   <p className="text-destructive">
-                    {language === "tr" ? "Gönderiler yüklenemedi" : "Failed to load posts"}
+                    Gönderiler yüklenemedi
                   </p>
                 </div>
               ) : posts.length === 0 ? (
                 <div className="card-gradient rounded-lg border border-border p-8 text-center">
                   <h3 className="text-lg font-semibold mb-2">
-                    {language === "tr" ? "Henüz gönderi yok" : "No posts yet"}
+                    Henüz gönderi yok
                   </h3>
                   <p className="text-muted-foreground mb-4">
-                    {language === "tr" ? "Toplulukla bir şeyler paylaşan ilk kişi ol!" : "Be the first to share something with the community!"}
+                    Toplulukla bir şeyler paylaşan ilk kişi ol!
                   </p>
                 </div>
               ) : (

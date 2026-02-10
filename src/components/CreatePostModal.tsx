@@ -65,7 +65,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
         title: title.trim(),
         content: content.trim() || undefined,
         community_id: communityId,
-        country: "US",
+        country: "TR",
         image_url: firstMedia ? firstMedia.url : undefined,
         link_url: postType === "link" && linkUrl ? linkUrl : undefined,
         media_items: mediaItems.length > 0 ? mediaItems : undefined,

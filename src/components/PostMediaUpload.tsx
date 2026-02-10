@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { ImagePlus, Video, X, Loader2 } from "lucide-react";
+import { ImagePlus, Video, X, Loader2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -7,19 +7,20 @@ import { useUploadPostMedia } from "@/hooks/usePosts";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
 
+export interface MediaItem {
+  url: string;
+  type: "image" | "video";
+}
+
 interface PostMediaUploadProps {
-  imageUrl: string;
-  onImageUrlChange: (url: string) => void;
-  videoUrl?: string;
-  onVideoUrlChange?: (url: string) => void;
+  mediaItems: MediaItem[];
+  onMediaItemsChange: (items: MediaItem[]) => void;
   type: "image" | "video";
 }
 
 const PostMediaUpload = ({
-  imageUrl,
-  onImageUrlChange,
-  videoUrl,
-  onVideoUrlChange,
+  mediaItems,
+  onMediaItemsChange,
   type,
 }: PostMediaUploadProps) => {
   const { language } = useLanguage();
@@ -27,6 +28,7 @@ const PostMediaUpload = ({
   const uploadMedia = useUploadPostMedia();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadTab, setUploadTab] = useState<"upload" | "url">("upload");
+  const [urlInput, setUrlInput] = useState("");
 
   const handleFileSelect = async (file: File) => {
     const isImage = type === "image";
@@ -34,10 +36,8 @@ const PostMediaUpload = ({
 
     if (file.size > maxSize) {
       toast({
-        title: language === "tr" ? "Dosya çok büyük" : "File too large",
-        description: isImage
-          ? (language === "tr" ? "Maksimum görsel boyutu 10MB" : "Maximum image size is 10MB")
-          : (language === "tr" ? "Maksimum video boyutu 100MB" : "Maximum video size is 100MB"),
+        title: "File too large",
+        description: isImage ? "Maximum image size is 10MB" : "Maximum video size is 100MB",
         variant: "destructive",
       });
       return;
@@ -45,37 +45,33 @@ const PostMediaUpload = ({
 
     try {
       const result = await uploadMedia.mutateAsync({ file, type });
-      if (type === "image") {
-        onImageUrlChange(result.url);
-      } else if (onVideoUrlChange) {
-        onVideoUrlChange(result.url);
-      }
+      onMediaItemsChange([...mediaItems, { url: result.url, type }]);
     } catch (error) {
       toast({
-        title: language === "tr" ? "Yükleme hatası" : "Upload error",
-        description: language === "tr" ? "Dosya yüklenemedi" : "Could not upload file",
+        title: "Upload error",
+        description: "Could not upload file",
         variant: "destructive",
       });
     }
   };
 
-  const currentUrl = type === "image" ? imageUrl : (videoUrl || "");
-  const handleUrlChange = type === "image" ? onImageUrlChange : (onVideoUrlChange || (() => {}));
+  const handleAddUrl = () => {
+    if (urlInput.trim()) {
+      onMediaItemsChange([...mediaItems, { url: urlInput.trim(), type }]);
+      setUrlInput("");
+    }
+  };
 
-  const handleClear = () => {
-    handleUrlChange("");
+  const handleRemove = (index: number) => {
+    onMediaItemsChange(mediaItems.filter((_, i) => i !== index));
   };
 
   return (
     <div className="space-y-3">
       <Tabs value={uploadTab} onValueChange={(v) => setUploadTab(v as "upload" | "url")}>
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="upload">
-            {language === "tr" ? "Dosya Yükle" : "Upload File"}
-          </TabsTrigger>
-          <TabsTrigger value="url">
-            {language === "tr" ? "URL Gir" : "Enter URL"}
-          </TabsTrigger>
+          <TabsTrigger value="upload">Upload File</TabsTrigger>
+          <TabsTrigger value="url">Enter URL</TabsTrigger>
         </TabsList>
 
         <TabsContent value="upload" className="mt-3">
@@ -83,83 +79,79 @@ const PostMediaUpload = ({
             ref={fileInputRef}
             type="file"
             accept={type === "image" ? "image/*" : "video/*"}
+            multiple
             className="hidden"
             onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) handleFileSelect(file);
+              const files = e.target.files;
+              if (files) {
+                Array.from(files).forEach((file) => handleFileSelect(file));
+              }
               e.target.value = "";
             }}
           />
-
-          {!currentUrl ? (
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full h-24 border-dashed gap-2"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploadMedia.isPending}
-            >
-              {uploadMedia.isPending ? (
-                <>
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  {language === "tr" ? "Yükleniyor..." : "Uploading..."}
-                </>
-              ) : (
-                <>
-                  {type === "image" ? <ImagePlus className="h-5 w-5" /> : <Video className="h-5 w-5" />}
-                  {type === "image"
-                    ? (language === "tr" ? "Görsel yüklemek için tıklayın" : "Click to upload image")
-                    : (language === "tr" ? "Video yüklemek için tıklayın" : "Click to upload video")}
-                </>
-              )}
-            </Button>
-          ) : null}
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full h-24 border-dashed gap-2"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadMedia.isPending}
+          >
+            {uploadMedia.isPending ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              <>
+                {type === "image" ? <ImagePlus className="h-5 w-5" /> : <Video className="h-5 w-5" />}
+                {type === "image" ? "Click to upload images" : "Click to upload videos"}
+              </>
+            )}
+          </Button>
         </TabsContent>
 
         <TabsContent value="url" className="mt-3">
-          <Input
-            placeholder={
-              type === "image"
-                ? (language === "tr" ? "Görsel URL'si girin" : "Enter image URL")
-                : (language === "tr" ? "Video URL'si girin" : "Enter video URL")
-            }
-            value={currentUrl}
-            onChange={(e) => handleUrlChange(e.target.value)}
-            className="bg-secondary border-none focus-visible:ring-primary"
-          />
+          <div className="flex gap-2">
+            <Input
+              placeholder={type === "image" ? "Enter image URL" : "Enter video URL"}
+              value={urlInput}
+              onChange={(e) => setUrlInput(e.target.value)}
+              className="bg-secondary border-none focus-visible:ring-primary"
+              onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddUrl())}
+            />
+            <Button type="button" size="icon" onClick={handleAddUrl} disabled={!urlInput.trim()}>
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
         </TabsContent>
       </Tabs>
 
-      {/* Preview */}
-      {currentUrl && (
-        <div className="relative">
-          {type === "image" ? (
-            <div className="border border-border rounded-lg overflow-hidden">
-              <img
-                src={currentUrl}
-                alt={language === "tr" ? "Önizleme" : "Preview"}
-                className="w-full h-auto max-h-64 object-cover"
-                onError={(e) => (e.currentTarget.style.display = "none")}
-              />
+      {/* Previews */}
+      {mediaItems.length > 0 && (
+        <div className="grid grid-cols-2 gap-2">
+          {mediaItems.map((item, index) => (
+            <div key={index} className="relative border border-border rounded-lg overflow-hidden">
+              {item.type === "image" ? (
+                <img
+                  src={item.url}
+                  alt="Preview"
+                  className="w-full h-32 object-cover"
+                  onError={(e) => (e.currentTarget.style.display = "none")}
+                />
+              ) : (
+                <video src={item.url} controls className="w-full h-32" />
+              )}
+              <Button
+                type="button"
+                variant="destructive"
+                size="icon"
+                className="absolute top-1 right-1 h-6 w-6"
+                onClick={() => handleRemove(index)}
+              >
+                <X className="h-3 w-3" />
+              </Button>
             </div>
-          ) : (
-            <div className="border border-border rounded-lg overflow-hidden">
-              <video
-                src={currentUrl}
-                controls
-                className="w-full h-auto max-h-64"
-              />
-            </div>
-          )}
-          <Button
-            type="button"
-            variant="destructive"
-            size="icon"
-            className="absolute top-2 right-2 h-8 w-8"
-            onClick={handleClear}
-          >
-            <X className="h-4 w-4" />
-          </Button>
+          ))}
         </div>
       )}
     </div>

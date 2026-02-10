@@ -15,9 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import PostMediaUpload from "./PostMediaUpload";
-import { Language } from "@/i18n/translations";
-import { languageToCountry, languageNames, SUPPORTED_LANGUAGES } from "@/i18n/languageCountryMapping";
+import PostMediaUpload, { MediaItem } from "./PostMediaUpload";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -32,26 +30,14 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [communityId, setCommunityId] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
   const [linkUrl, setLinkUrl] = useState("");
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>("tr");
 
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const { data: communities = [] } = useCommunities();
   const createPostMutation = useCreatePost();
   const { toast } = useToast();
-
-  // Auto-assign country based on selected language
-  const autoAssignedCountry = languageToCountry[selectedLanguage] || "US";
-
-  // Initialize selected language based on current UI language
-  useEffect(() => {
-    if (SUPPORTED_LANGUAGES.includes(language as Language)) {
-      setSelectedLanguage(language as Language);
-    }
-  }, [language]);
 
   if (!isOpen) return null;
 
@@ -62,41 +48,44 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
   }
 
   const handleSubmit = async () => {
-    if (!title.trim() || !communityId || !selectedLanguage) {
+    if (!title.trim() || !communityId) {
       toast({
-        title: language === "tr" ? "Eksik bilgi" : "Missing information",
-        description: language === "tr" ? "Lütfen başlığı doldurun, topluluk ve dil seçin" : "Please fill in the title and select a community and language",
+        title: "Missing information",
+        description: "Please fill in the title and select a community",
         variant: "destructive",
       });
       return;
     }
 
     try {
+      // Use the first media item as image_url for backward compatibility
+      const firstMedia = mediaItems.length > 0 ? mediaItems[0] : null;
+
       await createPostMutation.mutateAsync({
         title: title.trim(),
         content: content.trim() || undefined,
         community_id: communityId,
-        country: autoAssignedCountry, // Auto-assigned based on language
-        image_url: postType === "image" && imageUrl ? imageUrl : (postType === "video" && videoUrl ? videoUrl : undefined),
+        country: "US",
+        image_url: firstMedia ? firstMedia.url : undefined,
         link_url: postType === "link" && linkUrl ? linkUrl : undefined,
+        media_items: mediaItems.length > 0 ? mediaItems : undefined,
       });
 
       toast({
-        title: language === "tr" ? "Gönderi oluşturuldu!" : "Post created!",
-        description: language === "tr" ? "Gönderiniz yayınlandı" : "Your post has been published",
+        title: "Post created!",
+        description: "Your post has been published",
       });
 
       setTitle("");
       setContent("");
       setCommunityId("");
-      setImageUrl("");
-      setVideoUrl("");
+      setMediaItems([]);
       setLinkUrl("");
       onClose();
     } catch (error) {
       toast({
-        title: language === "tr" ? "Gönderi oluşturulamadı" : "Failed to create post",
-        description: language === "tr" ? "Lütfen tekrar deneyin" : "Please try again",
+        title: "Failed to create post",
+        description: "Please try again",
         variant: "destructive",
       });
     }
@@ -105,7 +94,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
   const postTypes: { type: PostType; icon: React.ReactNode; label: string }[] = [
     { type: "text", icon: <FileText className="h-4 w-4" />, label: t("post") },
     { type: "image", icon: <Image className="h-4 w-4" />, label: t("image") },
-    { type: "video", icon: <Video className="h-4 w-4" />, label: language === "tr" ? "Video" : "Video" },
+    { type: "video", icon: <Video className="h-4 w-4" />, label: "Video" },
     { type: "link", icon: <Link className="h-4 w-4" />, label: t("link") },
     { type: "poll", icon: <List className="h-4 w-4" />, label: t("poll") },
   ];
@@ -122,46 +111,21 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
           </div>
 
           <div className="p-4 space-y-4">
-            <div className="flex gap-2">
-              <Select value={communityId} onValueChange={setCommunityId}>
-                <SelectTrigger className="flex-1 bg-secondary border-none">
-                  <SelectValue placeholder={t("selectCommunity")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {communities.map((community) => (
-                    <SelectItem key={community.id} value={community.id}>
-                      <div className="flex items-center gap-2">
-                        <span>{community.icon || "💬"}</span>
-                        <span>r/{community.name}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={selectedLanguage} onValueChange={(val) => setSelectedLanguage(val as Language)}>
-                <SelectTrigger className="w-40 bg-secondary border-none">
-                  <SelectValue placeholder={language === "tr" ? "Dil" : "Language"} />
-                </SelectTrigger>
-                <SelectContent>
-                  {SUPPORTED_LANGUAGES.map((lang) => (
-                    <SelectItem key={lang} value={lang}>
-                      <div className="flex items-center gap-2">
-                        <span>{languageNames[lang].native}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Show auto-assigned country info */}
-            <div className="text-xs text-muted-foreground">
-              {language === "tr" 
-                ? `Bu gönderi ${languageNames[selectedLanguage].native} dilinde ${autoAssignedCountry} ülkesine atanacak`
-                : `This post in ${languageNames[selectedLanguage].english} will be assigned to ${autoAssignedCountry}`
-              }
-            </div>
+            <Select value={communityId} onValueChange={setCommunityId}>
+              <SelectTrigger className="bg-secondary border-none">
+                <SelectValue placeholder={t("selectCommunity")} />
+              </SelectTrigger>
+              <SelectContent>
+                {communities.map((community) => (
+                  <SelectItem key={community.id} value={community.id}>
+                    <div className="flex items-center gap-2">
+                      <span>{community.icon || "💬"}</span>
+                      <span>r/{community.name}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             <div className="flex gap-1 p-1 bg-secondary rounded-lg">
               {postTypes.map(({ type, icon, label }) => (
@@ -192,7 +156,6 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
               {title.length}/300
             </div>
 
-            {/* Always show content textarea for text posts, or combined with media */}
             {(postType === "text" || postType === "image" || postType === "video") && (
               <Textarea
                 placeholder={t("postContentPlaceholder")}
@@ -205,18 +168,16 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
             {postType === "image" && (
               <PostMediaUpload
                 type="image"
-                imageUrl={imageUrl}
-                onImageUrlChange={setImageUrl}
+                mediaItems={mediaItems}
+                onMediaItemsChange={setMediaItems}
               />
             )}
 
             {postType === "video" && (
               <PostMediaUpload
                 type="video"
-                imageUrl=""
-                onImageUrlChange={() => {}}
-                videoUrl={videoUrl}
-                onVideoUrlChange={setVideoUrl}
+                mediaItems={mediaItems}
+                onMediaItemsChange={setMediaItems}
               />
             )}
 
@@ -231,16 +192,10 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
 
             {postType === "poll" && (
               <div className="space-y-2">
-                <Input
-                  placeholder={language === "tr" ? "Seçenek 1" : "Option 1"}
-                  className="bg-secondary border-none focus-visible:ring-primary"
-                />
-                <Input
-                  placeholder={language === "tr" ? "Seçenek 2" : "Option 2"}
-                  className="bg-secondary border-none focus-visible:ring-primary"
-                />
+                <Input placeholder="Option 1" className="bg-secondary border-none focus-visible:ring-primary" />
+                <Input placeholder="Option 2" className="bg-secondary border-none focus-visible:ring-primary" />
                 <Button variant="ghost" size="sm" className="text-primary">
-                  {language === "tr" ? "+ Seçenek ekle" : "+ Add option"}
+                  + Add option
                 </Button>
               </div>
             )}
@@ -258,7 +213,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
               {createPostMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {language === "tr" ? "Gönderiliyor..." : "Posting..."}
+                  Posting...
                 </>
               ) : (
                 t("publish")

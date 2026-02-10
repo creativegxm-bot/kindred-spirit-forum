@@ -2,6 +2,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 
+export interface PostMedia {
+  id: string;
+  media_url: string;
+  media_type: "image" | "video";
+  sort_order: number;
+}
+
 export interface Post {
   id: string;
   title: string;
@@ -25,6 +32,7 @@ export interface Post {
   };
   user_vote?: number | null;
   is_saved?: boolean;
+  media?: PostMedia[];
 }
 
 export interface Community {
@@ -68,9 +76,25 @@ export const usePosts = (country?: string) => {
 
       const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
 
+      // Fetch post media
+      const postIds = (posts || []).map(p => p.id);
+      const { data: allMedia } = await supabase
+        .from("post_media")
+        .select("*")
+        .in("post_id", postIds)
+        .order("sort_order", { ascending: true });
+
+      const mediaMap = new Map<string, PostMedia[]>();
+      (allMedia || []).forEach(m => {
+        const list = mediaMap.get(m.post_id) || [];
+        list.push(m as PostMedia);
+        mediaMap.set(m.post_id, list);
+      });
+
       let postsWithAuthors = (posts || []).map(post => ({
         ...post,
         author: profileMap.get(post.author_id) || { username: "deleted", avatar_url: null },
+        media: mediaMap.get(post.id) || [],
       }));
 
       if (user) {
@@ -127,6 +151,7 @@ export const useCreatePost = () => {
       country,
       image_url,
       link_url,
+      media_items,
     }: {
       title: string;
       content?: string;
@@ -134,6 +159,7 @@ export const useCreatePost = () => {
       country?: string;
       image_url?: string;
       link_url?: string;
+      media_items?: { url: string; type: "image" | "video" }[];
     }) => {
       if (!user) throw new Error("Must be logged in to create a post");
 
@@ -143,7 +169,7 @@ export const useCreatePost = () => {
           title,
           content,
           community_id,
-          country: country || "TR",
+          country: country || "US",
           image_url,
           link_url,
           author_id: user.id,
@@ -152,6 +178,23 @@ export const useCreatePost = () => {
         .single();
 
       if (error) throw error;
+
+      // Insert media items into post_media table
+      if (media_items && media_items.length > 0) {
+        const mediaRows = media_items.map((item, index) => ({
+          post_id: data.id,
+          media_url: item.url,
+          media_type: item.type,
+          sort_order: index,
+        }));
+
+        const { error: mediaError } = await supabase
+          .from("post_media")
+          .insert(mediaRows);
+
+        if (mediaError) console.error("Failed to insert post media:", mediaError);
+      }
+
       return data;
     },
     onSuccess: () => {

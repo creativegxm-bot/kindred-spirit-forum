@@ -16,6 +16,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import PostMediaUpload, { MediaItem } from "./PostMediaUpload";
+import { COUNTRIES } from "./CountryFilter";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -32,6 +33,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
   const [communityId, setCommunityId] = useState("");
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
   const [linkUrl, setLinkUrl] = useState("");
+  const [postCountry, setPostCountry] = useState("TR");
 
   const { user } = useAuth();
   const { t, language } = useLanguage();
@@ -65,7 +67,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
         title: title.trim(),
         content: content.trim() || undefined,
         community_id: communityId,
-        country: "TR",
+        country: postCountry,
         image_url: firstMedia ? firstMedia.url : undefined,
         link_url: postType === "link" && linkUrl ? linkUrl : undefined,
         media_items: mediaItems.length > 0 ? mediaItems : undefined,
@@ -81,6 +83,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
       setCommunityId("");
       setMediaItems([]);
       setLinkUrl("");
+      setPostCountry("TR");
       onClose();
     } catch (error) {
       toast({
@@ -111,21 +114,42 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
           </div>
 
           <div className="p-4 space-y-4">
-            <Select value={communityId} onValueChange={setCommunityId}>
-              <SelectTrigger className="bg-secondary border-none">
-                <SelectValue placeholder={t("selectCommunity")} />
-              </SelectTrigger>
-              <SelectContent>
-                {communities.map((community) => (
-                  <SelectItem key={community.id} value={community.id}>
-                    <div className="flex items-center gap-2">
-                      <span>{community.icon || "💬"}</span>
-                      <span>r/{community.name}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <Select value={communityId} onValueChange={setCommunityId}>
+                  <SelectTrigger className="bg-secondary border-none">
+                    <SelectValue placeholder={t("selectCommunity")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {communities.map((community) => (
+                      <SelectItem key={community.id} value={community.id}>
+                        <div className="flex items-center gap-2">
+                          <span>{community.icon || "💬"}</span>
+                          <span>r/{community.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="w-40">
+                <Select value={postCountry} onValueChange={setPostCountry}>
+                  <SelectTrigger className="bg-secondary border-none">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {COUNTRIES.map((c) => (
+                      <SelectItem key={c.code} value={c.code}>
+                        <span className="flex items-center gap-2">
+                          <span>{c.flag}</span>
+                          <span>{c.name}</span>
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
             <div className="flex gap-1 p-1 bg-secondary rounded-lg">
               {postTypes.map(({ type, icon, label }) => (

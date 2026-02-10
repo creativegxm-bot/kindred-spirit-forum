@@ -133,23 +133,28 @@ const PostDetail = ({ post, onClose, onAuthRequired }: PostDetailProps) => {
                     </p>
                   )}
 
-                  {post.image_url && (
+                  {/* Multiple media display */}
+                  {post.media && post.media.length > 0 ? (
+                    <div className={`mt-4 overflow-hidden rounded-md ${post.media.length > 1 ? "grid grid-cols-2 gap-1" : ""}`}>
+                      {post.media.map((item) => (
+                        <div key={item.id}>
+                          {item.media_type === "video" ? (
+                            <video src={item.media_url} controls className="w-full h-auto" />
+                          ) : (
+                            <img src={item.media_url} alt="" className="w-full h-auto object-cover" />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : post.image_url ? (
                     <div className="mt-4 overflow-hidden rounded-md">
                       {/\.(mp4|webm|mov|avi|mkv)$/i.test(post.image_url) ? (
-                        <video
-                          src={post.image_url}
-                          controls
-                          className="w-full h-auto"
-                        />
+                        <video src={post.image_url} controls className="w-full h-auto" />
                       ) : (
-                        <img
-                          src={post.image_url}
-                          alt=""
-                          className="w-full h-auto"
-                        />
+                        <img src={post.image_url} alt="" className="w-full h-auto" />
                       )}
                     </div>
-                  )}
+                  ) : null}
 
                   <div className="mt-4 flex items-center gap-1">
                     <div className="sm:hidden">

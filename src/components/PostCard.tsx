@@ -148,7 +148,34 @@ const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
             </p>
           )}
 
-          {post.image_url && (
+          {/* Multiple media display */}
+          {post.media && post.media.length > 0 ? (
+            <div className={`mt-3 overflow-hidden rounded-md ${post.media.length > 1 ? "grid grid-cols-2 gap-1" : ""}`}>
+              {post.media.slice(0, 4).map((item, index) => (
+                <div key={item.id} className="relative">
+                  {item.media_type === "video" ? (
+                    <video
+                      src={item.media_url}
+                      controls
+                      className="w-full h-auto max-h-96 object-cover"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  ) : (
+                    <img
+                      src={item.media_url}
+                      alt=""
+                      className={`w-full object-cover ${post.media!.length > 1 ? "h-48" : "h-auto max-h-96"}`}
+                    />
+                  )}
+                  {index === 3 && post.media!.length > 4 && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white text-xl font-bold">
+                      +{post.media!.length - 4}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : post.image_url ? (
             <div className="mt-3 overflow-hidden rounded-md">
               {/\.(mp4|webm|mov|avi|mkv)$/i.test(post.image_url) ? (
                 <video
@@ -165,7 +192,7 @@ const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
                 />
               )}
             </div>
-          )}
+          ) : null}
 
           <div className="mt-3 flex items-center gap-1">
             <div className="sm:hidden">

@@ -2,3 +2,9 @@ project_id = "prksphzxxawvaootvwau"
 
 [functions.send-comment-notification]
 verify_jwt = false
+
+[functions.generate-ai-comments]
+verify_jwt = false
+
+[functions.post-pending-comments]
+verify_jwt = false

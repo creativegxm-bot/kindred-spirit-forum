@@ -25,6 +25,10 @@ const queryClient = new QueryClient();
 // Redirects legacy routes without language prefix to /tr/...
 const LegacyRedirect = () => {
   const location = useLocation();
+  if (typeof window !== 'undefined' && window.location.hostname === 'ondabir.com') {
+    window.location.href = `https://ondabir.com/tr${location.pathname}${location.search}${location.hash}`;
+    return null;
+  }
   return <Navigate to={`/tr${location.pathname}${location.search}${location.hash}`} replace />;
 };
 

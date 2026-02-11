@@ -6,8 +6,8 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 
 const TrendingSidebar = () => {
-  const { data: communities = [] } = useCommunities();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const { data: communities = [] } = useCommunities(language);
   const { localePath } = useLocalizedNavigate();
 
   const formatMembers = (count: number) => {

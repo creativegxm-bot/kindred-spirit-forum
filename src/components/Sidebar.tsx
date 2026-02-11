@@ -18,7 +18,7 @@ interface SidebarProps {
 const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
-  const { data: communities = [] } = useCommunities();
+  const { data: communities = [] } = useCommunities(language);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const { localePath } = useLocalizedNavigate();
 

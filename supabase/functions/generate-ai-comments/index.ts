@@ -107,9 +107,8 @@ Post content: "${post.content || "(no body text)"}"`;
           const { error: insertError } = await supabase
             .from("pending_ai_comments")
             .insert({
-              post_id: post.id,
-              author_id: randomUser.user_id,
-              content: commentContent,
+              target_post_id: post.id,
+              comment_text: commentContent,
               language_code: lang,
               status: "pending",
             });

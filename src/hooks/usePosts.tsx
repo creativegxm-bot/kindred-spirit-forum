@@ -46,11 +46,11 @@ export interface Community {
   created_at: string;
 }
 
-export const usePosts = (country?: string) => {
+export const usePosts = (languageCode?: string) => {
   const { user } = useAuth();
 
   return useQuery({
-    queryKey: ["posts", user?.id, country],
+    queryKey: ["posts", user?.id, languageCode],
     queryFn: async () => {
       let query = supabase
         .from("posts")
@@ -59,8 +59,8 @@ export const usePosts = (country?: string) => {
           community:communities(name, icon)
         `);
       
-      if (country) {
-        query = query.eq("country", country);
+      if (languageCode) {
+        query = query.eq("language_code", languageCode);
       }
       
       const { data: posts, error } = await query.order("created_at", { ascending: false });
@@ -148,7 +148,7 @@ export const useCreatePost = () => {
       title,
       content,
       community_id,
-      country,
+      language_code,
       image_url,
       link_url,
       media_items,
@@ -156,7 +156,7 @@ export const useCreatePost = () => {
       title: string;
       content?: string;
       community_id: string;
-      country?: string;
+      language_code?: string;
       image_url?: string;
       link_url?: string;
       media_items?: { url: string; type: "image" | "video" }[];
@@ -169,7 +169,7 @@ export const useCreatePost = () => {
           title,
           content,
           community_id,
-          country: country || "TR",
+          language_code: language_code || "tr",
           image_url,
           link_url,
           author_id: user.id,

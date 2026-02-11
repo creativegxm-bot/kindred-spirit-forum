@@ -213,6 +213,7 @@ export type Database = {
           downvotes: number
           id: string
           image_url: string | null
+          language_code: string
           parent_id: string | null
           post_id: string
           upvotes: number
@@ -225,6 +226,7 @@ export type Database = {
           downvotes?: number
           id?: string
           image_url?: string | null
+          language_code?: string
           parent_id?: string | null
           post_id: string
           upvotes?: number
@@ -237,6 +239,7 @@ export type Database = {
           downvotes?: number
           id?: string
           image_url?: string | null
+          language_code?: string
           parent_id?: string | null
           post_id?: string
           upvotes?: number
@@ -467,11 +470,11 @@ export type Database = {
           comment_count: number
           community_id: string
           content: string | null
-          country: string | null
           created_at: string
           downvotes: number
           id: string
           image_url: string | null
+          language_code: string
           link_url: string | null
           title: string
           updated_at: string
@@ -482,11 +485,11 @@ export type Database = {
           comment_count?: number
           community_id: string
           content?: string | null
-          country?: string | null
           created_at?: string
           downvotes?: number
           id?: string
           image_url?: string | null
+          language_code?: string
           link_url?: string | null
           title: string
           updated_at?: string
@@ -497,11 +500,11 @@ export type Database = {
           comment_count?: number
           community_id?: string
           content?: string | null
-          country?: string | null
           created_at?: string
           downvotes?: number
           id?: string
           image_url?: string | null
+          language_code?: string
           link_url?: string | null
           title?: string
           updated_at?: string

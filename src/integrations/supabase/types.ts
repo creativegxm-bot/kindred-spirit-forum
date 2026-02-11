@@ -270,6 +270,7 @@ export type Database = {
           description: string | null
           icon: string | null
           id: string
+          language_code: string
           member_count: number
           name: string
         }
@@ -280,6 +281,7 @@ export type Database = {
           description?: string | null
           icon?: string | null
           id?: string
+          language_code?: string
           member_count?: number
           name: string
         }
@@ -290,6 +292,7 @@ export type Database = {
           description?: string | null
           icon?: string | null
           id?: string
+          language_code?: string
           member_count?: number
           name?: string
         }

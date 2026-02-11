@@ -45,6 +45,17 @@ const App = () => (
                 {/* Redirect root to /tr */}
                 <Route path="/" element={<Navigate to="/tr" replace />} />
 
+                {/* Redirect legacy routes without language prefix (must be before /:lang) */}
+                <Route path="/tools/*" element={<LegacyRedirect />} />
+                <Route path="/r/*" element={<LegacyRedirect />} />
+                <Route path="/u/*" element={<LegacyRedirect />} />
+                <Route path="/post/*" element={<LegacyRedirect />} />
+                <Route path="/chat/*" element={<LegacyRedirect />} />
+                <Route path="/saved" element={<LegacyRedirect />} />
+                <Route path="/news" element={<LegacyRedirect />} />
+                <Route path="/advertise" element={<LegacyRedirect />} />
+                <Route path="/admin" element={<LegacyRedirect />} />
+
                 {/* Language-prefixed routes */}
                 <Route path="/:lang" element={<LanguageRouteLayout />}>
                   <Route index element={<Index />} />
@@ -60,17 +71,6 @@ const App = () => (
                   <Route path="advertise" element={<Advertise />} />
                   <Route path="admin" element={<Admin />} />
                 </Route>
-
-                {/* Redirect legacy routes without language prefix */}
-                <Route path="/tools/*" element={<LegacyRedirect />} />
-                <Route path="/r/*" element={<LegacyRedirect />} />
-                <Route path="/u/*" element={<LegacyRedirect />} />
-                <Route path="/post/*" element={<LegacyRedirect />} />
-                <Route path="/chat/*" element={<LegacyRedirect />} />
-                <Route path="/saved" element={<LegacyRedirect />} />
-                <Route path="/news" element={<LegacyRedirect />} />
-                <Route path="/advertise" element={<LegacyRedirect />} />
-                <Route path="/admin" element={<LegacyRedirect />} />
 
                 {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />

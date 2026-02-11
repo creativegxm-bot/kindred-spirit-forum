@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { ArrowLeft, Shield, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -11,7 +12,7 @@ const Admin = () => {
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, loading: adminLoading } = useAdmin();
   const { language } = useLanguage();
-  const navigate = useNavigate();
+  const { navigate, localePath } = useLocalizedNavigate();
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -41,7 +42,7 @@ const Admin = () => {
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur">
         <div className="container flex h-14 items-center gap-4">
-          <Link to="/">
+          <Link to={localePath("/")}>
             <Button variant="ghost" size="icon">
               <ArrowLeft className="h-5 w-5" />
             </Button>

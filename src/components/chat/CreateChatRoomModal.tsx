@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { useCreateChatRoom } from "@/hooks/useChat";
 import { useLanguage } from "@/hooks/useLanguage";
 import {
@@ -25,7 +25,7 @@ const CreateChatRoomModal = ({
   onOpenChange,
 }: CreateChatRoomModalProps) => {
   const { t } = useLanguage();
-  const navigate = useNavigate();
+  const { navigate } = useLocalizedNavigate();
   const createRoom = useCreateChatRoom();
   
   const [name, setName] = useState("");

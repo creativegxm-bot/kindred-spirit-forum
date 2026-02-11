@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { Search, Users, FileText, Hash, X, Loader2 } from "lucide-react";
 import {
   Dialog,
@@ -23,7 +23,7 @@ const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
   const [query, setQuery] = useState("");
   const { data: results, isLoading } = useSearch(query);
   const { language } = useLanguage();
-  const navigate = useNavigate();
+  const { navigate } = useLocalizedNavigate();
 
   // Reset query when modal closes
   useEffect(() => {

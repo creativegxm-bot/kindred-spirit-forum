@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserPost, UserComment } from "@/hooks/useProfile";
 import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
-import { useNavigate } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 
 interface ProfileTabsProps {
   posts: UserPost[] | undefined;
@@ -13,7 +13,7 @@ interface ProfileTabsProps {
 }
 
 const ProfileTabs = ({ posts, comments, isLoading }: ProfileTabsProps) => {
-  const navigate = useNavigate();
+  const { navigate } = useLocalizedNavigate();
 
   if (isLoading) {
     return (

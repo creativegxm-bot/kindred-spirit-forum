@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate as useRouterNavigate } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { ArrowLeft, MessageSquare, Share, Bookmark, MoreHorizontal, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,7 +21,8 @@ import { tr, enUS } from "date-fns/locale";
 
 const Post = () => {
   const { postId } = useParams<{ postId: string }>();
-  const navigate = useNavigate();
+  const { navigate } = useLocalizedNavigate();
+  const routerNavigate = useRouterNavigate();
   const [commentContent, setCommentContent] = useState("");
   const [commentImageUrl, setCommentImageUrl] = useState<string | null>(null);
   const [commentVideoUrl, setCommentVideoUrl] = useState<string | null>(null);
@@ -160,7 +162,7 @@ const Post = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate(-1)}
+              onClick={() => routerNavigate(-1)}
               className="mb-4 gap-2"
             >
               <ArrowLeft className="h-4 w-4" />

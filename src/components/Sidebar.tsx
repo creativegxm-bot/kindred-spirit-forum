@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useCommunities } from "@/hooks/usePosts";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import CreateCommunityModal from "./CreateCommunityModal";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +20,7 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
   const { t, language } = useLanguage();
   const { data: communities = [] } = useCommunities();
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const { localePath } = useLocalizedNavigate();
 
   const formatMembers = (count: number) => {
     const suffix = language === "tr" ? " üye" : " members";
@@ -74,25 +76,25 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
             <Star className="h-5 w-5 text-yellow-500" />
             {t("best")}
           </Button>
-          <Link to="/chat">
+          <Link to={localePath("/chat")}>
             <Button variant="ghost" className="w-full justify-start gap-3">
               <MessageSquare className="h-5 w-5 text-primary" />
               {t("chat")}
             </Button>
           </Link>
-          <Link to="/tools/converter">
+          <Link to={localePath("/tools/converter")}>
             <Button variant="ghost" className="w-full justify-start gap-3">
               <FileImage className="h-5 w-5 text-orange-500" />
               {t("fileConverter")}
             </Button>
           </Link>
-          <Link to="/tools/match-finder">
+          <Link to={localePath("/tools/match-finder")}>
             <Button variant="ghost" className="w-full justify-start gap-3">
               <Heart className="h-5 w-5 text-pink-500" />
               {language === "tr" ? "Eş Bulucu" : "Match Finder"}
             </Button>
           </Link>
-          <Link to="/news">
+          <Link to={localePath("/news")}>
             <Button variant="ghost" className="w-full justify-start gap-3">
               <Newspaper className="h-5 w-5 text-blue-500" />
               {language === "tr" ? "Haber Kaynakları" : "News Sources"}
@@ -128,7 +130,7 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
           </Button>
 
           {communities.map((community) => (
-            <Link key={community.id} to={`/r/${community.name}`}>
+            <Link key={community.id} to={localePath(`/r/${community.name}`)}>
               <Button
                 variant="ghost"
                 className="w-full justify-start gap-3 h-auto py-2"

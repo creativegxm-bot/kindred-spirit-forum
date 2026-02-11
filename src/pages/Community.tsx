@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -26,6 +27,7 @@ const CommunityPage = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const joinCommunity = useJoinCommunity();
+  const { localePath } = useLocalizedNavigate();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -227,7 +229,7 @@ const CommunityPage = () => {
         <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
           <h1 className="text-2xl font-bold">{t("communityNotFound")}</h1>
           <p className="text-muted-foreground">{t("communityNotFoundDesc")}</p>
-          <Link to="/">
+          <Link to={localePath("/")}>
             <Button>
               <ArrowLeft className="h-4 w-4 mr-2" />
               {t("backToHome")}

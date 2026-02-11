@@ -8,7 +8,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
-import { useNavigate } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 
 interface PostCardProps {
   post: Post;
@@ -21,7 +21,7 @@ const PostCard = ({ post, onClick, onAuthRequired }: PostCardProps) => {
   const { t, language } = useLanguage();
   const savePostMutation = useSavePost();
   const { toast } = useToast();
-  const navigate = useNavigate();
+  const { navigate } = useLocalizedNavigate();
   const timeAgo = formatDistanceToNow(new Date(post.created_at), { 
     addSuffix: true, 
     locale: language === "tr" ? tr : enUS 

@@ -34,7 +34,7 @@ serve(async (req) => {
     const { data: post, error: postError } = await supabase
       .from("posts")
       .select("id")
-      .eq("id", pending.post_id)
+      .eq("id", pending.target_post_id)
       .single();
 
     if (postError || !post) {
@@ -53,9 +53,8 @@ serve(async (req) => {
     const { error: commentError } = await supabase
       .from("comments")
       .insert({
-        post_id: pending.post_id,
-        author_id: pending.author_id,
-        content: pending.content,
+        post_id: pending.target_post_id,
+        content: pending.comment_text,
         language_code: pending.language_code,
       });
 

@@ -8,7 +8,7 @@ import TrendingSidebar from "@/components/TrendingSidebar";
 import PostCard from "@/components/PostCard";
 import CreatePostModal from "@/components/CreatePostModal";
 import AuthModal from "@/components/AuthModal";
-import LanguageFilter from "@/components/LanguageFilter";
+
 import { usePosts } from "@/hooks/usePosts";
 import { useRealtimePosts } from "@/hooks/useRealtimeSubscription";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -22,8 +22,7 @@ const Index = () => {
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
 
   const { language } = useLanguage();
-  const [selectedLanguage, setSelectedLanguage] = useState<string>(language);
-  const { data: posts = [], isLoading, error } = usePosts(selectedLanguage);
+  const { data: posts = [], isLoading, error } = usePosts(language);
   
   // Enable real-time updates for posts and votes
   useRealtimePosts();
@@ -49,10 +48,6 @@ const Index = () => {
         <main className="flex-1 py-4 px-4 lg:px-6">
           <div className="flex gap-6 justify-center">
             <div className="w-full max-w-2xl space-y-4">
-              <LanguageFilter 
-                selectedLanguage={selectedLanguage} 
-                onLanguageChange={setSelectedLanguage} 
-              />
               {isLoading ? (
                 <div className="flex items-center justify-center py-20">
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />

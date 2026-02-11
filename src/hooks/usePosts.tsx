@@ -124,14 +124,19 @@ export const usePosts = (languageCode?: string) => {
   });
 };
 
-export const useCommunities = () => {
+export const useCommunities = (languageCode?: string) => {
   return useQuery({
-    queryKey: ["communities"],
+    queryKey: ["communities", languageCode],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("communities")
-        .select("*")
-        .order("member_count", { ascending: false });
+        .select("*");
+      
+      if (languageCode) {
+        query = query.eq("language_code", languageCode);
+      }
+      
+      const { data, error } = await query.order("member_count", { ascending: false });
 
       if (error) throw error;
       return data as Community[];

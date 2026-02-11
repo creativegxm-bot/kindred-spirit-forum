@@ -434,42 +434,39 @@ export type Database = {
       }
       pending_ai_comments: {
         Row: {
-          author_id: string
-          content: string
-          created_at: string
-          error_message: string | null
+          category: string | null
+          comment_text: string
           id: string
           language_code: string
-          post_id: string
           posted_at: string | null
+          scheduled_at: string | null
           status: string
+          target_post_id: string
         }
         Insert: {
-          author_id: string
-          content: string
-          created_at?: string
-          error_message?: string | null
+          category?: string | null
+          comment_text: string
           id?: string
           language_code?: string
-          post_id: string
           posted_at?: string | null
+          scheduled_at?: string | null
           status?: string
+          target_post_id: string
         }
         Update: {
-          author_id?: string
-          content?: string
-          created_at?: string
-          error_message?: string | null
+          category?: string | null
+          comment_text?: string
           id?: string
           language_code?: string
-          post_id?: string
           posted_at?: string | null
+          scheduled_at?: string | null
           status?: string
+          target_post_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "pending_ai_comments_post_id_fkey"
-            columns: ["post_id"]
+            columns: ["target_post_id"]
             isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]

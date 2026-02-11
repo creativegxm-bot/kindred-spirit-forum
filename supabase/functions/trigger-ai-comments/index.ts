@@ -140,7 +140,7 @@ serve(async (req) => {
           langResult.errors.push(err instanceof Error ? err.message : "Unknown AI error");
         }
 
-        await new Promise(r => setTimeout(r, 1500));
+        await new Promise(r => setTimeout(r, 300));
       }
 
       results.push(langResult);

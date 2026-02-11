@@ -8,11 +8,10 @@ import TrendingSidebar from "@/components/TrendingSidebar";
 import PostCard from "@/components/PostCard";
 import CreatePostModal from "@/components/CreatePostModal";
 import AuthModal from "@/components/AuthModal";
-import CountryFilter from "@/components/CountryFilter";
+import LanguageFilter from "@/components/LanguageFilter";
 import { usePosts } from "@/hooks/usePosts";
 import { useRealtimePosts } from "@/hooks/useRealtimeSubscription";
 import { useLanguage } from "@/hooks/useLanguage";
-import { useCountry } from "@/hooks/useCountry";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
@@ -22,9 +21,9 @@ const Index = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
 
-  const { selectedCountry, setSelectedCountry } = useCountry();
-  const { data: posts = [], isLoading, error } = usePosts(selectedCountry);
   const { language } = useLanguage();
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(language);
+  const { data: posts = [], isLoading, error } = usePosts(selectedLanguage);
   
   // Enable real-time updates for posts and votes
   useRealtimePosts();
@@ -50,9 +49,9 @@ const Index = () => {
         <main className="flex-1 py-4 px-4 lg:px-6">
           <div className="flex gap-6 justify-center">
             <div className="w-full max-w-2xl space-y-4">
-              <CountryFilter 
-                selectedCountry={selectedCountry} 
-                onCountryChange={setSelectedCountry} 
+              <LanguageFilter 
+                selectedLanguage={selectedLanguage} 
+                onLanguageChange={setSelectedLanguage} 
               />
               {isLoading ? (
                 <div className="flex items-center justify-center py-20">
@@ -61,16 +60,16 @@ const Index = () => {
               ) : error ? (
                 <div className="text-center py-20">
                   <p className="text-destructive">
-                    Gönderiler yüklenemedi
+                    {language === "tr" ? "Gönderiler yüklenemedi" : "Failed to load posts"}
                   </p>
                 </div>
               ) : posts.length === 0 ? (
                 <div className="card-gradient rounded-lg border border-border p-8 text-center">
                   <h3 className="text-lg font-semibold mb-2">
-                    Henüz gönderi yok
+                    {language === "tr" ? "Henüz gönderi yok" : "No posts yet"}
                   </h3>
                   <p className="text-muted-foreground mb-4">
-                    Toplulukla bir şeyler paylaşan ilk kişi ol!
+                    {language === "tr" ? "Toplulukla bir şeyler paylaşan ilk kişi ol!" : "Be the first to share something!"}
                   </p>
                 </div>
               ) : (

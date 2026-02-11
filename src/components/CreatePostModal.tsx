@@ -16,7 +16,8 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import PostMediaUpload, { MediaItem } from "./PostMediaUpload";
-import { COUNTRIES } from "./CountryFilter";
+import { SUPPORTED_LANGUAGES, languageNames } from "@/i18n/languageCountryMapping";
+import { Language } from "@/i18n/translations";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -26,6 +27,11 @@ interface CreatePostModalProps {
 
 type PostType = "text" | "image" | "video" | "link" | "poll";
 
+const languageFlags: Record<Language, string> = {
+  tr: "🇹🇷", en: "🇬🇧", de: "🇩🇪", fr: "🇫🇷", es: "🇪🇸",
+  hi: "🇮🇳", zh: "🇨🇳", ja: "🇯🇵", pt: "🇧🇷", ru: "🇷🇺", it: "🇮🇹",
+};
+
 const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalProps) => {
   const [postType, setPostType] = useState<PostType>("text");
   const [title, setTitle] = useState("");
@@ -33,13 +39,18 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
   const [communityId, setCommunityId] = useState("");
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
   const [linkUrl, setLinkUrl] = useState("");
-  const [postCountry, setPostCountry] = useState("TR");
+  const [postLanguage, setPostLanguage] = useState<string>("tr");
 
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const { data: communities = [] } = useCommunities();
   const createPostMutation = useCreatePost();
   const { toast } = useToast();
+
+  // Default to current UI language
+  useEffect(() => {
+    setPostLanguage(language);
+  }, [language]);
 
   if (!isOpen) return null;
 
@@ -60,14 +71,13 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
     }
 
     try {
-      // Use the first media item as image_url for backward compatibility
       const firstMedia = mediaItems.length > 0 ? mediaItems[0] : null;
 
       await createPostMutation.mutateAsync({
         title: title.trim(),
         content: content.trim() || undefined,
         community_id: communityId,
-        country: postCountry,
+        language_code: postLanguage,
         image_url: firstMedia ? firstMedia.url : undefined,
         link_url: postType === "link" && linkUrl ? linkUrl : undefined,
         media_items: mediaItems.length > 0 ? mediaItems : undefined,
@@ -83,7 +93,7 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
       setCommunityId("");
       setMediaItems([]);
       setLinkUrl("");
-      setPostCountry("TR");
+      setPostLanguage(language);
       onClose();
     } catch (error) {
       toast({
@@ -132,17 +142,17 @@ const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalPro
                   </SelectContent>
                 </Select>
               </div>
-              <div className="w-40">
-                <Select value={postCountry} onValueChange={setPostCountry}>
+              <div className="w-44">
+                <Select value={postLanguage} onValueChange={setPostLanguage}>
                   <SelectTrigger className="bg-secondary border-none">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {COUNTRIES.map((c) => (
-                      <SelectItem key={c.code} value={c.code}>
+                    {SUPPORTED_LANGUAGES.map((lang) => (
+                      <SelectItem key={lang} value={lang}>
                         <span className="flex items-center gap-2">
-                          <span>{c.flag}</span>
-                          <span>{c.name}</span>
+                          <span>{languageFlags[lang]}</span>
+                          <span>{languageNames[lang].native}</span>
                         </span>
                       </SelectItem>
                     ))}

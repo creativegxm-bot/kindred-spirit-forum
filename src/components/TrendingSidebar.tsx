@@ -3,10 +3,12 @@ import { TrendingUp, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCommunities } from "@/hooks/usePosts";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 
 const TrendingSidebar = () => {
   const { data: communities = [] } = useCommunities();
   const { t } = useLanguage();
+  const { localePath } = useLocalizedNavigate();
 
   const formatMembers = (count: number) => {
     if (count >= 1000000) {
@@ -29,7 +31,7 @@ const TrendingSidebar = () => {
           {communities.slice(0, 5).map((community, index) => (
             <Link
               key={community.id}
-              to={`/r/${community.name}`}
+              to={localePath(`/r/${community.name}`)}
               className="flex items-center gap-3 group cursor-pointer"
             >
               <span className="text-sm font-medium text-muted-foreground w-4">

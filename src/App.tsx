@@ -2,10 +2,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { LanguageProvider } from "@/hooks/useLanguage";
 import { CountryProvider } from "@/hooks/useCountry";
+import LanguageRouteLayout from "@/components/LanguageRouteLayout";
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
 import SavedPosts from "./pages/SavedPosts";
@@ -31,19 +32,26 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/r/:communityName" element={<Community />} />
-                <Route path="/u/:username" element={<Profile />} />
-                <Route path="/saved" element={<SavedPosts />} />
-                <Route path="/chat" element={<Chat />} />
-                <Route path="/chat/:roomId" element={<Chat />} />
-                <Route path="/post/:postId" element={<Post />} />
-                <Route path="/tools/converter" element={<FileConverter />} />
-                <Route path="/tools/match-finder" element={<MatchFinder />} />
-                <Route path="/news" element={<News />} />
-                <Route path="/advertise" element={<Advertise />} />
-                <Route path="/admin" element={<Admin />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                {/* Redirect root to /tr */}
+                <Route path="/" element={<Navigate to="/tr" replace />} />
+
+                {/* Language-prefixed routes */}
+                <Route path="/:lang" element={<LanguageRouteLayout />}>
+                  <Route index element={<Index />} />
+                  <Route path="r/:communityName" element={<Community />} />
+                  <Route path="u/:username" element={<Profile />} />
+                  <Route path="saved" element={<SavedPosts />} />
+                  <Route path="chat" element={<Chat />} />
+                  <Route path="chat/:roomId" element={<Chat />} />
+                  <Route path="post/:postId" element={<Post />} />
+                  <Route path="tools/converter" element={<FileConverter />} />
+                  <Route path="tools/match-finder" element={<MatchFinder />} />
+                  <Route path="news" element={<News />} />
+                  <Route path="advertise" element={<Advertise />} />
+                  <Route path="admin" element={<Admin />} />
+                </Route>
+
+                {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

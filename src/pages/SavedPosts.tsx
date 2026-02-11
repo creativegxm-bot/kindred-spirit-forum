@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import PostCard from "@/components/PostCard";
@@ -20,6 +21,7 @@ const SavedPosts = () => {
 
   const { user, loading: authLoading } = useAuth();
   const { t, language } = useLanguage();
+  const { localePath } = useLocalizedNavigate();
   const { data: posts = [], isLoading, error } = useSavedPosts();
 
   // Enable real-time updates
@@ -32,7 +34,7 @@ const SavedPosts = () => {
 
   // Redirect to home if not logged in
   if (!authLoading && !user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={localePath("/")} replace />;
   }
 
   return (

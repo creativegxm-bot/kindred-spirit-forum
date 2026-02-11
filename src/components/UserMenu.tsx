@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
-import { useNavigate } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 
 interface UserMenuProps {
   onOpenAuth: (mode: "login" | "signup") => void;
@@ -19,7 +19,7 @@ interface UserMenuProps {
 const UserMenu = ({ onOpenAuth }: UserMenuProps) => {
   const { user, profile, signOut, loading } = useAuth();
   const { t } = useLanguage();
-  const navigate = useNavigate();
+  const { navigate } = useLocalizedNavigate();
 
   if (loading) {
     return (

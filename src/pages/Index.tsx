@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import Header from "@/components/Header";
 import PromoBanner from "@/components/PromoBanner";
 import AirbnbBanner from "@/components/AirbnbBanner";
@@ -16,7 +16,7 @@ import { useCountry } from "@/hooks/useCountry";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
-  const navigate = useNavigate();
+  const { navigate } = useLocalizedNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);

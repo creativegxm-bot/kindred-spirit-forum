@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { useNavigate } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { formatDistanceToNow } from "date-fns";
 import { tr, enUS } from "date-fns/locale";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -30,7 +30,7 @@ const NotificationDropdown = () => {
   const markAsRead = useMarkAsRead();
   const markAllAsRead = useMarkAllAsRead();
   const deleteNotification = useDeleteNotification();
-  const navigate = useNavigate();
+  const { navigate } = useLocalizedNavigate();
   const { language, t } = useLanguage();
 
   const getIcon = (type: Notification["type"]) => {

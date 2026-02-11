@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,7 @@ import ondabirLogo from "@/assets/ondabir-logo.png";
 
 const Chat = () => {
   const { roomId } = useParams();
-  const navigate = useNavigate();
+  const { navigate, localePath } = useLocalizedNavigate();
   const { user } = useAuth();
   const { t } = useLanguage();
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -56,7 +57,7 @@ const Chat = () => {
             <Menu className="h-5 w-5" />
           </Button>
 
-          <Link to="/" className="flex items-center gap-2">
+          <Link to={localePath("/")} className="flex items-center gap-2">
             <img src={ondabirLogo} alt="ondabir" className="h-8 w-8 rounded" />
             <span className="hidden text-xl font-bold text-gradient sm:block">
               ondabir
@@ -74,7 +75,7 @@ const Chat = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <Link to="/">
+            <Link to={localePath("/")}>
               <Button variant="ghost" size="icon">
                 <Home className="h-5 w-5" />
               </Button>

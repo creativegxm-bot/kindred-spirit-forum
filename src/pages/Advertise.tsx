@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ArrowLeft, Mail, Users, TrendingUp, Target, CheckCircle, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const Advertise = () => {
   const { language } = useLanguage();
+  const { localePath } = useLocalizedNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -113,7 +115,7 @@ const Advertise = () => {
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur">
         <div className="container flex h-14 items-center gap-4">
-          <Link to="/">
+          <Link to={localePath("/")}>
             <Button variant="ghost" size="icon">
               <ArrowLeft className="h-5 w-5" />
             </Button>

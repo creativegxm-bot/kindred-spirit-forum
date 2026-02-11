@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 
 export interface DMRoom {
   id: string;
@@ -102,7 +102,7 @@ export const useDirectMessages = () => {
 
 export const useStartDirectMessage = () => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const { navigate } = useLocalizedNavigate();
 
   return useMutation({
     mutationFn: async (otherUserId: string) => {

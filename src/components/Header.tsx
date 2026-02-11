@@ -9,6 +9,7 @@ import AgeProgressionTool from "./AgeProgressionTool";
 import SearchModal from "./SearchModal";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import ondabirLogo from "@/assets/ondabir-logo.png";
 
 interface HeaderProps {
@@ -20,6 +21,7 @@ interface HeaderProps {
 const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const { localePath } = useLocalizedNavigate();
   const [searchOpen, setSearchOpen] = useState(false);
 
   return (
@@ -35,7 +37,7 @@ const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
             <Menu className="h-5 w-5" />
           </Button>
 
-          <a href="/" className="flex items-center gap-2 shrink-0">
+          <a href={localePath("/")} className="flex items-center gap-2 shrink-0">
             <img src={ondabirLogo} alt="ondabir" className="h-8 w-8 rounded" />
             <div className="flex flex-col">
               <span className="text-xl font-bold text-gradient leading-tight">

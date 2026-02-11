@@ -1,4 +1,5 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
@@ -12,7 +13,7 @@ import { useState } from "react";
 
 const Profile = () => {
   const { username } = useParams<{ username: string }>();
-  const navigate = useNavigate();
+  const { navigate } = useLocalizedNavigate();
   const { user, profile: currentUserProfile } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");

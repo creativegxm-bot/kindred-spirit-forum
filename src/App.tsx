@@ -26,10 +26,10 @@ const queryClient = new QueryClient();
 const LegacyRedirect = () => {
   const location = useLocation();
   if (typeof window !== 'undefined' && window.location.hostname === 'ondabir.com') {
-    window.location.href = `https://ondabir.com/tr${location.pathname}${location.search}${location.hash}`;
+    window.location.href = `https://ondabir.com/en${location.pathname}${location.search}${location.hash}`;
     return null;
   }
-  return <Navigate to={`/tr${location.pathname}${location.search}${location.hash}`} replace />;
+  return <Navigate to={`/en${location.pathname}${location.search}${location.hash}`} replace />;
 };
 
 const App = () => (

@@ -16,9 +16,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useCreateCommunity } from "@/hooks/useCommunities";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
+import { SUPPORTED_LANGUAGES, languageNames } from "@/i18n/languageCountryMapping";
+import { Language } from "@/i18n/translations";
 
 interface CreateCommunityModalProps {
   isOpen: boolean;
@@ -41,6 +50,7 @@ const CreateCommunityModal = ({
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("💬");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+  const [languageCode, setLanguageCode] = useState<Language>("tr");
   
   const { t, language } = useLanguage();
   const createCommunity = useCreateCommunity();
@@ -63,6 +73,7 @@ const CreateCommunityModal = ({
         name: name.trim(),
         description: description.trim() || undefined,
         icon,
+        language_code: languageCode,
       });
       
       toast({
@@ -73,6 +84,7 @@ const CreateCommunityModal = ({
       setName("");
       setDescription("");
       setIcon("💬");
+      setLanguageCode("tr");
       onClose();
     } catch (error: any) {
       toast({
@@ -167,6 +179,22 @@ const CreateCommunityModal = ({
             <p className="text-xs text-muted-foreground text-right">
               {description.length}/500
             </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label>{language === "tr" ? "Dil" : "Language"}</Label>
+            <Select value={languageCode} onValueChange={(val) => setLanguageCode(val as Language)}>
+              <SelectTrigger className="bg-secondary border-none">
+                <SelectValue placeholder={language === "tr" ? "Dil seçin" : "Select language"} />
+              </SelectTrigger>
+              <SelectContent>
+                {SUPPORTED_LANGUAGES.map((lang) => (
+                  <SelectItem key={lang} value={lang}>
+                    {languageNames[lang].native}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex gap-3 pt-2">

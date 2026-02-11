@@ -6,6 +6,7 @@ export interface CreateCommunityInput {
   name: string;
   description?: string;
   icon?: string;
+  language_code?: string;
 }
 
 export const useCreateCommunity = () => {
@@ -13,7 +14,7 @@ export const useCreateCommunity = () => {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async ({ name, description, icon }: CreateCommunityInput) => {
+    mutationFn: async ({ name, description, icon, language_code }: CreateCommunityInput) => {
       if (!user) throw new Error("Must be logged in to create a community");
 
       // Validate name format
@@ -34,6 +35,7 @@ export const useCreateCommunity = () => {
           icon: icon || "💬",
           created_by: user.id,
           member_count: 1,
+          language_code: language_code || "tr",
         })
         .select()
         .single();

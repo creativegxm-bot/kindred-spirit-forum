@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Language } from "@/i18n/translations";
 import { SUPPORTED_LANGUAGES, languageNames } from "@/i18n/languageCountryMapping";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const languageFlags: Record<Language, string> = {
   tr: "🇹🇷",
@@ -17,12 +19,14 @@ const languageFlags: Record<Language, string> = {
   it: "🇮🇹",
 };
 
-interface LanguageFilterProps {
-  selectedLanguage: string;
-  onLanguageChange: (lang: string) => void;
-}
+const LanguageFilter = () => {
+  const { language } = useLanguage();
+  const navigate = useNavigate();
 
-const LanguageFilter = ({ selectedLanguage, onLanguageChange }: LanguageFilterProps) => {
+  const handleLanguageChange = (lang: Language) => {
+    navigate(`/${lang}`, { replace: true });
+  };
+
   return (
     <div className="flex gap-1 p-1 bg-secondary rounded-lg overflow-x-auto scrollbar-hide">
       {SUPPORTED_LANGUAGES.map((lang) => (
@@ -32,9 +36,9 @@ const LanguageFilter = ({ selectedLanguage, onLanguageChange }: LanguageFilterPr
           size="sm"
           className={cn(
             "flex-shrink-0 gap-1.5 px-3",
-            selectedLanguage === lang && "bg-card text-primary"
+            language === lang && "bg-card text-primary"
           )}
-          onClick={() => onLanguageChange(lang)}
+          onClick={() => handleLanguageChange(lang)}
         >
           <span className="text-lg">{languageFlags[lang]}</span>
           <span className="hidden sm:inline">{languageNames[lang].native}</span>

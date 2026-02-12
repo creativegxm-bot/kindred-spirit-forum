@@ -84,8 +84,8 @@ export const useGeoLocation = () => {
         }
       } catch (error) {
         console.log("Geolocation detection failed, using default:", error);
-        // Default to Turkey if detection fails
-        const defaultCode = savedCountry || "TR";
+        // Default to US if detection fails
+        const defaultCode = savedCountry || "US";
         setGeoData({
           country: "",
           countryCode: defaultCode,

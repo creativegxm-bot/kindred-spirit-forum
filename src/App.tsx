@@ -42,8 +42,8 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <Routes>
-                {/* Redirect root to /tr */}
-                <Route path="/" element={<Navigate to="/tr" replace />} />
+                {/* Redirect root to /en */}
+                <Route path="/" element={<Navigate to="/en" replace />} />
 
                 {/* Redirect legacy routes without language prefix (must be before /:lang) */}
                 <Route path="/tools/*" element={<LegacyRedirect />} />

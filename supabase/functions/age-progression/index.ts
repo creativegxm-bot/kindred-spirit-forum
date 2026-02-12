@@ -25,7 +25,7 @@ serve(async (req) => {
   }
 
   try {
-    const { imageBase64, targetAge } = await req.json();
+    const { imageBase64, enhanceType } = await req.json();
 
     if (!imageBase64) {
       return new Response(
@@ -39,10 +39,15 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const prompt = `Transform this person's face to show how they would look at age ${targetAge}. 
-Keep the same person, same facial features, same identity, but age them realistically to ${targetAge} years old.
-Show natural aging effects appropriate for that age - wrinkles, skin texture changes, hair graying if applicable.
-Maintain the same background, lighting, and photo style. Keep it realistic and respectful.`;
+    const enhancePrompts: Record<string, string> = {
+      enhance: "Enhance this photo to maximum quality. Improve sharpness, clarity, lighting, color balance, and overall visual appeal. Remove any noise or artifacts. Make it look professional and high-definition. Keep the same composition and subject.",
+      restore: "Restore this old or damaged photo. Fix any scratches, tears, discoloration, fading, or damage. Improve clarity and sharpness while maintaining the original look and feel. Make it look like a freshly taken photo.",
+      colorize: "Colorize this black and white photo with realistic, natural colors. Use historically and contextually appropriate colors for skin tones, clothing, backgrounds, and objects. Make it look like it was originally taken in color.",
+      portrait: "Enhance this portrait photo professionally. Smooth skin naturally without looking artificial, improve lighting on the face, enhance eye clarity, balance skin tones, and add subtle professional-grade color grading. Keep it realistic.",
+      hdr: "Apply a professional HDR enhancement to this photo. Bring out details in shadows and highlights, increase dynamic range, enhance colors and contrast. Make it look vibrant and dramatic while staying realistic.",
+    };
+
+    const prompt = enhancePrompts[enhanceType] || enhancePrompts.enhance;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -56,16 +61,8 @@ Maintain the same background, lighting, and photo style. Keep it realistic and r
           {
             role: "user",
             content: [
-              {
-                type: "text",
-                text: prompt
-              },
-              {
-                type: "image_url",
-                image_url: {
-                  url: imageBase64
-                }
-              }
+              { type: "text", text: prompt },
+              { type: "image_url", image_url: { url: imageBase64 } }
             ]
           }
         ],
@@ -92,39 +89,31 @@ Maintain the same background, lighting, and photo style. Keep it realistic and r
     }
 
     const data = await response.json();
-    console.log("AI response:", JSON.stringify(data, null, 2));
+    console.log("AI response received");
     
-    // Check multiple possible locations for the image
-    let agedImageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    let enhancedImageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
     
-    // Alternative: Check if it's directly in the content
-    if (!agedImageUrl && data.choices?.[0]?.message?.content) {
+    if (!enhancedImageUrl && data.choices?.[0]?.message?.content) {
       const content = data.choices[0].message.content;
-      // Check if content contains base64 image data
       if (typeof content === 'string' && content.includes('data:image')) {
         const match = content.match(/data:image\/[^;]+;base64,[A-Za-z0-9+/=]+/);
         if (match) {
-          agedImageUrl = match[0];
+          enhancedImageUrl = match[0];
         }
       }
     }
-    
-    const textResponse = data.choices?.[0]?.message?.content;
 
-    if (!agedImageUrl) {
-      console.error("No image in response:", data);
-      throw new Error("No image generated. The AI model may not have processed the image correctly.");
+    if (!enhancedImageUrl) {
+      console.error("No image in response:", JSON.stringify(data, null, 2));
+      throw new Error("No enhanced image generated. Please try again.");
     }
 
     return new Response(
-      JSON.stringify({ 
-        agedImageUrl,
-        message: typeof textResponse === 'string' ? textResponse : "Age transformation complete!"
-      }),
+      JSON.stringify({ enhancedImageUrl }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
-    console.error("age-progression error:", error);
+    console.error("photo-enhance error:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }

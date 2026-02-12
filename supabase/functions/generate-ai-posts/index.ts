@@ -10,40 +10,44 @@ const CATEGORIES = ["jobs", "housing", "services", "forsale", "general"];
 
 const LANG_CONFIG: Record<string, { categories: Record<string, string>; prompt: string }> = {
   en: {
-    categories: {
-      jobs: "Jobs",
-      housing: "Housing",
-      services: "Services-EN",
-      forsale: "ForSale",
-      general: "General-EN",
-    },
-    prompt: `You generate realistic classified-style posts for a Craigslist-style community website in English.
-Each post must have a title and content. Reference concrete details: price, location, timing, requirements, availability.
-No vague phrasing. No emojis. Natural human tone. Posts should cover jobs, housing, services, items for sale, and general community topics.`,
+    categories: { jobs: "Jobs", housing: "Housing", services: "Services-EN", forsale: "ForSale", general: "General-EN" },
+    prompt: `You generate realistic classified-style posts for a Craigslist-style community website in English. Each post must have a title and content. Reference concrete details: price, location, timing, requirements, availability. No vague phrasing. No emojis. Natural human tone.`,
   },
   fr: {
-    categories: {
-      jobs: "Emploi",
-      housing: "Logement",
-      services: "Services-FR",
-      forsale: "Ventes",
-      general: "General-FR",
-    },
-    prompt: `Vous générez des annonces réalistes pour un site communautaire de type Craigslist en français.
-Chaque annonce doit avoir un titre et un contenu. Mentionnez des détails concrets : prix, localisation, horaires, exigences, disponibilité.
-Pas de formulations vagues. Pas d'emojis. Ton humain et naturel. Les annonces couvrent emploi, logement, services, ventes et sujets communautaires.`,
+    categories: { jobs: "Emploi", housing: "Logement", services: "Services-FR", forsale: "Ventes", general: "General-FR" },
+    prompt: `Vous générez des annonces réalistes pour un site communautaire de type Craigslist en français. Chaque annonce doit avoir un titre et un contenu. Mentionnez des détails concrets : prix, localisation, horaires, exigences, disponibilité. Pas de formulations vagues. Pas d'emojis. Ton humain et naturel.`,
   },
   es: {
-    categories: {
-      jobs: "Empleos",
-      housing: "Vivienda",
-      services: "Servicios",
-      forsale: "Ventas",
-      general: "General-ES",
-    },
-    prompt: `Generas publicaciones realistas estilo clasificados para un sitio comunitario tipo Craigslist en español.
-Cada publicación debe tener título y contenido. Menciona detalles concretos: precio, ubicación, horarios, requisitos, disponibilidad.
-Sin frases vagas. Sin emojis. Tono humano y natural. Las publicaciones cubren empleo, vivienda, servicios, ventas y temas comunitarios.`,
+    categories: { jobs: "Empleos", housing: "Vivienda", services: "Servicios", forsale: "Ventas", general: "General-ES" },
+    prompt: `Generas publicaciones realistas estilo clasificados para un sitio comunitario tipo Craigslist en español. Cada publicación debe tener título y contenido. Menciona detalles concretos: precio, ubicación, horarios, requisitos, disponibilidad. Sin frases vagas. Sin emojis. Tono humano y natural.`,
+  },
+  tr: {
+    categories: { jobs: "İş-İlanları", housing: "Konut", services: "Hizmetler", forsale: "Satılık", general: "Genel" },
+    prompt: `Craigslist tarzı bir topluluk sitesi için Türkçe gerçekçi ilan tarzında gönderiler oluşturuyorsunuz. Her gönderinin bir başlığı ve içeriği olmalıdır. Somut ayrıntılar belirtin: fiyat, konum, zamanlama, gereksinimler, müsaitlik. Belirsiz ifadeler yok. Emoji yok. Doğal insan tonu.`,
+  },
+  de: {
+    categories: { jobs: "Stellenangebote", housing: "Wohnung", services: "Dienstleistungen", forsale: "Verkauf", general: "Allgemein" },
+    prompt: `Sie erstellen realistische Kleinanzeigen für eine Craigslist-ähnliche Community-Website auf Deutsch. Jeder Beitrag muss einen Titel und Inhalt haben. Nennen Sie konkrete Details: Preis, Standort, Zeitplan, Anforderungen, Verfügbarkeit. Keine vagen Formulierungen. Keine Emojis. Natürlicher menschlicher Ton.`,
+  },
+  ja: {
+    categories: { jobs: "求人情報", housing: "住宅情報", services: "サービス", forsale: "売ります", general: "一般掲示板" },
+    prompt: `Craigslistスタイルのコミュニティサイト向けに、日本語でリアルなクラシファイド広告を作成してください。各投稿にはタイトルと内容が必要です。具体的な詳細を記載してください：価格、場所、時間、要件、空き状況。曖昧な表現は不可。絵文字は不可。自然な人間のトーンで。`,
+  },
+  hi: {
+    categories: { jobs: "नौकरियां", housing: "आवास", services: "सेवाएं", forsale: "बिक्री", general: "सामान्य" },
+    prompt: `आप Craigslist शैली की एक सामुदायिक वेबसाइट के लिए हिंदी में यथार्थवादी वर्गीकृत-शैली के पोस्ट बनाते हैं। प्रत्येक पोस्ट में एक शीर्षक और सामग्री होनी चाहिए। ठोस विवरण दें: कीमत, स्थान, समय, आवश्यकताएं, उपलब्धता। अस्पष्ट भाषा नहीं। इमोजी नहीं। प्राकृतिक मानवीय लहजा।`,
+  },
+  pt: {
+    categories: { jobs: "Empregos", housing: "Moradia", services: "Serviços", forsale: "Vendas-PT", general: "Geral" },
+    prompt: `Você gera publicações realistas no estilo classificados para um site comunitário tipo Craigslist em português. Cada publicação deve ter título e conteúdo. Mencione detalhes concretos: preço, localização, horários, requisitos, disponibilidade. Sem frases vagas. Sem emojis. Tom humano e natural.`,
+  },
+  ru: {
+    categories: { jobs: "Вакансии", housing: "Жильё", services: "Услуги", forsale: "Продажа", general: "Общее" },
+    prompt: `Вы создаёте реалистичные объявления для сайта сообщества в стиле Craigslist на русском языке. Каждое объявление должно иметь заголовок и содержание. Указывайте конкретные детали: цена, местоположение, время, требования, доступность. Без расплывчатых формулировок. Без эмодзи. Естественный человеческий тон.`,
+  },
+  it: {
+    categories: { jobs: "Lavoro", housing: "Alloggio", services: "Servizi", forsale: "Vendita", general: "Generale" },
+    prompt: `Generi annunci realistici in stile classificati per un sito comunitario tipo Craigslist in italiano. Ogni annuncio deve avere un titolo e un contenuto. Menziona dettagli concreti: prezzo, posizione, orari, requisiti, disponibilità. Niente frasi vaghe. Niente emoji. Tono umano e naturale.`,
   },
 };
 
@@ -58,7 +62,7 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     const body = await req.json().catch(() => ({}));
-    const targetLangs: string[] = body.languages || ["en", "fr", "es"];
+    const targetLangs: string[] = body.languages || ["en", "fr", "es", "tr", "de", "ja", "hi", "pt", "ru", "it"];
     const postsPerLang: number = body.count || 15;
 
     // Fetch users to attribute posts to

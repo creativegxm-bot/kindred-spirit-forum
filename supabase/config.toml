@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.trigger-ai-comments]
 verify_jwt = false
+
+[functions.generate-ai-posts]
+verify_jwt = false

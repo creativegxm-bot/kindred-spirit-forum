@@ -17,14 +17,7 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
-const enhanceOptions = [
-  { value: "enhance", label: "✨ Genel İyileştirme", desc: "Netlik, renk ve ışık" },
-  { value: "restore", label: "🔧 Fotoğraf Onarım", desc: "Eski/hasarlı fotoğraflar" },
-  { value: "colorize", label: "🎨 Renklendirme", desc: "Siyah-beyazı renklendir" },
-  { value: "portrait", label: "👤 Portre İyileştirme", desc: "Yüz ve cilt iyileştirme" },
-  { value: "hdr", label: "🌅 HDR Efekti", desc: "Canlı ve dramatik görünüm" },
-];
+import { useLanguage } from "@/hooks/useLanguage";
 
 const PhotoEnhancerTool = () => {
   const [open, setOpen] = useState(false);
@@ -34,16 +27,25 @@ const PhotoEnhancerTool = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { t } = useLanguage();
+
+  const enhanceOptions = [
+    { value: "enhance", label: t("enhanceGeneral"), desc: t("enhanceGeneralDesc") },
+    { value: "restore", label: t("enhanceRestore"), desc: t("enhanceRestoreDesc") },
+    { value: "colorize", label: t("enhanceColorize"), desc: t("enhanceColorizeDesc") },
+    { value: "portrait", label: t("enhancePortrait"), desc: t("enhancePortraitDesc") },
+    { value: "hdr", label: t("enhanceHdr"), desc: t("enhanceHdrDesc") },
+  ];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      toast({ title: "Geçersiz dosya", description: "Lütfen bir fotoğraf yükleyin", variant: "destructive" });
+      toast({ title: t("invalidFile"), description: t("pleaseUploadPhoto"), variant: "destructive" });
       return;
     }
     if (file.size > 10 * 1024 * 1024) {
-      toast({ title: "Dosya çok büyük", description: "Maksimum dosya boyutu 10MB", variant: "destructive" });
+      toast({ title: t("fileTooLargePhoto"), description: t("maxFileSizePhoto"), variant: "destructive" });
       return;
     }
     const reader = new FileReader();
@@ -62,14 +64,14 @@ const PhotoEnhancerTool = () => {
       const { data, error } = await supabase.functions.invoke("age-progression", {
         body: { imageBase64: uploadedImage, enhanceType },
       });
-      if (error) throw new Error(error.message || "İşlem başarısız oldu");
+      if (error) throw new Error(error.message || t("processingFailed"));
       if (data?.error) throw new Error(data.error);
-      if (!data?.enhancedImageUrl) throw new Error("İyileştirilmiş fotoğraf alınamadı");
+      if (!data?.enhancedImageUrl) throw new Error(t("enhanceError"));
       setEnhancedImage(data.enhancedImageUrl);
-      toast({ title: "Başarılı!", description: "Fotoğrafınız iyileştirildi" });
+      toast({ title: t("success"), description: t("enhanceSuccess") });
     } catch (error) {
       console.error("Photo enhance error:", error);
-      toast({ title: "Hata", description: error instanceof Error ? error.message : "İşlem başarısız oldu", variant: "destructive" });
+      toast({ title: t("error"), description: error instanceof Error ? error.message : t("processingFailed"), variant: "destructive" });
     } finally {
       setIsProcessing(false);
     }
@@ -98,9 +100,9 @@ const PhotoEnhancerTool = () => {
         link.click();
         document.body.removeChild(link);
       }
-      toast({ title: "İndirildi!", description: "Fotoğraf başarıyla indirildi" });
+      toast({ title: t("downloaded"), description: t("downloadSuccess") });
     } catch {
-      toast({ title: "Hata", description: "İndirme başarısız oldu", variant: "destructive" });
+      toast({ title: t("error"), description: t("downloadError"), variant: "destructive" });
     }
   };
 
@@ -119,15 +121,15 @@ const PhotoEnhancerTool = () => {
           className="gap-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-purple-500/50 hover:border-purple-400 hover:bg-purple-500/30 transition-all duration-300"
         >
           <Wand2 className="h-4 w-4" />
-          <span className="hidden sm:inline">Fotoğraf İyileştirici</span>
-          <span className="sm:hidden">İyileştir</span>
+          <span className="hidden sm:inline">{t("photoEnhancer")}</span>
+          <span className="sm:hidden">{t("photoEnhancerShort")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-purple-500" />
-            AI Fotoğraf İyileştirici
+            {t("photoEnhancerTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -138,8 +140,8 @@ const PhotoEnhancerTool = () => {
               className="border-2 border-dashed border-muted-foreground/30 rounded-lg p-8 text-center cursor-pointer hover:border-purple-500/50 hover:bg-purple-500/5 transition-all duration-300"
             >
               <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-lg font-medium mb-2">Fotoğrafınızı Yükleyin</p>
-              <p className="text-sm text-muted-foreground">İyileştirmek istediğiniz fotoğrafı seçin</p>
+              <p className="text-lg font-medium mb-2">{t("uploadPhoto")}</p>
+              <p className="text-sm text-muted-foreground">{t("uploadPhotoDesc")}</p>
               <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
             </div>
           ) : (
@@ -147,7 +149,7 @@ const PhotoEnhancerTool = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Orijinal</span>
+                    <span className="text-sm font-medium">{t("original")}</span>
                     <Button variant="ghost" size="icon" className="h-6 w-6" onClick={resetTool}>
                       <X className="h-4 w-4" />
                     </Button>
@@ -157,19 +159,19 @@ const PhotoEnhancerTool = () => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <span className="text-sm font-medium">İyileştirilmiş</span>
+                  <span className="text-sm font-medium">{t("enhanced")}</span>
                   <div className="aspect-square rounded-lg overflow-hidden bg-muted flex items-center justify-center">
                     {isProcessing ? (
                       <div className="text-center">
                         <Loader2 className="h-8 w-8 animate-spin mx-auto mb-2 text-purple-500" />
-                        <p className="text-sm text-muted-foreground">AI işliyor...</p>
+                        <p className="text-sm text-muted-foreground">{t("aiProcessing")}</p>
                       </div>
                     ) : enhancedImage ? (
                       <img src={enhancedImage} alt="Enhanced" className="w-full h-full object-cover" />
                     ) : (
                       <div className="text-center text-muted-foreground">
                         <Sparkles className="h-8 w-8 mx-auto mb-2" />
-                        <p className="text-sm">Mod seçip başlatın</p>
+                        <p className="text-sm">{t("selectModeStart")}</p>
                       </div>
                     )}
                   </div>
@@ -177,7 +179,7 @@ const PhotoEnhancerTool = () => {
               </div>
 
               <div className="space-y-2">
-                <span className="text-sm font-medium">İyileştirme Modu</span>
+                <span className="text-sm font-medium">{t("enhanceMode")}</span>
                 <Select value={enhanceType} onValueChange={setEnhanceType}>
                   <SelectTrigger>
                     <SelectValue />
@@ -202,18 +204,18 @@ const PhotoEnhancerTool = () => {
                   className="flex-1 gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                 >
                   {isProcessing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
-                  {isProcessing ? "İşleniyor..." : "İyileştir"}
+                  {isProcessing ? t("enhancing") : t("enhance")}
                 </Button>
                 {enhancedImage && (
                   <Button variant="outline" onClick={downloadImage} className="gap-2">
                     <Download className="h-4 w-4" />
-                    İndir
+                    {t("download")}
                   </Button>
                 )}
               </div>
             </>
           )}
-          <p className="text-xs text-muted-foreground text-center">🔒 Fotoğraflarınız güvenli şekilde işlenir ve saklanmaz</p>
+          <p className="text-xs text-muted-foreground text-center">{t("photoPrivacy")}</p>
         </div>
       </DialogContent>
     </Dialog>

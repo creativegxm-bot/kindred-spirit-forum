@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import UserMenu from "./UserMenu";
 import LanguageSwitcher from "./LanguageSwitcher";
 import NotificationDropdown from "./NotificationDropdown";
-import AgeProgressionTool from "./AgeProgressionTool";
+import PhotoEnhancerTool from "./AgeProgressionTool";
 import SearchModal from "./SearchModal";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
@@ -66,7 +66,7 @@ const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
           </div>
 
           <div className="flex items-center gap-2">
-            <AgeProgressionTool />
+            <PhotoEnhancerTool />
             <Button
               variant="create"
               size="sm"

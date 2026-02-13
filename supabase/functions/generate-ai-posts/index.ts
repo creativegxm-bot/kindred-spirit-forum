@@ -64,6 +64,7 @@ serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const targetLangs: string[] = body.languages || ["en", "fr", "es", "tr", "de", "ja", "hi", "pt", "ru", "it"];
     const postsPerLang: number = body.count || 15;
+    const postType: string = body.post_type || "classified";
 
     // Fetch users to attribute posts to
     const { data: users } = await supabase
@@ -113,8 +114,39 @@ serve(async (req) => {
         continue;
       }
 
-      // Generate posts via AI
-      const userPrompt = `Generate exactly ${postsPerLang} classified-style posts.
+      // Build prompt based on post type
+      let userPrompt: string;
+      let systemPrompt: string;
+
+      if (postType === "jokes") {
+        const jokeSystemPrompts: Record<string, string> = {
+          en: "You generate funny, family-friendly jokes and humorous posts in English. Each joke should have a title (setup) and content (punchline/full joke). Mix different joke styles: puns, one-liners, observational humor, dad jokes, and short funny stories. Keep it clean and entertaining.",
+          fr: "Vous générez des blagues drôles et familiales en français. Chaque blague doit avoir un titre (mise en place) et un contenu (chute/blague complète). Mélangez différents styles : jeux de mots, blagues courtes, humour d'observation. Gardez le tout propre et divertissant.",
+          es: "Generas chistes graciosos y aptos para toda la familia en español. Cada chiste debe tener un título (planteamiento) y contenido (remate/chiste completo). Mezcla diferentes estilos: juegos de palabras, chistes cortos, humor observacional. Mantenlo limpio y entretenido.",
+          tr: "Türkçe komik ve aile dostu şakalar üretiyorsunuz. Her şakanın bir başlığı (giriş) ve içeriği (espri/tam şaka) olmalıdır. Farklı stilleri karıştırın: kelime oyunları, kısa fıkralar, gözlemsel mizah. Temiz ve eğlenceli tutun.",
+          de: "Sie erstellen lustige, familienfreundliche Witze auf Deutsch. Jeder Witz muss einen Titel (Aufbau) und Inhalt (Pointe/ganzer Witz) haben. Mischen Sie verschiedene Stile: Wortspiele, Einzeiler, Beobachtungshumor. Halten Sie es sauber und unterhaltsam.",
+          ja: "日本語で面白くて家族向けのジョークを作成してください。各ジョークにはタイトル（前振り）と内容（オチ/全文）が必要です。異なるスタイルを混ぜてください：駄洒落、一発ギャグ、あるあるネタ。清潔で楽しいものにしてください。",
+          hi: "आप हिंदी में मज़ेदार और परिवार के अनुकूल चुटकुले बनाते हैं। प्रत्येक चुटकुले में एक शीर्षक (सेटअप) और सामग्री (पंचलाइन/पूरा चुटकुला) होनी चाहिए। विभिन्न शैलियों को मिलाएं: शब्द खेल, छोटे चुटकुले, अवलोकन हास्य। इसे साफ़ और मनोरंजक रखें।",
+          pt: "Você gera piadas engraçadas e familiares em português. Cada piada deve ter um título (preparação) e conteúdo (punchline/piada completa). Misture diferentes estilos: trocadilhos, piadas curtas, humor observacional. Mantenha limpo e divertido.",
+          ru: "Вы создаёте смешные, семейные шутки на русском языке. Каждая шутка должна иметь заголовок (завязка) и содержание (кульминация/полная шутка). Смешивайте разные стили: каламбуры, короткие анекдоты, наблюдательный юмор. Держите чисто и развлекательно.",
+          it: "Generi barzellette divertenti e adatte a tutta la famiglia in italiano. Ogni barzelletta deve avere un titolo (premessa) e contenuto (battuta finale/barzelletta completa). Mescola diversi stili: giochi di parole, battute brevi, umorismo osservazionale. Mantieni pulito e divertente.",
+        };
+        systemPrompt = jokeSystemPrompts[lang] || jokeSystemPrompts["en"];
+        userPrompt = `Generate exactly ${postsPerLang} funny jokes or humorous posts.
+Each must belong to the "general" category.
+
+Return ONLY valid JSON with this structure:
+{
+  "posts": [
+    {"category": "general", "title": "Short joke title or setup", "content": "Full joke with punchline"},
+    ...
+  ]
+}
+
+No explanations. No markdown. Only JSON.`;
+      } else {
+        systemPrompt = config.prompt;
+        userPrompt = `Generate exactly ${postsPerLang} classified-style posts.
 Each post must belong to one of these categories: ${CATEGORIES.join(", ")}.
 Distribute roughly evenly across categories.
 
@@ -127,6 +159,7 @@ Return ONLY valid JSON with this structure:
 }
 
 No explanations. No markdown. Only JSON.`;
+      }
 
       try {
         const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -138,7 +171,7 @@ No explanations. No markdown. Only JSON.`;
           body: JSON.stringify({
             model: "google/gemini-3-flash-preview",
             messages: [
-              { role: "system", content: config.prompt },
+              { role: "system", content: systemPrompt },
               { role: "user", content: userPrompt },
             ],
           }),

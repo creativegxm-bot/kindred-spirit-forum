@@ -365,6 +365,36 @@ export type Database = {
           },
         ]
       }
+      email_aliases: {
+        Row: {
+          alias: string
+          created_at: string
+          forward_to: string
+          id: string
+          is_active: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alias: string
+          created_at?: string
+          forward_to: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alias?: string
+          created_at?: string
+          forward_to?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           comment_id: string | null

@@ -16,6 +16,7 @@ import FileConverter from "./pages/FileConverter";
 import MatchFinder from "./pages/MatchFinder";
 import News from "./pages/News";
 import TopApps from "./pages/TopApps";
+import EmailAlias from "./pages/EmailAlias";
 import Advertise from "./pages/Advertise";
 import Admin from "./pages/Admin";
 import Post from "./pages/Post";
@@ -70,6 +71,7 @@ const App = () => (
                   <Route path="tools/match-finder" element={<MatchFinder />} />
                   <Route path="news" element={<News />} />
                   <Route path="top-apps" element={<TopApps />} />
+                  <Route path="email" element={<EmailAlias />} />
                   <Route path="advertise" element={<Advertise />} />
                   <Route path="admin" element={<Admin />} />
                 </Route>

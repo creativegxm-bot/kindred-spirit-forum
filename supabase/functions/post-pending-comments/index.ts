@@ -12,72 +12,70 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Pick the oldest pending comment
+    const body = await req.json().catch(() => ({}));
+    const batchSize = body.batch_size || 50;
+
+    // Fetch pending comments
     const { data: pending, error: fetchError } = await supabase
       .from("pending_ai_comments")
       .select("*")
       .eq("status", "pending")
-      .order("created_at", { ascending: true })
-      .limit(1)
-      .single();
+      .order("scheduled_at", { ascending: true, nullsFirst: false })
+      .limit(batchSize);
 
-    if (fetchError || !pending) {
-      return new Response(JSON.stringify({ success: true, message: "No pending comments" }), {
+    if (fetchError || !pending || pending.length === 0) {
+      return new Response(JSON.stringify({ success: true, message: "No pending comments", posted: 0 }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Verify the post still exists
-    const { data: post, error: postError } = await supabase
-      .from("posts")
-      .select("id")
-      .eq("id", pending.target_post_id)
-      .single();
+    // Fetch users to attribute comments to
+    const { data: users } = await supabase
+      .from("profiles")
+      .select("user_id")
+      .limit(50);
 
-    if (postError || !post) {
-      // Post was deleted, mark as failed
-      await supabase
-        .from("pending_ai_comments")
-        .update({ status: "failed", error_message: "Post no longer exists" })
-        .eq("id", pending.id);
-
-      return new Response(JSON.stringify({ success: true, message: "Post deleted, skipped" }), {
+    if (!users || users.length === 0) {
+      return new Response(JSON.stringify({ error: "No users found" }), {
+        status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Insert the comment into the actual comments table
-    const { error: commentError } = await supabase
-      .from("comments")
-      .insert({
-        post_id: pending.target_post_id,
-        content: pending.comment_text,
-        language_code: pending.language_code,
-      });
+    let posted = 0;
+    let failed = 0;
 
-    if (commentError) {
-      console.error("Failed to post comment:", commentError);
-      await supabase
-        .from("pending_ai_comments")
-        .update({ status: "failed", error_message: commentError.message })
-        .eq("id", pending.id);
+    for (const item of pending) {
+      const randomUser = users[Math.floor(Math.random() * users.length)];
 
-      return new Response(JSON.stringify({ success: false, error: commentError.message }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      const { error: commentError } = await supabase
+        .from("comments")
+        .insert({
+          post_id: item.target_post_id,
+          content: item.comment_text,
+          language_code: item.language_code,
+          author_id: randomUser.user_id,
+        });
+
+      if (commentError) {
+        console.error("Failed to post comment:", commentError);
+        await supabase
+          .from("pending_ai_comments")
+          .update({ status: "failed" })
+          .eq("id", item.id);
+        failed++;
+      } else {
+        await supabase
+          .from("pending_ai_comments")
+          .update({ status: "posted", posted_at: new Date().toISOString() })
+          .eq("id", item.id);
+        posted++;
+      }
     }
 
-    // Mark as posted
-    await supabase
-      .from("pending_ai_comments")
-      .update({ status: "posted", posted_at: new Date().toISOString() })
-      .eq("id", pending.id);
-
-    return new Response(JSON.stringify({ success: true, posted: pending.id }), {
+    return new Response(JSON.stringify({ success: true, posted, failed, total: pending.length }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {

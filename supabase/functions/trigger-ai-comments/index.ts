@@ -71,7 +71,8 @@ serve(async (req) => {
         continue;
       }
 
-      const selectedPosts = posts.sort(() => Math.random() - 0.5).slice(0, commentsPerLang);
+      // Comment on ALL posts, not just a subset
+      const selectedPosts = posts;
 
       for (const post of selectedPosts) {
         const eligibleUsers = users.filter(u => u.user_id !== post.author_id);

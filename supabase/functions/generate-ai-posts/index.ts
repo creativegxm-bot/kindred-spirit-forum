@@ -63,7 +63,7 @@ serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const targetLangs: string[] = body.languages || ["en", "fr", "es", "tr", "de", "ja", "hi", "pt", "ru", "it"];
-    const postsPerLang: number = body.count || 15;
+    const postsPerLang: number = body.count || 3;
     const postType: string = body.post_type || "classified";
 
     // Fetch users to attribute posts to

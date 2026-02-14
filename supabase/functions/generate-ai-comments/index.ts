@@ -35,10 +35,8 @@ serve(async (req) => {
 
       if (postsError || !posts || posts.length === 0) continue;
 
-      // Pick random posts to comment on
-      const selectedPosts = posts
-        .sort(() => Math.random() - 0.5)
-        .slice(0, COMMENTS_PER_LANGUAGE);
+      // Comment on ALL posts, not just a subset
+      const selectedPosts = posts;
 
       // Fetch random existing users to attribute comments to
       const { data: users, error: usersError } = await supabase

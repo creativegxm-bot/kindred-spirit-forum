@@ -8,6 +8,19 @@ const corsHeaders = {
 
 const CATEGORIES = ["jobs", "housing", "services", "forsale", "general"];
 
+const DAILY_LIFE_COMMUNITIES: Record<string, string> = {
+  en: "DailyLife",
+  fr: "VieQuotidienne",
+  es: "VidaDiaria",
+  tr: "GunlukYasam",
+  de: "Alltagsleben",
+  ja: "NichijouSeikatsu",
+  hi: "DainikJeevan",
+  pt: "VidaDiariaPT",
+  ru: "PovsednevnayaZhizn",
+  it: "VitaQuotidiana",
+};
+
 const LANG_CONFIG: Record<string, { categories: Record<string, string>; prompt: string }> = {
   en: {
     categories: { jobs: "Jobs", housing: "Housing", services: "Services-EN", forsale: "ForSale", general: "General-EN" },
@@ -260,8 +273,19 @@ No explanations. No markdown. Only JSON.`;
 
         // Insert posts
         for (const post of parsed.posts) {
-          const cat = post.category?.toLowerCase() || "general";
-          const communityId = communityMap[cat] || communityMap["general"];
+          let communityId: string | undefined;
+
+          if (postType === "dailylife") {
+            // Route daily life posts to dedicated Daily Life community
+            const dailyLifeName = DAILY_LIFE_COMMUNITIES[lang];
+            const dailyLifeCommunity = communities.find(
+              (c) => c.name === dailyLifeName && c.language_code === lang
+            );
+            communityId = dailyLifeCommunity?.id || communityMap["general"];
+          } else {
+            const cat = post.category?.toLowerCase() || "general";
+            communityId = communityMap[cat] || communityMap["general"];
+          }
           if (!communityId) continue;
 
           const randomUser = users[Math.floor(Math.random() * users.length)];

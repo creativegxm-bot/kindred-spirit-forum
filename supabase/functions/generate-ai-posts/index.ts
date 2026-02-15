@@ -63,8 +63,8 @@ serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const targetLangs: string[] = body.languages || ["en", "fr", "es", "tr", "de", "ja", "hi", "pt", "ru", "it"];
-    const postsPerLang: number = body.count || 3;
-    const postType: string = body.post_type || "classified";
+    const postsPerLang: number = body.count || 10;
+    const postType: string = body.post_type || "dailylife";
 
     // Fetch users to attribute posts to
     const { data: users } = await supabase
@@ -165,6 +165,34 @@ Return ONLY valid JSON with this structure:
 {
   "posts": [
     {"category": "general", "title": "Trivia question here?", "content": "Answer: [answer]. [Brief interesting explanation]"},
+    ...
+  ]
+}
+
+No explanations. No markdown. Only JSON.`;
+      } else if (postType === "dailylife") {
+        const dailyLifeSystemPrompts: Record<string, string> = {
+          en: "You generate engaging daily life discussion questions for a community forum in English. Topics include: cooking, relationships, work-life balance, hobbies, travel, health, parenting, money tips, home improvement, fashion, pets, fitness, technology in daily life, neighborhood stories, commuting, weekend plans, and personal growth. Each post should spark conversation. Natural human tone, no emojis.",
+          fr: "Vous générez des questions de discussion sur la vie quotidienne pour un forum communautaire en français. Sujets : cuisine, relations, équilibre travail-vie, loisirs, voyages, santé, parentalité, astuces financières, bricolage, mode, animaux, fitness, technologie au quotidien, histoires de quartier, trajets, plans de week-end, développement personnel. Ton naturel, pas d'emojis.",
+          es: "Generas preguntas de discusión sobre la vida diaria para un foro comunitario en español. Temas: cocina, relaciones, equilibrio trabajo-vida, pasatiempos, viajes, salud, crianza, consejos de dinero, mejoras del hogar, moda, mascotas, fitness, tecnología diaria, historias del barrio, transporte, planes de fin de semana, crecimiento personal. Tono natural, sin emojis.",
+          tr: "Bir topluluk forumu için Türkçe günlük yaşam tartışma soruları oluşturuyorsunuz. Konular: yemek, ilişkiler, iş-yaşam dengesi, hobiler, seyahat, sağlık, ebeveynlik, para ipuçları, ev tadilatı, moda, evcil hayvanlar, fitness, günlük teknoloji, mahalle hikayeleri, ulaşım, hafta sonu planları, kişisel gelişim. Doğal ton, emoji yok.",
+          de: "Sie erstellen ansprechende Diskussionsfragen zum Alltag für ein Community-Forum auf Deutsch. Themen: Kochen, Beziehungen, Work-Life-Balance, Hobbys, Reisen, Gesundheit, Erziehung, Geldtipps, Heimwerken, Mode, Haustiere, Fitness, Technologie im Alltag, Nachbarschaftsgeschichten, Pendeln, Wochenendpläne, persönliche Entwicklung. Natürlicher Ton, keine Emojis.",
+          ja: "日本語でコミュニティフォーラム向けの日常生活に関する議論の質問を作成してください。トピック：料理、人間関係、ワークライフバランス、趣味、旅行、健康、子育て、お金のコツ、DIY、ファッション、ペット、フィットネス、日常のテクノロジー、ご近所の話、通勤、週末の計画、自己成長。自然なトーン、絵文字なし。",
+          hi: "आप हिंदी में एक सामुदायिक फोरम के लिए दैनिक जीवन पर चर्चा के प्रश्न बनाते हैं। विषय: खाना पकाना, रिश्ते, कार्य-जीवन संतुलन, शौक, यात्रा, स्वास्थ्य, पालन-पोषण, पैसे की युक्तियां, घर सुधार, फैशन, पालतू जानवर, फिटनेस, दैनिक प्रौद्योगिकी, पड़ोस की कहानियां, आवागमन, सप्ताहांत योजनाएं, व्यक्तिगत विकास। प्राकृतिक लहजा, इमोजी नहीं।",
+          pt: "Você gera perguntas de discussão sobre a vida diária para um fórum comunitário em português. Temas: culinária, relacionamentos, equilíbrio trabalho-vida, hobbies, viagens, saúde, parentalidade, dicas de dinheiro, melhorias domésticas, moda, animais de estimação, fitness, tecnologia no dia a dia, histórias do bairro, deslocamento, planos de fim de semana, crescimento pessoal. Tom natural, sem emojis.",
+          ru: "Вы создаёте увлекательные вопросы для обсуждения повседневной жизни на форуме сообщества на русском языке. Темы: кулинария, отношения, баланс работы и жизни, хобби, путешествия, здоровье, воспитание детей, финансовые советы, ремонт дома, мода, домашние животные, фитнес, технологии в быту, истории из района, поездки на работу, планы на выходные, саморазвитие. Естественный тон, без эмодзи.",
+          it: "Generi domande di discussione sulla vita quotidiana per un forum comunitario in italiano. Argomenti: cucina, relazioni, equilibrio lavoro-vita, hobby, viaggi, salute, genitorialità, consigli sui soldi, miglioramenti domestici, moda, animali domestici, fitness, tecnologia quotidiana, storie di quartiere, pendolarismo, piani per il weekend, crescita personale. Tono naturale, niente emoji.",
+        };
+        systemPrompt = dailyLifeSystemPrompts[lang] || dailyLifeSystemPrompts["en"];
+        userPrompt = `Generate exactly ${postsPerLang} engaging daily life discussion questions that people would want to answer and discuss.
+Each must belong to the "general" category.
+Mix topics: some about food/cooking, some about work, some about relationships, some about hobbies, some about money, some about health, etc.
+Each post title should be a compelling question. The content should add context or a personal angle to spark discussion.
+
+Return ONLY valid JSON with this structure:
+{
+  "posts": [
+    {"category": "general", "title": "What's your go-to weeknight dinner when you're too tired to cook?", "content": "I usually end up making pasta or ordering takeout, but I'm trying to find quick healthy alternatives. What do you all do when cooking feels like too much effort after a long day?"},
     ...
   ]
 }

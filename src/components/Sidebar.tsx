@@ -9,6 +9,12 @@ import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import CreateCommunityModal from "./CreateCommunityModal";
 import { cn } from "@/lib/utils";
 
+const DAILY_LIFE_NAMES = new Set([
+  "DailyLife", "VieQuotidienne", "VidaDiaria", "GunlukYasam",
+  "Alltagsleben", "NichijouSeikatsu", "DainikJeevan",
+  "VidaDiariaPT", "PovsednevnayaZhizn", "VitaQuotidiana",
+]);
+
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
@@ -117,7 +123,7 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
         <div className="mt-2 border-t border-border" />
 
         <div className="flex flex-col gap-1 p-3">
-          <div className="flex items-center justify-between px-3 py-2">
+        <div className="flex items-center justify-between px-3 py-2">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t("communities")}
             </h3>
@@ -141,22 +147,45 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
             {t("createCommunity")}
           </Button>
 
-          {communities.map((community) => (
-            <Link key={community.id} to={localePath(`/r/${community.name}`)}>
-              <Button
-                variant="ghost"
-                className="w-full justify-start gap-3 h-auto py-2"
-              >
-                <span className="text-xl">{community.icon || "💬"}</span>
-                <div className="flex flex-col items-start">
-                  <span className="text-sm font-medium">r/{community.name}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {formatMembers(community.member_count)}
-                  </span>
-                </div>
-              </Button>
-            </Link>
-          ))}
+          {/* Daily Life communities pinned at top */}
+          {communities
+            .filter((c) => DAILY_LIFE_NAMES.has(c.name))
+            .map((community) => (
+              <Link key={community.id} to={localePath(`/r/${community.name}`)}>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-3 h-auto py-2 bg-primary/5 border border-primary/20 hover:bg-primary/10"
+                >
+                  <span className="text-xl">🌞</span>
+                  <div className="flex flex-col items-start">
+                    <span className="text-sm font-medium text-primary">r/{community.name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {formatMembers(community.member_count)}
+                    </span>
+                  </div>
+                </Button>
+              </Link>
+            ))}
+
+          {/* Other communities */}
+          {communities
+            .filter((c) => !DAILY_LIFE_NAMES.has(c.name))
+            .map((community) => (
+              <Link key={community.id} to={localePath(`/r/${community.name}`)}>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-3 h-auto py-2"
+                >
+                  <span className="text-xl">{community.icon || "💬"}</span>
+                  <div className="flex flex-col items-start">
+                    <span className="text-sm font-medium">r/{community.name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {formatMembers(community.member_count)}
+                    </span>
+                  </div>
+                </Button>
+              </Link>
+            ))}
         </div>
       </aside>
 

@@ -183,6 +183,34 @@ Return ONLY valid JSON with this structure:
 }
 
 No explanations. No markdown. Only JSON.`;
+      } else if (postType === "quora") {
+        const quoraSystemPrompts: Record<string, string> = {
+          en: "You generate Quora-style thought-provoking questions for a community forum in English. Questions should invite personal stories, opinions, and detailed answers. Topics: life experiences, career advice, psychology, self-improvement, cultural differences, interesting 'what if' scenarios, unpopular opinions, life hacks, social observations, philosophical dilemmas. Each question should feel authentic, like a real person genuinely curious. No emojis. Natural conversational tone.",
+          fr: "Vous générez des questions de style Quora pour un forum communautaire en français. Les questions doivent inviter des histoires personnelles, des opinions et des réponses détaillées. Sujets : expériences de vie, conseils de carrière, psychologie, amélioration personnelle, différences culturelles, scénarios hypothétiques, opinions impopulaires, astuces de vie, observations sociales, dilemmes philosophiques. Ton naturel et conversationnel, pas d'emojis.",
+          es: "Generas preguntas estilo Quora para un foro comunitario en español. Las preguntas deben invitar historias personales, opiniones y respuestas detalladas. Temas: experiencias de vida, consejos de carrera, psicología, superación personal, diferencias culturales, escenarios hipotéticos, opiniones impopulares, trucos de vida, observaciones sociales, dilemas filosóficos. Tono natural y conversacional, sin emojis.",
+          tr: "Bir topluluk forumu için Türkçe Quora tarzı düşündürücü sorular oluşturuyorsunuz. Sorular kişisel hikayeleri, fikirleri ve detaylı cevapları davet etmelidir. Konular: yaşam deneyimleri, kariyer tavsiyeleri, psikoloji, kişisel gelişim, kültürel farklılıklar, ilginç varsayımsal senaryolar, popüler olmayan görüşler, hayat hileleri, sosyal gözlemler, felsefi ikilemler. Doğal konuşma tonu, emoji yok.",
+          de: "Sie erstellen Quora-ähnliche nachdenkliche Fragen für ein Community-Forum auf Deutsch. Fragen sollen persönliche Geschichten, Meinungen und ausführliche Antworten einladen. Themen: Lebenserfahrungen, Karrieretipps, Psychologie, Selbstverbesserung, kulturelle Unterschiede, hypothetische Szenarien, unpopuläre Meinungen, Life-Hacks, soziale Beobachtungen, philosophische Dilemmata. Natürlicher Gesprächston, keine Emojis.",
+          ja: "日本語でコミュニティフォーラム向けのQuoraスタイルの考えさせられる質問を作成してください。質問は個人的な体験談、意見、詳細な回答を促すものにしてください。トピック：人生経験、キャリアアドバイス、心理学、自己改善、文化の違い、仮定のシナリオ、少数派の意見、ライフハック、社会観察、哲学的ジレンマ。自然な会話調、絵文字なし。",
+          hi: "आप हिंदी में एक सामुदायिक फोरम के लिए Quora शैली के विचारोत्तेजक प्रश्न बनाते हैं। प्रश्नों को व्यक्तिगत कहानियां, राय और विस्तृत उत्तर आमंत्रित करने चाहिए। विषय: जीवन अनुभव, करियर सलाह, मनोविज्ञान, आत्म-सुधार, सांस्कृतिक अंतर, काल्पनिक परिदृश्य, अलोकप्रिय राय, लाइफ हैक्स, सामाजिक अवलोकन, दार्शनिक दुविधाएं। प्राकृतिक बातचीत का लहजा, इमोजी नहीं।",
+          pt: "Você gera perguntas no estilo Quora para um fórum comunitário em português. As perguntas devem convidar histórias pessoais, opiniões e respostas detalhadas. Temas: experiências de vida, conselhos de carreira, psicologia, autoaperfeiçoamento, diferenças culturais, cenários hipotéticos, opiniões impopulares, dicas de vida, observações sociais, dilemas filosóficos. Tom natural e conversacional, sem emojis.",
+          ru: "Вы создаёте вопросы в стиле Quora для форума сообщества на русском языке. Вопросы должны приглашать к личным историям, мнениям и подробным ответам. Темы: жизненный опыт, карьерные советы, психология, саморазвитие, культурные различия, гипотетические сценарии, непопулярные мнения, лайфхаки, социальные наблюдения, философские дилеммы. Естественный разговорный тон, без эмодзи.",
+          it: "Generi domande in stile Quora per un forum comunitario in italiano. Le domande devono invitare storie personali, opinioni e risposte dettagliate. Argomenti: esperienze di vita, consigli di carriera, psicologia, auto-miglioramento, differenze culturali, scenari ipotetici, opinioni impopolari, trucchi per la vita, osservazioni sociali, dilemmi filosofici. Tono naturale e conversazionale, niente emoji.",
+        };
+        systemPrompt = quoraSystemPrompts[lang] || quoraSystemPrompts["en"];
+        userPrompt = `Generate exactly ${postsPerLang} Quora-style thought-provoking questions that people would love to answer with personal stories and opinions.
+Each must belong to the "general" category.
+Mix topics: some about life experiences, some about career/work, some about relationships, some about psychology, some about cultural observations, some philosophical or hypothetical.
+Each post title should be a compelling question. The content should add context, a personal angle, or explain why you're asking to spark detailed responses.
+
+Return ONLY valid JSON with this structure:
+{
+  "posts": [
+    {"category": "general", "title": "What's a skill you learned as an adult that you wish you'd learned as a child?", "content": "I recently started learning to cook properly at 30 and realized how much time and money I would have saved if I'd learned earlier. It made me wonder what other skills people picked up later in life that they wish they had started sooner."},
+    ...
+  ]
+}
+
+No explanations. No markdown. Only JSON.`;
       } else if (postType === "dailylife") {
         const dailyLifeSystemPrompts: Record<string, string> = {
           en: "You generate engaging daily life discussion questions for a community forum in English. Topics include: cooking, relationships, work-life balance, hobbies, travel, health, parenting, money tips, home improvement, fashion, pets, fitness, technology in daily life, neighborhood stories, commuting, weekend plans, and personal growth. Each post should spark conversation. Natural human tone, no emojis.",
@@ -275,8 +303,8 @@ No explanations. No markdown. Only JSON.`;
         for (const post of parsed.posts) {
           let communityId: string | undefined;
 
-          if (postType === "dailylife") {
-            // Route daily life posts to dedicated Daily Life community
+          if (postType === "dailylife" || postType === "quora") {
+            // Route to dedicated Daily Life community
             const dailyLifeName = DAILY_LIFE_COMMUNITIES[lang];
             const dailyLifeCommunity = communities.find(
               (c) => c.name === dailyLifeName && c.language_code === lang
@@ -290,18 +318,79 @@ No explanations. No markdown. Only JSON.`;
 
           const randomUser = users[Math.floor(Math.random() * users.length)];
 
-          const { error: insertError } = await supabase.from("posts").insert({
+          const { data: insertedPost, error: insertError } = await supabase.from("posts").insert({
             title: post.title,
             content: post.content,
             community_id: communityId,
             author_id: randomUser.user_id,
             language_code: lang,
-          });
+          }).select("id").single();
 
           if (insertError) {
             langResult.errors.push(insertError.message);
-          } else {
-            langResult.posted++;
+            continue;
+          }
+          
+          langResult.posted++;
+
+          // Generate and insert a reply comment for quora and dailylife posts
+          if ((postType === "quora" || postType === "dailylife") && insertedPost) {
+            try {
+              const LANG_COMMENT_PROMPTS: Record<string, string> = {
+                en: "Write a short, natural reply in English.",
+                fr: "Écris une réponse courte et naturelle en français.",
+                es: "Escribe una respuesta corta y natural en español.",
+                tr: "Türkçe kısa ve doğal bir yanıt yaz.",
+                de: "Schreibe eine kurze, natürliche Antwort auf Deutsch.",
+                ja: "日本語で短く自然な返信を書いてください。",
+                hi: "हिंदी में एक छोटा और प्राकृतिक उत्तर लिखें।",
+                pt: "Escreva uma resposta curta e natural em português.",
+                ru: "Напишите короткий и естественный ответ на русском.",
+                it: "Scrivi una risposta breve e naturale in italiano.",
+              };
+              
+              const commentUser = users.filter(u => u.user_id !== randomUser.user_id);
+              const replyUser = commentUser.length > 0 
+                ? commentUser[Math.floor(Math.random() * commentUser.length)] 
+                : randomUser;
+
+              const commentAiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${lovableApiKey}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  model: "google/gemini-3-flash-preview",
+                  messages: [
+                    {
+                      role: "system",
+                      content: `You are a real person answering a question on a forum. ${LANG_COMMENT_PROMPTS[lang] || LANG_COMMENT_PROMPTS.en} Share a personal experience or thoughtful opinion. Keep it 2-4 sentences. Be conversational, not robotic. Don't mention AI. Reply with ONLY the comment text.`,
+                    },
+                    {
+                      role: "user",
+                      content: `Question: "${post.title}"\nContext: "${post.content || ""}"`,
+                    },
+                  ],
+                }),
+              });
+
+              if (commentAiResponse.ok) {
+                const commentData = await commentAiResponse.json();
+                const commentText = commentData.choices?.[0]?.message?.content?.trim();
+                if (commentText && commentText.length >= 5) {
+                  await supabase.from("comments").insert({
+                    post_id: insertedPost.id,
+                    author_id: replyUser.user_id,
+                    content: commentText,
+                    language_code: lang,
+                  });
+                }
+              }
+              await new Promise(r => setTimeout(r, 300));
+            } catch (commentErr) {
+              console.error("Comment generation error:", commentErr);
+            }
           }
         }
       } catch (err) {

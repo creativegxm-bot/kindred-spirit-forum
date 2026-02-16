@@ -20,6 +20,8 @@ import EmailAlias from "./pages/EmailAlias";
 import Advertise from "./pages/Advertise";
 import Admin from "./pages/Admin";
 import Post from "./pages/Post";
+import Hims from "./pages/Hims";
+import Hers from "./pages/Hers";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -73,6 +75,8 @@ const App = () => (
                   <Route path="top-apps" element={<TopApps />} />
                   <Route path="email" element={<EmailAlias />} />
                   <Route path="advertise" element={<Advertise />} />
+                  <Route path="hims" element={<Hims />} />
+                  <Route path="hers" element={<Hers />} />
                   <Route path="admin" element={<Admin />} />
                 </Route>
 

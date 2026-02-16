@@ -21,6 +21,18 @@ const DAILY_LIFE_COMMUNITIES: Record<string, string> = {
   it: "VitaQuotidiana",
 };
 
+const HIMS_COMMUNITIES: Record<string, string> = {
+  en: "Hims", fr: "Hims-FR", es: "Hims-ES", tr: "Hims-TR",
+  de: "Hims-DE", ja: "Hims-JA", hi: "Hims-HI", pt: "Hims-PT",
+  ru: "Hims-RU", it: "Hims-IT",
+};
+
+const HERS_COMMUNITIES: Record<string, string> = {
+  en: "Hers", fr: "Hers-FR", es: "Hers-ES", tr: "Hers-TR",
+  de: "Hers-DE", ja: "Hers-JA", hi: "Hers-HI", pt: "Hers-PT",
+  ru: "Hers-RU", it: "Hers-IT",
+};
+
 const LANG_CONFIG: Record<string, { categories: Record<string, string>; prompt: string }> = {
   en: {
     categories: { jobs: "Jobs", housing: "Housing", services: "Services-EN", forsale: "ForSale", general: "General-EN" },
@@ -239,6 +251,62 @@ Return ONLY valid JSON with this structure:
 }
 
 No explanations. No markdown. Only JSON.`;
+      } else if (postType === "hims") {
+        const himsPrompts: Record<string, string> = {
+          en: "You generate informative men's health news articles in English. Topics: testosterone, prostate health, heart health, mental health for men, fitness routines, muscle building, weight management, hair loss solutions, sleep quality, stress management, sexual health, nutrition for men, aging well. Each post has a title and detailed content (3-5 sentences). Evidence-based, practical advice. No emojis. Natural human tone.",
+          fr: "Vous générez des articles informatifs sur la santé masculine en français. Sujets : testostérone, santé de la prostate, santé cardiaque, santé mentale, fitness, musculation, gestion du poids, perte de cheveux, qualité du sommeil, gestion du stress, santé sexuelle, nutrition. Ton naturel, pas d'emojis.",
+          es: "Generas artículos informativos sobre salud masculina en español. Temas: testosterona, salud de la próstata, salud cardíaca, salud mental, fitness, musculación, control de peso, caída del cabello, calidad del sueño, estrés, salud sexual, nutrición. Tono natural, sin emojis.",
+          tr: "Türkçe erkek sağlığı haber makaleleri oluşturuyorsunuz. Konular: testosteron, prostat sağlığı, kalp sağlığı, erkeklerde ruh sağlığı, fitness, kas yapımı, kilo yönetimi, saç dökülmesi, uyku kalitesi, stres yönetimi, cinsel sağlık, beslenme. Doğal ton, emoji yok.",
+          de: "Sie erstellen informative Männergesundheitsartikel auf Deutsch. Themen: Testosteron, Prostata, Herzgesundheit, mentale Gesundheit, Fitness, Muskelaufbau, Gewichtsmanagement, Haarausfall, Schlafqualität, Stressmanagement, sexuelle Gesundheit, Ernährung. Natürlicher Ton, keine Emojis.",
+          ja: "日本語で男性の健康に関するニュース記事を作成してください。トピック：テストステロン、前立腺、心臓の健康、メンタルヘルス、フィットネス、筋力トレーニング、体重管理、薄毛対策、睡眠の質、ストレス管理、性的健康、栄養。自然なトーン、絵文字なし。",
+          hi: "आप हिंदी में पुरुष स्वास्थ्य समाचार लेख बनाते हैं। विषय: टेस्टोस्टेरोन, प्रोस्टेट, हृदय स्वास्थ्य, मानसिक स्वास्थ्य, फिटनेस, मांसपेशियां, वजन प्रबंधन, बालों का झड़ना, नींद, तनाव, यौन स्वास्थ्य, पोषण। प्राकृतिक लहजा, इमोजी नहीं।",
+          pt: "Você gera artigos informativos sobre saúde masculina em português. Temas: testosterona, próstata, saúde cardíaca, saúde mental, fitness, musculação, controle de peso, queda de cabelo, qualidade do sono, estresse, saúde sexual, nutrição. Tom natural, sem emojis.",
+          ru: "Вы создаёте информативные статьи о мужском здоровье на русском языке. Темы: тестостерон, простата, сердце, ментальное здоровье, фитнес, мышцы, вес, выпадение волос, сон, стресс, сексуальное здоровье, питание. Естественный тон, без эмодзи.",
+          it: "Generi articoli informativi sulla salute maschile in italiano. Argomenti: testosterone, prostata, salute cardiaca, salute mentale, fitness, muscoli, gestione del peso, caduta dei capelli, sonno, stress, salute sessuale, nutrizione. Tono naturale, niente emoji.",
+        };
+        systemPrompt = himsPrompts[lang] || himsPrompts["en"];
+        userPrompt = `Generate exactly ${postsPerLang} men's health news articles with practical advice.
+Each must belong to the "general" category.
+Mix topics across fitness, nutrition, mental health, preventive care, and lifestyle.
+Each post title should be attention-grabbing. Content should be 3-5 sentences with actionable info.
+
+Return ONLY valid JSON with this structure:
+{
+  "posts": [
+    {"category": "general", "title": "Why Most Men Are Deficient in This Key Mineral", "content": "Magnesium deficiency affects nearly 60% of adult men, leading to poor sleep, muscle cramps, and elevated stress levels. A recent study found that supplementing with 400mg daily improved sleep quality by 30%. Foods rich in magnesium include dark chocolate, almonds, and spinach."},
+    ...
+  ]
+}
+
+No explanations. No markdown. Only JSON.`;
+      } else if (postType === "hers") {
+        const hersPrompts: Record<string, string> = {
+          en: "You generate informative women's health news articles in English. Topics: hormonal health, reproductive health, menstrual wellness, menopause, bone density, breast health, mental health for women, skincare science, prenatal/postnatal care, PCOS, endometriosis, iron deficiency, thyroid health, pelvic floor health, stress and anxiety. Each post has a title and detailed content (3-5 sentences). Evidence-based, practical advice. No emojis. Natural human tone.",
+          fr: "Vous générez des articles informatifs sur la santé féminine en français. Sujets : hormones, santé reproductive, menstruation, ménopause, densité osseuse, santé mammaire, santé mentale, soins de la peau, soins prénataux, SOPK, endométriose, carence en fer, thyroïde, plancher pelvien. Ton naturel, pas d'emojis.",
+          es: "Generas artículos informativos sobre salud femenina en español. Temas: salud hormonal, salud reproductiva, bienestar menstrual, menopausia, densidad ósea, salud mamaria, salud mental, cuidado de la piel, cuidado prenatal, SOP, endometriosis, deficiencia de hierro, tiroides, suelo pélvico. Tono natural, sin emojis.",
+          tr: "Türkçe kadın sağlığı haber makaleleri oluşturuyorsunuz. Konular: hormonal sağlık, üreme sağlığı, adet düzeni, menopoz, kemik yoğunluğu, meme sağlığı, ruh sağlığı, cilt bakımı, doğum öncesi/sonrası bakım, PCOS, endometriozis, demir eksikliği, tiroid, pelvik taban. Doğal ton, emoji yok.",
+          de: "Sie erstellen informative Frauengesundheitsartikel auf Deutsch. Themen: Hormone, reproduktive Gesundheit, Menstruation, Menopause, Knochendichte, Brustgesundheit, mentale Gesundheit, Hautpflege, Schwangerschaft, PCOS, Endometriose, Eisenmangel, Schilddrüse, Beckenboden. Natürlicher Ton, keine Emojis.",
+          ja: "日本語で女性の健康に関するニュース記事を作成してください。トピック：ホルモン、生殖健康、月経、更年期、骨密度、乳房の健康、メンタルヘルス、スキンケア、妊娠前後のケア、PCOS、子宮内膜症、鉄分不足、甲状腺、骨盤底筋。自然なトーン、絵文字なし。",
+          hi: "आप हिंदी में महिला स्वास्थ्य समाचार लेख बनाते हैं। विषय: हार्मोन, प्रजनन स्वास्थ्य, मासिक धर्म, रजोनिवृत्ति, हड्डी घनत्व, स्तन स्वास्थ्य, मानसिक स्वास्थ्य, त्वचा देखभाल, प्रसवपूर्व, PCOS, एंडोमेट्रियोसिस, आयरन की कमी, थायराइड। प्राकृतिक लहजा, इमोजी नहीं।",
+          pt: "Você gera artigos informativos sobre saúde feminina em português. Temas: saúde hormonal, saúde reprodutiva, menstruação, menopausa, densidade óssea, saúde mamária, saúde mental, cuidados com a pele, pré-natal, SOP, endometriose, deficiência de ferro, tireoide, assoalho pélvico. Tom natural, sem emojis.",
+          ru: "Вы создаёте информативные статьи о женском здоровье на русском языке. Темы: гормоны, репродуктивное здоровье, менструация, менопауза, костная плотность, здоровье груди, ментальное здоровье, уход за кожей, беременность, СПКЯ, эндометриоз, железо, щитовидная железа, тазовое дно. Естественный тон, без эмодзи.",
+          it: "Generi articoli informativi sulla salute femminile in italiano. Argomenti: salute ormonale, salute riproduttiva, mestruazioni, menopausa, densità ossea, salute del seno, salute mentale, cura della pelle, cure prenatali, PCOS, endometriosi, carenza di ferro, tiroide, pavimento pelvico. Tono naturale, niente emoji.",
+        };
+        systemPrompt = hersPrompts[lang] || hersPrompts["en"];
+        userPrompt = `Generate exactly ${postsPerLang} women's health news articles with practical advice.
+Each must belong to the "general" category.
+Mix topics across hormonal health, nutrition, mental wellness, preventive care, fitness, and lifestyle.
+Each post title should be attention-grabbing. Content should be 3-5 sentences with actionable info.
+
+Return ONLY valid JSON with this structure:
+{
+  "posts": [
+    {"category": "general", "title": "The Overlooked Vitamin That Could Transform Your Energy Levels", "content": "Iron deficiency affects 1 in 5 women of reproductive age, yet many don't realize fatigue and brain fog are symptoms. A simple blood test can check your ferritin levels. Pairing iron-rich foods like lentils with vitamin C dramatically improves absorption."},
+    ...
+  ]
+}
+
+No explanations. No markdown. Only JSON.`;
       } else {
         systemPrompt = config.prompt;
         userPrompt = `Generate exactly ${postsPerLang} classified-style posts.
@@ -310,6 +378,18 @@ No explanations. No markdown. Only JSON.`;
               (c) => c.name === dailyLifeName && c.language_code === lang
             );
             communityId = dailyLifeCommunity?.id || communityMap["general"];
+          } else if (postType === "hims") {
+            const himsName = HIMS_COMMUNITIES[lang];
+            const himsCommunity = communities.find(
+              (c) => c.name === himsName && c.language_code === lang
+            );
+            communityId = himsCommunity?.id || communityMap["general"];
+          } else if (postType === "hers") {
+            const hersName = HERS_COMMUNITIES[lang];
+            const hersCommunity = communities.find(
+              (c) => c.name === hersName && c.language_code === lang
+            );
+            communityId = hersCommunity?.id || communityMap["general"];
           } else {
             const cat = post.category?.toLowerCase() || "general";
             communityId = communityMap[cat] || communityMap["general"];
@@ -333,8 +413,8 @@ No explanations. No markdown. Only JSON.`;
           
           langResult.posted++;
 
-          // Generate and insert a reply comment for quora and dailylife posts
-          if ((postType === "quora" || postType === "dailylife") && insertedPost) {
+          // Generate and insert a reply comment for content posts
+          if ((postType === "quora" || postType === "dailylife" || postType === "hims" || postType === "hers") && insertedPost) {
             try {
               const LANG_COMMENT_PROMPTS: Record<string, string> = {
                 en: "Write a short, natural reply in English.",

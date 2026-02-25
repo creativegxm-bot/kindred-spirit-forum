@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Plus, Menu } from "lucide-react";
+import { Search, Plus, Menu, Gamepad2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import UserMenu from "./UserMenu";
@@ -66,6 +66,11 @@ const Header = ({ onCreatePost, onMenuToggle, onOpenAuth }: HeaderProps) => {
           </div>
 
           <div className="flex items-center gap-2">
+            <a href={localePath("/roblox")}>
+              <Button variant="ghost" size="icon" title="Roblox Games">
+                <Gamepad2 className="h-5 w-5 text-green-500" />
+              </Button>
+            </a>
             <PhotoEnhancerTool />
             <Button
               variant="create"

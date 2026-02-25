@@ -6,6 +6,7 @@ import AirbnbBanner from "@/components/AirbnbBanner";
 import Sidebar from "@/components/Sidebar";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import TrendingGames from "@/components/TrendingGames";
+import TrendingApps from "@/components/TrendingApps";
 import PostCard from "@/components/PostCard";
 import CreatePostModal from "@/components/CreatePostModal";
 import AuthModal from "@/components/AuthModal";
@@ -50,6 +51,7 @@ const Index = () => {
           <div className="flex gap-6 justify-center">
             <div className="w-full max-w-2xl space-y-4">
               <TrendingGames />
+              <TrendingApps />
               <LanguageFilter />
               {isLoading ? (
                 <div className="flex items-center justify-center py-20">

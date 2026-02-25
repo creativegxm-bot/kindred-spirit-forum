@@ -16,6 +16,7 @@ import { Loader2 } from "lucide-react";
 const TrendingSidebar = lazy(() => import("@/components/TrendingSidebar"));
 const TrendingGames = lazy(() => import("@/components/TrendingGames"));
 const TrendingApps = lazy(() => import("@/components/TrendingApps"));
+const TrendingAIApps = lazy(() => import("@/components/TrendingAIApps"));
 
 const Index = () => {
   const { navigate } = useLocalizedNavigate();
@@ -54,6 +55,7 @@ const Index = () => {
               <Suspense fallback={null}>
                 <TrendingGames />
                 <TrendingApps />
+                <TrendingAIApps />
               </Suspense>
               <LanguageFilter />
               {isLoading ? (

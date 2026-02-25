@@ -26,6 +26,8 @@ import RobloxGames from "./pages/RobloxGames";
 import RobloxGameDetail from "./pages/RobloxGameDetail";
 import AppListing from "./pages/AppListing";
 import AppDetail from "./pages/AppDetail";
+import AIAppListing from "./pages/AIAppListing";
+import AIAppDetail from "./pages/AIAppDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -85,6 +87,8 @@ const App = () => (
                   <Route path="roblox/:gameId" element={<RobloxGameDetail />} />
                   <Route path="apps" element={<AppListing />} />
                   <Route path="apps/:appId" element={<AppDetail />} />
+                  <Route path="ai-apps" element={<AIAppListing />} />
+                  <Route path="ai-apps/:appId" element={<AIAppDetail />} />
                   <Route path="admin" element={<Admin />} />
                 </Route>
 

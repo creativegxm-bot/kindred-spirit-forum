@@ -24,6 +24,8 @@ import Hims from "./pages/Hims";
 import Hers from "./pages/Hers";
 import RobloxGames from "./pages/RobloxGames";
 import RobloxGameDetail from "./pages/RobloxGameDetail";
+import AppListing from "./pages/AppListing";
+import AppDetail from "./pages/AppDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -81,6 +83,8 @@ const App = () => (
                   <Route path="hers" element={<Hers />} />
                   <Route path="roblox" element={<RobloxGames />} />
                   <Route path="roblox/:gameId" element={<RobloxGameDetail />} />
+                  <Route path="apps" element={<AppListing />} />
+                  <Route path="apps/:appId" element={<AppDetail />} />
                   <Route path="admin" element={<Admin />} />
                 </Route>
 

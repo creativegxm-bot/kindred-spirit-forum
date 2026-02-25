@@ -1,12 +1,9 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import Header from "@/components/Header";
 import PromoBanner from "@/components/PromoBanner";
 import AirbnbBanner from "@/components/AirbnbBanner";
 import Sidebar from "@/components/Sidebar";
-import TrendingSidebar from "@/components/TrendingSidebar";
-import TrendingGames from "@/components/TrendingGames";
-import TrendingApps from "@/components/TrendingApps";
 import PostCard from "@/components/PostCard";
 import CreatePostModal from "@/components/CreatePostModal";
 import AuthModal from "@/components/AuthModal";
@@ -15,6 +12,10 @@ import { usePosts } from "@/hooks/usePosts";
 import { useRealtimePosts } from "@/hooks/useRealtimeSubscription";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Loader2 } from "lucide-react";
+
+const TrendingSidebar = lazy(() => import("@/components/TrendingSidebar"));
+const TrendingGames = lazy(() => import("@/components/TrendingGames"));
+const TrendingApps = lazy(() => import("@/components/TrendingApps"));
 
 const Index = () => {
   const { navigate } = useLocalizedNavigate();
@@ -50,8 +51,10 @@ const Index = () => {
         <main className="flex-1 py-4 px-4 lg:px-6">
           <div className="flex gap-6 justify-center">
             <div className="w-full max-w-2xl space-y-4">
-              <TrendingGames />
-              <TrendingApps />
+              <Suspense fallback={null}>
+                <TrendingGames />
+                <TrendingApps />
+              </Suspense>
               <LanguageFilter />
               {isLoading ? (
                 <div className="flex items-center justify-center py-20">
@@ -84,7 +87,9 @@ const Index = () => {
               )}
             </div>
 
-            <TrendingSidebar />
+            <Suspense fallback={null}>
+              <TrendingSidebar />
+            </Suspense>
           </div>
         </main>
       </div>

@@ -57,7 +57,8 @@ export const usePosts = (languageCode?: string) => {
         .select(`
           *,
           community:communities(name, icon)
-        `);
+        `)
+        .limit(50);
       
       if (languageCode) {
         query = query.eq("language_code", languageCode);
@@ -66,60 +67,56 @@ export const usePosts = (languageCode?: string) => {
       const { data: posts, error } = await query.order("created_at", { ascending: false });
 
       if (error) throw error;
+      if (!posts || posts.length === 0) return [] as Post[];
 
-      // Fetch author profiles separately
-      const authorIds = [...new Set((posts || []).map(p => p.author_id))];
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("user_id, username, avatar_url")
-        .in("user_id", authorIds);
+      const authorIds = [...new Set(posts.map(p => p.author_id))];
+      const postIds = posts.map(p => p.id);
 
-      const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
+      // Fetch profiles, media, votes, and saved posts in parallel
+      const [profilesRes, mediaRes, votesRes, savedRes] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("user_id, username, avatar_url")
+          .in("user_id", authorIds),
+        supabase
+          .from("post_media")
+          .select("*")
+          .in("post_id", postIds)
+          .order("sort_order", { ascending: true }),
+        user
+          ? supabase
+              .from("votes")
+              .select("post_id, vote_type")
+              .eq("user_id", user.id)
+              .not("post_id", "is", null)
+          : Promise.resolve({ data: null }),
+        user
+          ? supabase
+              .from("saved_posts")
+              .select("post_id")
+              .eq("user_id", user.id)
+          : Promise.resolve({ data: null }),
+      ]);
 
-      // Fetch post media
-      const postIds = (posts || []).map(p => p.id);
-      const { data: allMedia } = await supabase
-        .from("post_media")
-        .select("*")
-        .in("post_id", postIds)
-        .order("sort_order", { ascending: true });
+      const profileMap = new Map(profilesRes.data?.map(p => [p.user_id, p]) || []);
 
       const mediaMap = new Map<string, PostMedia[]>();
-      (allMedia || []).forEach(m => {
+      (mediaRes.data || []).forEach(m => {
         const list = mediaMap.get(m.post_id) || [];
         list.push(m as PostMedia);
         mediaMap.set(m.post_id, list);
       });
 
-      let postsWithAuthors = (posts || []).map(post => ({
+      const voteMap = new Map(votesRes.data?.map((v) => [v.post_id, v.vote_type]) || []);
+      const savedSet = new Set(savedRes.data?.map((s) => s.post_id) || []);
+
+      return posts.map(post => ({
         ...post,
         author: profileMap.get(post.author_id) || { username: "deleted", avatar_url: null },
         media: mediaMap.get(post.id) || [],
-      }));
-
-      if (user) {
-        const { data: votes } = await supabase
-          .from("votes")
-          .select("post_id, vote_type")
-          .eq("user_id", user.id)
-          .not("post_id", "is", null);
-
-        const { data: savedPosts } = await supabase
-          .from("saved_posts")
-          .select("post_id")
-          .eq("user_id", user.id);
-
-        const voteMap = new Map(votes?.map((v) => [v.post_id, v.vote_type]));
-        const savedSet = new Set(savedPosts?.map((s) => s.post_id));
-
-        postsWithAuthors = postsWithAuthors.map((post) => ({
-          ...post,
-          user_vote: voteMap.get(post.id) ?? null,
-          is_saved: savedSet.has(post.id),
-        }));
-      }
-
-      return postsWithAuthors as Post[];
+        user_vote: voteMap.get(post.id) ?? null,
+        is_saved: savedSet.has(post.id),
+      })) as Post[];
     },
   });
 };

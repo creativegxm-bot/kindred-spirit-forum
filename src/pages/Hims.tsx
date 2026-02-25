@@ -14,11 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Shield } from "lucide-react";
 import type { Post } from "@/hooks/usePosts";
 
-const HIMS_COMMUNITIES: Record<string, string> = {
-  en: "Hims", fr: "Hims-FR", es: "Hims-ES", tr: "Hims-TR",
-  de: "Hims-DE", ja: "Hims-JA", hi: "Hims-HI", pt: "Hims-PT",
-  ru: "Hims-RU", it: "Hims-IT",
-};
+const HIMS_COMMUNITY = "Hims";
 
 const Hims = () => {
   const { user } = useAuth();
@@ -35,7 +31,7 @@ const Hims = () => {
     setAuthModalOpen(true);
   };
 
-  const communityName = HIMS_COMMUNITIES[language] || "Hims";
+  const communityName = HIMS_COMMUNITY;
 
   const { data: posts = [], isLoading } = useQuery({
     queryKey: ["hims-posts", language, user?.id],
@@ -44,7 +40,6 @@ const Hims = () => {
         .from("communities")
         .select("id")
         .eq("name", communityName)
-        .eq("language_code", language)
         .single();
 
       if (!community) return [];

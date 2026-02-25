@@ -14,11 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Heart } from "lucide-react";
 import type { Post } from "@/hooks/usePosts";
 
-const HERS_COMMUNITIES: Record<string, string> = {
-  en: "Hers", fr: "Hers-FR", es: "Hers-ES", tr: "Hers-TR",
-  de: "Hers-DE", ja: "Hers-JA", hi: "Hers-HI", pt: "Hers-PT",
-  ru: "Hers-RU", it: "Hers-IT",
-};
+const HERS_COMMUNITY = "Hers";
 
 const Hers = () => {
   const { user } = useAuth();
@@ -35,7 +31,7 @@ const Hers = () => {
     setAuthModalOpen(true);
   };
 
-  const communityName = HERS_COMMUNITIES[language] || "Hers";
+  const communityName = HERS_COMMUNITY;
 
   const { data: posts = [], isLoading } = useQuery({
     queryKey: ["hers-posts", language, user?.id],
@@ -44,7 +40,6 @@ const Hers = () => {
         .from("communities")
         .select("id")
         .eq("name", communityName)
-        .eq("language_code", language)
         .single();
 
       if (!community) return [];

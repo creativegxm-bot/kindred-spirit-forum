@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { TrendingUp, Flame, Clock, Star, Plus, MessageSquare, FileImage, Heart, Newspaper, Smartphone, Mail, Shield } from "lucide-react";
+import { TrendingUp, Flame, Clock, Star, Plus, MessageSquare, FileImage, Heart, Newspaper, Smartphone, Mail, Shield, Gamepad2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCommunities } from "@/hooks/usePosts";
 import { useAuth } from "@/hooks/useAuth";
@@ -98,6 +98,12 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
             <Button variant="ghost" className="w-full justify-start gap-3">
               <Heart className="h-5 w-5 text-pink-500" />
               {language === "tr" ? "Eş Bulucu" : "Match Finder"}
+            </Button>
+          </Link>
+          <Link to={localePath("/tech-news")}>
+            <Button variant="ghost" className="w-full justify-start gap-3">
+              <Gamepad2 className="h-5 w-5 text-red-500" />
+              {language === "tr" ? "Teknoloji Haberleri" : "Tech News"}
             </Button>
           </Link>
           <Link to={localePath("/news")}>

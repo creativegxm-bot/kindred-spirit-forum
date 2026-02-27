@@ -31,6 +31,7 @@ import AIAppListing from "./pages/AIAppListing";
 import AIAppDetail from "./pages/AIAppDetail";
 import PrivacyAnalysis from "./pages/PrivacyAnalysis";
 import CategoryApps from "./pages/CategoryApps";
+import CategoryAppDetail from "./pages/CategoryAppDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -95,6 +96,7 @@ const App = () => (
                   <Route path="ai-apps/:appId" element={<AIAppDetail />} />
                   <Route path="privacy-analysis" element={<PrivacyAnalysis />} />
                   <Route path="category-apps/:category" element={<CategoryApps />} />
+                  <Route path="category-apps/:category/:appSlug" element={<CategoryAppDetail />} />
                   <Route path="admin" element={<Admin />} />
                 </Route>
 

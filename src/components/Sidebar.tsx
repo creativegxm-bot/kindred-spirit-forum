@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { TrendingUp, Flame, Clock, Star, Plus, MessageSquare, FileImage, Heart, Newspaper, Smartphone, Mail, Shield, Gamepad2, Eye } from "lucide-react";
+import { TrendingUp, Flame, Clock, Star, Plus, MessageSquare, FileImage, Heart, Newspaper, Smartphone, Mail, Shield, Gamepad2, Eye, ChevronDown, ChevronRight, AppWindow } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useCommunities } from "@/hooks/usePosts";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
+import { appCategories } from "@/data/categoryApps";
 import CreateCommunityModal from "./CreateCommunityModal";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +28,7 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
   const { t, language } = useLanguage();
   const { data: communities = [] } = useCommunities(language);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [categoryOpen, setCategoryOpen] = useState(false);
   const { localePath } = useLocalizedNavigate();
 
   const formatMembers = (count: number) => {
@@ -142,6 +145,33 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
               {language === "tr" ? "Gizlilik Analizi" : "Privacy Analysis"}
             </Button>
           </Link>
+
+          {/* Category Apps collapsible */}
+          <Collapsible open={categoryOpen} onOpenChange={setCategoryOpen}>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="w-full justify-start gap-3">
+                <AppWindow className="h-5 w-5 text-indigo-500" />
+                <span className="flex-1 text-left">
+                  {language === "tr" ? "Uygulama Kategorileri" : "App Categories"}
+                </span>
+                {categoryOpen ? (
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                )}
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pl-4 space-y-0.5">
+              {appCategories.map((cat) => (
+                <Link key={cat.slug} to={localePath(`/category-apps/${cat.slug}`)}>
+                  <Button variant="ghost" className="w-full justify-start gap-2 h-8 text-sm">
+                    <span>{cat.emoji}</span>
+                    <span className="truncate">{language === "tr" ? cat.nameTr : cat.name}</span>
+                  </Button>
+                </Link>
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
         </div>
 
         <div className="mt-2 border-t border-border" />

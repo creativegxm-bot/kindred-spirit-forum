@@ -292,3 +292,13 @@ export const appCategories: AppCategory[] = [
 
 export const getCategoryBySlug = (slug: string): AppCategory | undefined =>
   appCategories.find((c) => c.slug === slug);
+
+export const getAppSlug = (name: string): string =>
+  name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+export const findCategoryApp = (categorySlug: string, appSlug: string) => {
+  const cat = getCategoryBySlug(categorySlug);
+  if (!cat) return { category: undefined, app: undefined };
+  const app = cat.apps.find((a) => getAppSlug(a.name) === appSlug);
+  return { category: cat, app };
+};

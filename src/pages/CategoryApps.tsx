@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { getCategoryBySlug } from "@/data/categoryApps";
+import { getCategoryBySlug, getAppSlug } from "@/data/categoryApps";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { useLanguage } from "@/hooks/useLanguage";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
@@ -16,6 +17,7 @@ const CategoryApps = () => {
   const { language } = useLanguage();
   const isTr = language === "tr";
 
+  const { navigate } = useLocalizedNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -90,7 +92,11 @@ const CategoryApps = () => {
           {/* Apps Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredApps.map((app, idx) => (
-              <Card key={idx} className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/50 group">
+              <Card
+                key={idx}
+                className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/50 group cursor-pointer"
+                onClick={() => navigate(`/category-apps/${category}/${getAppSlug(app.name)}`)}
+              >
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
                     <img

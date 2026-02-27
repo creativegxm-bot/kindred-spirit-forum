@@ -401,8 +401,62 @@ const PrivacyAnalysis = () => {
           ))}
         </div>
 
+        {/* Search in Incognito Section */}
+        <Card className="mt-12 border-accent bg-accent/10">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <EyeOff className="h-5 w-5 text-primary" />
+              {isTr ? "Gizli Modda Arama Yapın" : "Search Online in Incognito Mode"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              {isTr
+                ? "Gizli mod, tarama geçmişinizi, çerezlerinizi ve site verilerinizi oturum sonunda otomatik olarak siler. Aşağıdaki bağlantıya tıklayarak yeni bir gizli pencerede arama yapabilirsiniz."
+                : "Incognito mode automatically deletes your browsing history, cookies, and site data at the end of your session. Click the link below to open a search engine — then use the keyboard shortcut to switch to an incognito window."}
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a
+                href="https://www.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex"
+              >
+                <Button variant="default" className="gap-2 w-full sm:w-auto">
+                  <Globe className="h-4 w-4" />
+                  {isTr ? "Google'da Ara" : "Search on Google"}
+                </Button>
+              </a>
+              <a
+                href="https://duckduckgo.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex"
+              >
+                <Button variant="outline" className="gap-2 w-full sm:w-auto">
+                  <Lock className="h-4 w-4" />
+                  {isTr ? "DuckDuckGo (Gizlilik Odaklı)" : "DuckDuckGo (Privacy-Focused)"}
+                </Button>
+              </a>
+            </div>
+
+            <div className="rounded-lg bg-muted p-4 space-y-2">
+              <p className="text-sm font-semibold text-foreground">
+                {isTr ? "Gizli Pencere Kısayolları:" : "Incognito Window Shortcuts:"}
+              </p>
+              <ul className="text-xs text-muted-foreground space-y-1">
+                <li><span className="font-mono bg-background px-1.5 py-0.5 rounded text-foreground">Ctrl + Shift + N</span> — Chrome / Edge</li>
+                <li><span className="font-mono bg-background px-1.5 py-0.5 rounded text-foreground">Ctrl + Shift + P</span> — Firefox</li>
+                <li><span className="font-mono bg-background px-1.5 py-0.5 rounded text-foreground">⌘ + Shift + N</span> — Mac (Chrome / Edge)</li>
+                <li><span className="font-mono bg-background px-1.5 py-0.5 rounded text-foreground">⌘ + Shift + P</span> — Mac (Firefox)</li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Disclaimer */}
-        <Card className="mt-12 border-primary/20 bg-primary/5">
+        <Card className="mt-6 border-primary/20 bg-primary/5">
           <CardContent className="pt-5">
             <div className="flex items-start gap-3">
               <Shield className="h-5 w-5 text-primary mt-0.5 shrink-0" />

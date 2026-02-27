@@ -29,6 +29,7 @@ import AppListing from "./pages/AppListing";
 import AppDetail from "./pages/AppDetail";
 import AIAppListing from "./pages/AIAppListing";
 import AIAppDetail from "./pages/AIAppDetail";
+import PrivacyAnalysis from "./pages/PrivacyAnalysis";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -91,6 +92,7 @@ const App = () => (
                   <Route path="apps/:appId" element={<AppDetail />} />
                   <Route path="ai-apps" element={<AIAppListing />} />
                   <Route path="ai-apps/:appId" element={<AIAppDetail />} />
+                  <Route path="privacy-analysis" element={<PrivacyAnalysis />} />
                   <Route path="admin" element={<Admin />} />
                 </Route>
 

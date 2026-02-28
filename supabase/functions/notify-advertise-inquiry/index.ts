@@ -27,7 +27,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         from: "OndaBir <notifications@ondabir.com>",
-        to: ["notifications@ondabir.com"],
+        to: ["resiaba2872@gmail.com"],
         subject: `Yeni Reklam Başvurusu: ${name}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">

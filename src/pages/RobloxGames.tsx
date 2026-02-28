@@ -8,6 +8,7 @@ import { robloxGames, gameCategories } from "@/data/robloxGames";
 import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useState } from "react";
+import Footer from "@/components/Footer";
 
 const RobloxGames = () => {
   const { localePath } = useLocalizedNavigate();
@@ -121,6 +122,7 @@ const RobloxGames = () => {
           {language === "tr" ? "Oyun bulunamadı." : "No games found."}
         </div>
       )}
+      <Footer />
     </div>
   );
 };

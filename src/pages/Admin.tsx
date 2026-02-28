@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useLanguage } from "@/hooks/useLanguage";
 import AdvertiseInquiriesTable from "@/components/admin/AdvertiseInquiriesTable";
+import Footer from "@/components/Footer";
 
 const Admin = () => {
   const { user, loading: authLoading } = useAuth();
@@ -64,6 +65,7 @@ const Admin = () => {
           <AdvertiseInquiriesTable />
         </section>
       </main>
+      <Footer />
     </div>
   );
 };

@@ -8,6 +8,7 @@ import PostDetail from "@/components/PostDetail";
 import AuthModal from "@/components/AuthModal";
 import { useSavedPosts } from "@/hooks/useSavedPosts";
 import { useRealtimePosts } from "@/hooks/useRealtimeSubscription";
+import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Post } from "@/hooks/usePosts";
@@ -115,6 +116,7 @@ const SavedPosts = () => {
         onClose={() => setAuthModalOpen(false)}
         defaultMode={authMode}
       />
+      <Footer />
     </div>
   );
 };

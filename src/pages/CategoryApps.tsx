@@ -9,6 +9,7 @@ import AuthModal from "@/components/AuthModal";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Search, Star, Download, ExternalLink } from "lucide-react";
 
@@ -152,6 +153,7 @@ const CategoryApps = () => {
         onClose={() => setAuthModalOpen(false)}
         defaultMode="login"
       />
+      <Footer />
     </div>
   );
 };

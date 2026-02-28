@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { MessageSquare, Search, Menu, Home } from "lucide-react";
 import UserMenu from "@/components/UserMenu";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import Footer from "@/components/Footer";
 import NotificationDropdown from "@/components/NotificationDropdown";
 import ChatRoomList from "@/components/chat/ChatRoomList";
 import ChatRoomView from "@/components/chat/ChatRoomView";
@@ -148,6 +149,7 @@ const Chat = () => {
         onClose={() => setAuthModalOpen(false)}
         defaultMode={authMode}
       />
+      <Footer />
     </div>
   );
 };

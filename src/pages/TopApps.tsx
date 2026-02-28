@@ -7,6 +7,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import Footer from "@/components/Footer";
 
 interface AppInfo {
   name: string;
@@ -338,6 +339,7 @@ const TopApps = () => {
         onClose={() => setAuthModalOpen(false)}
         defaultMode="login"
       />
+      <Footer />
     </div>
   );
 };

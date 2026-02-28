@@ -9,6 +9,7 @@ import CommentItem from "@/components/CommentItem";
 import CommentMediaUpload from "@/components/CommentMediaUpload";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
+import Footer from "@/components/Footer";
 import AuthModal from "@/components/AuthModal";
 import { usePosts } from "@/hooks/usePosts";
 import { useComments, useCreateComment } from "@/hooks/useComments";
@@ -360,6 +361,7 @@ const Post = () => {
         onClose={() => setShowAuthModal(false)} 
         defaultMode={authMode}
       />
+      <Footer />
     </div>
   );
 };

@@ -8,6 +8,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useJoinCommunity } from "@/hooks/useCommunities";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
+import Footer from "@/components/Footer";
 import TrendingSidebar from "@/components/TrendingSidebar";
 import AuthModal from "@/components/AuthModal";
 import PostCard from "@/components/PostCard";
@@ -400,6 +401,7 @@ const CommunityPage = () => {
         onClose={() => setCreatePostOpen(false)}
         onAuthRequired={() => openAuth("login")}
       />
+      <Footer />
     </div>
   );
 };

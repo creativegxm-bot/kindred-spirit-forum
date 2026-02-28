@@ -6,6 +6,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import TrendingSidebar from "@/components/TrendingSidebar";
+import Footer from "@/components/Footer";
 import AuthModal from "@/components/AuthModal";
 import PostCard from "@/components/PostCard";
 import PostDetail from "@/components/PostDetail";
@@ -151,6 +152,7 @@ const Hims = () => {
         <PostDetail post={selectedPost} onClose={() => setSelectedPost(null)} onAuthRequired={() => openAuth("login")} />
       )}
       <CreatePostModal isOpen={createPostOpen} onClose={() => setCreatePostOpen(false)} onAuthRequired={() => openAuth("login")} />
+      <Footer />
     </div>
   );
 };

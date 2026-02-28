@@ -8,6 +8,7 @@ import Header from "@/components/Header";
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
+import Footer from "@/components/Footer";
 import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -259,6 +260,7 @@ const EmailAlias = () => {
         onClose={() => setAuthModalOpen(false)}
         defaultMode={authMode}
       />
+      <Footer />
     </div>
   );
 };

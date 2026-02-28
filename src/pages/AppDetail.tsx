@@ -8,6 +8,7 @@ import Sidebar from "@/components/Sidebar";
 import AuthModal from "@/components/AuthModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import Footer from "@/components/Footer";
 import { ArrowLeft, Download, Star, ExternalLink, Check } from "lucide-react";
 
 const AppDetail = () => {
@@ -160,6 +161,7 @@ const AppDetail = () => {
         onClose={() => setAuthModalOpen(false)}
         defaultMode="login"
       />
+      <Footer />
     </div>
   );
 };

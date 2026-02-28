@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import AuthModal from "@/components/AuthModal";
+import Footer from "@/components/Footer";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
@@ -325,6 +326,7 @@ const MatchFinder = () => {
         onClose={() => setAuthModal({ ...authModal, isOpen: false })}
         defaultMode={authModal.mode}
       />
+      <Footer />
     </div>
   );
 };

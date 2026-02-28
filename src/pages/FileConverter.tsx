@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import AuthModal from "@/components/AuthModal";
 import CreatePostModal from "@/components/CreatePostModal";
+import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -443,6 +444,7 @@ const FileConverter = () => {
         onClose={() => setAuthModalOpen(false)}
         defaultMode={authMode}
       />
+      <Footer />
     </div>
   );
 };

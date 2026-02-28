@@ -8,6 +8,7 @@ import ProfileTabs from "@/components/ProfileTabs";
 import ProfileSettings from "@/components/ProfileSettings";
 import AuthModal from "@/components/AuthModal";
 import { useUserProfile, useUserPosts, useUserComments, useUserKarma } from "@/hooks/useProfile";
+import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 
@@ -109,6 +110,7 @@ const Profile = () => {
         onClose={() => setAuthModalOpen(false)}
         defaultMode={authMode}
       />
+      <Footer />
     </div>
   );
 };

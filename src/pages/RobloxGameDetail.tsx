@@ -6,6 +6,7 @@ import { Star, Users, ArrowLeft, Download, ExternalLink, Calendar, HardDrive, Co
 import { robloxGames } from "@/data/robloxGames";
 import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { useLanguage } from "@/hooks/useLanguage";
+import Footer from "@/components/Footer";
 
 const RobloxGameDetail = () => {
   const { gameId } = useParams<{ gameId: string }>();
@@ -110,6 +111,7 @@ const RobloxGameDetail = () => {
           </div>
         </CardContent>
       </Card>
+      <Footer />
     </div>
   );
 };

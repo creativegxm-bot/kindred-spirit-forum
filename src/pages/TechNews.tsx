@@ -8,6 +8,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Footer from "@/components/Footer";
 import { techNewsArticles, type TechNewsArticle } from "@/data/techNews";
 
 type CategoryFilter = "all" | "game" | "app" | "ai";
@@ -147,6 +148,7 @@ const TechNews = () => {
         </main>
       </div>
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} defaultMode="login" />
+      <Footer />
     </div>
   );
 };

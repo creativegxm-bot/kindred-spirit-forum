@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import Footer from "@/components/Footer";
 
 const Advertise = () => {
   const { language } = useLanguage();
@@ -265,6 +266,7 @@ const Advertise = () => {
           </Card>
         </section>
       </main>
+      <Footer />
     </div>
   );
 };

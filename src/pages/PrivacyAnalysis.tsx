@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
+import Footer from "@/components/Footer";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
@@ -474,6 +475,7 @@ const PrivacyAnalysis = () => {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </div>
   );
 };

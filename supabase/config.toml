@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.manage-email-alias]
 verify_jwt = false
+
+[functions.notify-advertise-inquiry]
+verify_jwt = false

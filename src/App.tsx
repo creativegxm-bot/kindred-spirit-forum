@@ -32,6 +32,20 @@ import AIAppDetail from "./pages/AIAppDetail";
 import PrivacyAnalysis from "./pages/PrivacyAnalysis";
 import CategoryApps from "./pages/CategoryApps";
 import CategoryAppDetail from "./pages/CategoryAppDetail";
+import AboutUs from "./pages/AboutUs";
+import SecurityTrust from "./pages/SecurityTrust";
+import HelpSupport from "./pages/HelpSupport";
+import Jobs from "./pages/Jobs";
+import EditorialGuidelines from "./pages/EditorialGuidelines";
+import AddSoftware from "./pages/AddSoftware";
+import MonetizationSolutions from "./pages/MonetizationSolutions";
+import SoftwarePolicy from "./pages/SoftwarePolicy";
+import DMCA from "./pages/DMCA";
+import LegalInfo from "./pages/LegalInfo";
+import TermsOfUse from "./pages/TermsOfUse";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import CookiePolicy from "./pages/CookiePolicy";
+import AdvertisingOpportunities from "./pages/AdvertisingOpportunities";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -98,6 +112,20 @@ const App = () => (
                   <Route path="category-apps/:category" element={<CategoryApps />} />
                   <Route path="category-apps/:category/:appSlug" element={<CategoryAppDetail />} />
                   <Route path="admin" element={<Admin />} />
+                  <Route path="about" element={<AboutUs />} />
+                  <Route path="security" element={<SecurityTrust />} />
+                  <Route path="help" element={<HelpSupport />} />
+                  <Route path="jobs" element={<Jobs />} />
+                  <Route path="editorial" element={<EditorialGuidelines />} />
+                  <Route path="add-software" element={<AddSoftware />} />
+                  <Route path="monetization" element={<MonetizationSolutions />} />
+                  <Route path="software-policy" element={<SoftwarePolicy />} />
+                  <Route path="dmca" element={<DMCA />} />
+                  <Route path="legal" element={<LegalInfo />} />
+                  <Route path="terms" element={<TermsOfUse />} />
+                  <Route path="privacy" element={<PrivacyPolicyPage />} />
+                  <Route path="cookies" element={<CookiePolicy />} />
+                  <Route path="ad-opportunities" element={<AdvertisingOpportunities />} />
                 </Route>
 
                 {/* Catch-all */}

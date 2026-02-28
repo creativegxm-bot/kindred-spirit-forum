@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 
@@ -46,19 +46,21 @@ export interface Community {
   created_at: string;
 }
 
+const POSTS_PER_PAGE = 10;
+
 export const usePosts = (languageCode?: string) => {
   const { user } = useAuth();
 
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["posts", user?.id, languageCode],
-    queryFn: async () => {
+    queryFn: async ({ pageParam = 0 }) => {
       let query = supabase
         .from("posts")
         .select(`
           *,
           community:communities(name, icon)
         `)
-        .limit(50);
+        .range(pageParam * POSTS_PER_PAGE, (pageParam + 1) * POSTS_PER_PAGE - 1);
       
       if (languageCode) {
         query = query.eq("language_code", languageCode);
@@ -67,12 +69,11 @@ export const usePosts = (languageCode?: string) => {
       const { data: posts, error } = await query.order("created_at", { ascending: false });
 
       if (error) throw error;
-      if (!posts || posts.length === 0) return [] as Post[];
+      if (!posts || posts.length === 0) return { posts: [] as Post[], nextPage: undefined };
 
       const authorIds = [...new Set(posts.map(p => p.author_id))];
       const postIds = posts.map(p => p.id);
 
-      // Fetch profiles, media, votes, and saved posts in parallel
       const [profilesRes, mediaRes, votesRes, savedRes] = await Promise.all([
         supabase
           .from("profiles")
@@ -110,14 +111,21 @@ export const usePosts = (languageCode?: string) => {
       const voteMap = new Map(votesRes.data?.map((v) => [v.post_id, v.vote_type]) || []);
       const savedSet = new Set(savedRes.data?.map((s) => s.post_id) || []);
 
-      return posts.map(post => ({
+      const mappedPosts = posts.map(post => ({
         ...post,
         author: profileMap.get(post.author_id) || { username: "deleted", avatar_url: null },
         media: mediaMap.get(post.id) || [],
         user_vote: voteMap.get(post.id) ?? null,
         is_saved: savedSet.has(post.id),
       })) as Post[];
+
+      return {
+        posts: mappedPosts,
+        nextPage: posts.length === POSTS_PER_PAGE ? pageParam + 1 : undefined,
+      };
     },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextPage,
   });
 };
 

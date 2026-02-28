@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import Header from "@/components/Header";
 import PromoBanner from "@/components/PromoBanner";
@@ -12,6 +12,7 @@ import { usePosts } from "@/hooks/usePosts";
 import { useRealtimePosts } from "@/hooks/useRealtimeSubscription";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 
 const TrendingSidebar = lazy(() => import("@/components/TrendingSidebar"));
@@ -27,7 +28,9 @@ const Index = () => {
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
 
   const { language } = useLanguage();
-  const { data: posts = [], isLoading, error } = usePosts(language);
+  const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage } = usePosts(language);
+
+  const posts = useMemo(() => data?.pages?.flatMap(page => page.posts) ?? [], [data]);
   
   // Enable real-time updates for posts and votes
   useRealtimePosts();
@@ -87,6 +90,21 @@ const Index = () => {
                     onAuthRequired={() => openAuth("login")}
                   />
                 ))
+              )}
+              {hasNextPage && (
+                <div className="flex justify-center py-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => fetchNextPage()}
+                    disabled={isFetchingNextPage}
+                    className="w-full max-w-xs"
+                  >
+                    {isFetchingNextPage ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : null}
+                    {language === "tr" ? "Daha Fazla Göster" : "Load More"}
+                  </Button>
+                </div>
               )}
             </div>
 

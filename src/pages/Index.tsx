@@ -12,6 +12,7 @@ import { usePosts } from "@/hooks/usePosts";
 import { useRealtimePosts } from "@/hooks/useRealtimeSubscription";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Loader2 } from "lucide-react";
+import Footer from "@/components/Footer";
 
 const TrendingSidebar = lazy(() => import("@/components/TrendingSidebar"));
 const TrendingGames = lazy(() => import("@/components/TrendingGames"));
@@ -107,6 +108,8 @@ const Index = () => {
         onClose={() => setAuthModalOpen(false)}
         defaultMode={authMode}
       />
+
+      <Footer />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { useLanguage } from "@/hooks/useLanguage";
+import { Twitter, Instagram, Github } from "lucide-react";
 import ondabirLogo from "@/assets/ondabir-logo.png";
 
 const Footer = () => {
@@ -83,6 +84,17 @@ const Footer = () => {
           <p className="text-muted-foreground text-xs">
             © {new Date().getFullYear()} ondabir. {isTr ? "Tüm hakları saklıdır." : "All rights reserved."}
           </p>
+          <div className="flex items-center gap-4">
+            <a href="https://twitter.com/ondabir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+              <Twitter size={18} />
+            </a>
+            <a href="https://instagram.com/ondabir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+              <Instagram size={18} />
+            </a>
+            <a href="https://github.com/ondabir" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+              <Github size={18} />
+            </a>
+          </div>
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <Link to={localePath("/privacy")} className="hover:text-primary transition-colors">{isTr ? "Gizlilik" : "Privacy"}</Link>
             <Link to={localePath("/terms")} className="hover:text-primary transition-colors">{isTr ? "Koşullar" : "Terms"}</Link>

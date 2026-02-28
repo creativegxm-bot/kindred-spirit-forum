@@ -39,6 +39,11 @@ const Advertise = () => {
 
       if (error) throw error;
 
+      // Send email notification (fire-and-forget)
+      supabase.functions.invoke("notify-advertise-inquiry", {
+        body: { name: formData.name, email: formData.email, company: formData.company, message: formData.message }
+      }).catch(err => console.error("Email notification failed:", err));
+
       toast({
         title: language === "tr" ? "Mesajınız gönderildi!" : "Message sent!",
         description: language === "tr" 

@@ -32,12 +32,13 @@ const Post = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const { toast } = useToast();
-  const { data: posts = [], isLoading: postsLoading } = usePosts();
+  const { data: postsData, isLoading: postsLoading } = usePosts();
   const { data: comments = [], isLoading: commentsLoading } = useComments(postId || null);
   const createComment = useCreateComment();
 
-  // Find the specific post
-  const post = posts.find(p => p.id === postId);
+  // Find the specific post from paginated data
+  const allPosts = postsData?.pages?.flatMap(page => page.posts) ?? [];
+  const post = allPosts.find(p => p.id === postId);
 
   // Enable real-time updates for comments and votes
   useRealtimeComments(postId || null);

@@ -205,6 +205,48 @@ export type Database = {
         }
         Relationships: []
       }
+      children_stories: {
+        Row: {
+          age_range: string
+          content: string
+          created_at: string
+          id: string
+          image_url: string | null
+          language_code: string
+          moral: string
+          read_time: number
+          story_number: number
+          summary: string
+          title: string
+        }
+        Insert: {
+          age_range?: string
+          content: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          language_code?: string
+          moral: string
+          read_time?: number
+          story_number: number
+          summary: string
+          title: string
+        }
+        Update: {
+          age_range?: string
+          content?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          language_code?: string
+          moral?: string
+          read_time?: number
+          story_number?: number
+          summary?: string
+          title?: string
+        }
+        Relationships: []
+      }
       comments: {
         Row: {
           author_id: string

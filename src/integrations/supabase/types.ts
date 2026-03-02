@@ -437,6 +437,39 @@ export type Database = {
         }
         Relationships: []
       }
+      iq_test_results: {
+        Row: {
+          created_at: string
+          id: string
+          iq_estimate: number
+          language_code: string
+          score: number
+          time_taken_seconds: number | null
+          total_questions: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          iq_estimate?: number
+          language_code?: string
+          score?: number
+          time_taken_seconds?: number | null
+          total_questions?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          iq_estimate?: number
+          language_code?: string
+          score?: number
+          time_taken_seconds?: number | null
+          total_questions?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           comment_id: string | null

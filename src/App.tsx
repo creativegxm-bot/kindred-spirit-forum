@@ -48,6 +48,7 @@ import CookiePolicy from "./pages/CookiePolicy";
 import AdvertisingOpportunities from "./pages/AdvertisingOpportunities";
 import ChineseFolklore from "./pages/ChineseFolklore";
 import ChildrenStories from "./pages/ChildrenStories";
+import IQTest from "./pages/IQTest";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -132,6 +133,7 @@ const App = () => (
                   <Route path="folklore/china/:storyId" element={<ChineseFolklore />} />
                   <Route path="stories" element={<ChildrenStories />} />
                   <Route path="stories/:storyId" element={<ChildrenStories />} />
+                  <Route path="iq-test" element={<IQTest />} />
                 </Route>
 
                 {/* Catch-all */}

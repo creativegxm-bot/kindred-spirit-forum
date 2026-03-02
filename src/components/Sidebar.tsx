@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { TrendingUp, Flame, Clock, Star, Plus, MessageSquare, FileImage, Heart, Newspaper, Smartphone, Mail, Shield, Gamepad2, Eye, ChevronDown, ChevronRight, AppWindow } from "lucide-react";
+import { TrendingUp, Flame, Clock, Star, Plus, MessageSquare, FileImage, Heart, Newspaper, Smartphone, Mail, Shield, Gamepad2, Eye, ChevronDown, ChevronRight, AppWindow, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useCommunities } from "@/hooks/usePosts";
@@ -143,6 +143,12 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
             <Button variant="ghost" className="w-full justify-start gap-3">
               <Eye className="h-5 w-5 text-cyan-500" />
               {language === "tr" ? "Gizlilik Analizi" : "Privacy Analysis"}
+            </Button>
+          </Link>
+          <Link to={localePath("/iq-test")}>
+            <Button variant="ghost" className="w-full justify-start gap-3">
+              <Brain className="h-5 w-5 text-purple-500" />
+              {language === "tr" ? "IQ Testi" : "IQ Test"}
             </Button>
           </Link>
 

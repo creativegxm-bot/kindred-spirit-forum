@@ -407,6 +407,33 @@ export type Database = {
           },
         ]
       }
+      draw_entries: {
+        Row: {
+          country: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       email_aliases: {
         Row: {
           alias: string

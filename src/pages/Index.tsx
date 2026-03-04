@@ -2,7 +2,7 @@ import { useState, useMemo, lazy, Suspense } from "react";
 import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import Header from "@/components/Header";
 import PromoBanner from "@/components/PromoBanner";
-import AirbnbBanner from "@/components/AirbnbBanner";
+import MillionDollarBanner from "@/components/MillionDollarBanner";
 import Sidebar from "@/components/Sidebar";
 import PostCard from "@/components/PostCard";
 import CreatePostModal from "@/components/CreatePostModal";
@@ -42,7 +42,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AirbnbBanner />
+      <MillionDollarBanner />
       <PromoBanner />
       <Header
         onCreatePost={() => setCreateModalOpen(true)}

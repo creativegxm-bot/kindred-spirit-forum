@@ -49,6 +49,7 @@ import AdvertisingOpportunities from "./pages/AdvertisingOpportunities";
 import ChineseFolklore from "./pages/ChineseFolklore";
 import ChildrenStories from "./pages/ChildrenStories";
 import IQTest from "./pages/IQTest";
+import MillionDollarDraw from "./pages/MillionDollarDraw";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -134,6 +135,7 @@ const App = () => (
                   <Route path="stories" element={<ChildrenStories />} />
                   <Route path="stories/:storyId" element={<ChildrenStories />} />
                   <Route path="iq-test" element={<IQTest />} />
+                  <Route path="million-dollar-draw" element={<MillionDollarDraw />} />
                 </Route>
 
                 {/* Catch-all */}

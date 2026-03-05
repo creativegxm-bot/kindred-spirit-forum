@@ -1,0 +1,98 @@
+export interface KurdistanCity {
+  name: string;
+  nameTr: string;
+  nameKu: string;
+  population: number;
+  region: string;
+  regionTr: string;
+  country: string;
+  countryTr: string;
+  lat: number;
+  lng: number;
+  elevation?: number; // meters
+  area?: number; // km²
+  notable?: string;
+  notableTr?: string;
+}
+
+export const kurdistanCities: KurdistanCity[] = [
+  // ── Southern Kurdistan (Iraq) ──
+  { name: "Erbil", nameTr: "Erbil", nameKu: "Hewlêr", population: 1500000, region: "Southern Kurdistan", regionTr: "Güney Kürdistan", country: "Iraq", countryTr: "Irak", lat: 36.19, lng: 44.01, elevation: 420, area: 115, notable: "Capital of Kurdistan Region, one of the oldest continuously inhabited cities", notableTr: "Kürdistan Bölgesi başkenti, dünyanın en eski sürekli yerleşim yerlerinden" },
+  { name: "Sulaymaniyah", nameTr: "Süleymaniye", nameKu: "Silêmanî", population: 900000, region: "Southern Kurdistan", regionTr: "Güney Kürdistan", country: "Iraq", countryTr: "Irak", lat: 35.56, lng: 45.43, elevation: 882, area: 105, notable: "Cultural capital of Kurdistan, known for intellectuals and poets", notableTr: "Kürdistan'ın kültür başkenti, entelektüel ve şairleriyle tanınır" },
+  { name: "Duhok", nameTr: "Duhok", nameKu: "Dihok", population: 350000, region: "Southern Kurdistan", regionTr: "Güney Kürdistan", country: "Iraq", countryTr: "Irak", lat: 36.87, lng: 42.99, elevation: 430, area: 67, notable: "Gateway to northern Kurdistan, surrounded by mountains", notableTr: "Kuzey Kürdistan'a geçiş kapısı, dağlarla çevrili" },
+  { name: "Kirkuk", nameTr: "Kerkük", nameKu: "Kerkûk", population: 1000000, region: "Southern Kurdistan", regionTr: "Güney Kürdistan", country: "Iraq", countryTr: "Irak", lat: 35.47, lng: 44.39, elevation: 350, area: 120, notable: "Major oil-producing city, historically multi-ethnic", notableTr: "Önemli petrol şehri, tarihsel olarak çok etnikli" },
+  { name: "Halabja", nameTr: "Halepçe", nameKu: "Helebce", population: 75000, region: "Southern Kurdistan", regionTr: "Güney Kürdistan", country: "Iraq", countryTr: "Irak", lat: 35.18, lng: 45.99, elevation: 680, area: 30, notable: "Site of the 1988 chemical attack, symbol of Kurdish resilience", notableTr: "1988 kimyasal saldırısı yeri, Kürt direniş sembolü" },
+  { name: "Zakho", nameTr: "Zakho", nameKu: "Zaxo", population: 190000, region: "Southern Kurdistan", regionTr: "Güney Kürdistan", country: "Iraq", countryTr: "Irak", lat: 37.15, lng: 42.68, elevation: 450, area: 40, notable: "Border city near Turkey, historic Delal Bridge", notableTr: "Türkiye sınırında, tarihi Delal Köprüsü" },
+  { name: "Soran", nameTr: "Soran", nameKu: "Soran", population: 140000, region: "Southern Kurdistan", regionTr: "Güney Kürdistan", country: "Iraq", countryTr: "Irak", lat: 36.66, lng: 44.54, elevation: 590, area: 35, notable: "Gateway to Hamilton Road and Bekhal waterfall", notableTr: "Hamilton Yolu ve Bekhal şelalesinin giriş kapısı" },
+  { name: "Ranya", nameTr: "Ranya", nameKu: "Ranya", population: 110000, region: "Southern Kurdistan", regionTr: "Güney Kürdistan", country: "Iraq", countryTr: "Irak", lat: 36.25, lng: 44.88, elevation: 560, area: 28, notable: "Located near Lake Dukan, agricultural center", notableTr: "Dukan Gölü yakınında, tarım merkezi" },
+  { name: "Kalar", nameTr: "Kalar", nameKu: "Keler", population: 120000, region: "Southern Kurdistan", regionTr: "Güney Kürdistan", country: "Iraq", countryTr: "Irak", lat: 34.63, lng: 45.32, elevation: 213, area: 32, notable: "Located in Garmian region, agricultural hub", notableTr: "Garmian bölgesinde, tarım merkezi" },
+  { name: "Chamchamal", nameTr: "Çemçemal", nameKu: "Çemçemal", population: 85000, region: "Southern Kurdistan", regionTr: "Güney Kürdistan", country: "Iraq", countryTr: "Irak", lat: 35.53, lng: 44.83, elevation: 700, area: 24, notable: "Agricultural town between Kirkuk and Sulaymaniyah", notableTr: "Kerkük ve Süleymaniye arasında tarım kasabası" },
+  { name: "Koysinjaq", nameTr: "Koysinceq", nameKu: "Koye", population: 65000, region: "Southern Kurdistan", regionTr: "Güney Kürdistan", country: "Iraq", countryTr: "Irak", lat: 36.08, lng: 44.63, elevation: 730, area: 20, notable: "Historic town known for pomegranate orchards", notableTr: "Nar bahçeleriyle bilinen tarihi kasaba" },
+  { name: "Akre", nameTr: "Akre", nameKu: "Aqrê", population: 80000, region: "Southern Kurdistan", regionTr: "Güney Kürdistan", country: "Iraq", countryTr: "Irak", lat: 36.74, lng: 43.88, elevation: 640, area: 22, notable: "Known for Newroz celebrations and cliff-side old town", notableTr: "Nevruz kutlamaları ve yamaç eski şehriyle tanınır" },
+
+  // ── Northern Kurdistan (Turkey) ──
+  { name: "Diyarbakır", nameTr: "Diyarbakır", nameKu: "Amed", population: 1790000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 37.91, lng: 40.24, elevation: 660, area: 15272, notable: "Unofficial capital of Northern Kurdistan, UNESCO-listed walls", notableTr: "Kuzey Kürdistan'ın gayri resmi başkenti, UNESCO listesindeki surlar" },
+  { name: "Van", nameTr: "Van", nameKu: "Wan", population: 540000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 38.49, lng: 43.38, elevation: 1727, area: 19069, notable: "Home to Lake Van, the largest lake in Turkey", notableTr: "Türkiye'nin en büyük gölü Van Gölü'ne ev sahipliği yapar" },
+  { name: "Şanlıurfa", nameTr: "Şanlıurfa", nameKu: "Riha", population: 2070000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 37.16, lng: 38.79, elevation: 518, area: 18584, notable: "Ancient city near Göbekli Tepe, birthplace of Abraham", notableTr: "Göbekli Tepe yakınında antik şehir, Hz. İbrahim'in doğum yeri" },
+  { name: "Gaziantep", nameTr: "Gaziantep", nameKu: "Entab", population: 2100000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 37.07, lng: 37.38, elevation: 855, area: 6222, notable: "UNESCO Creative City of Gastronomy, famous for baklava", notableTr: "UNESCO Gastronomi Yaratıcı Şehri, baklavasıyla ünlü" },
+  { name: "Batman", nameTr: "Batman", nameKu: "Êlih", population: 620000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 37.89, lng: 41.13, elevation: 540, area: 4694, notable: "Major oil-producing province in Turkey", notableTr: "Türkiye'nin önemli petrol üretim ili" },
+  { name: "Mardin", nameTr: "Mardin", nameKu: "Mêrdîn", population: 870000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 37.31, lng: 40.74, elevation: 1083, area: 8891, notable: "Stone city overlooking Mesopotamian plains, multi-faith heritage", notableTr: "Mezopotamya ovalarına bakan taş şehir, çok dinli miras" },
+  { name: "Siirt", nameTr: "Siirt", nameKu: "Sêrt", population: 330000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 37.93, lng: 41.94, elevation: 895, area: 5406, notable: "Known for blanket weaving and pistachio production", notableTr: "Battaniye dokumacılığı ve fıstık üretimiyle tanınır" },
+  { name: "Şırnak", nameTr: "Şırnak", nameKu: "Şirnex", population: 520000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 37.42, lng: 42.46, elevation: 1350, area: 7172, notable: "Near Cizre, the historic city of Botan emirate", notableTr: "Tarihi Botan Beyliği şehri Cizre yakınında" },
+  { name: "Hakkari", nameTr: "Hakkari", nameKu: "Colemêrg", population: 280000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 37.58, lng: 43.74, elevation: 1720, area: 7121, notable: "Highest provincial capital in Turkey, Cilo-Sat mountains", notableTr: "Türkiye'nin en yüksek il merkezi, Cilo-Sat dağları" },
+  { name: "Bingöl", nameTr: "Bingöl", nameKu: "Çewlîg", population: 280000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 38.88, lng: 40.49, elevation: 1150, area: 8402, notable: "Name means 'thousand lakes' in Kurdish", notableTr: "Adı Kürtçe 'bin göl' anlamına gelir" },
+  { name: "Muş", nameTr: "Muş", nameKu: "Mûş", population: 410000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 38.73, lng: 41.51, elevation: 1350, area: 8196, notable: "Fertile plain, historically significant in Armenian and Kurdish history", notableTr: "Verimli ova, Ermeni ve Kürt tarihinde önemli" },
+  { name: "Bitlis", nameTr: "Bitlis", nameKu: "Bedlîs", population: 350000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 38.40, lng: 42.12, elevation: 1545, area: 6707, notable: "Historic fortress city, gateway to Lake Van", notableTr: "Tarihi kale şehri, Van Gölü'ne geçiş kapısı" },
+  { name: "Ağrı", nameTr: "Ağrı", nameKu: "Agirî", population: 540000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 39.72, lng: 43.05, elevation: 1650, area: 11492, notable: "Home to Mount Ararat (5137m), Turkey's highest peak", notableTr: "Türkiye'nin en yüksek zirvesi Ağrı Dağı (5137m)" },
+  { name: "Tunceli", nameTr: "Tunceli", nameKu: "Dêrsim", population: 88000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 39.11, lng: 39.55, elevation: 930, area: 7774, notable: "Sacred to Alevi Kurds, Munzur Valley National Park", notableTr: "Alevi Kürtler için kutsal, Munzur Vadisi Milli Parkı" },
+  { name: "Elazığ", nameTr: "Elazığ", nameKu: "Xarpêt", population: 590000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 38.68, lng: 39.23, elevation: 1067, area: 9153, notable: "Historic Harput fortress, Keban Dam lake", notableTr: "Tarihi Harput kalesi, Keban Baraj gölü" },
+  { name: "Adıyaman", nameTr: "Adıyaman", nameKu: "Semsûr", population: 630000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 37.76, lng: 38.28, elevation: 669, area: 7614, notable: "Home to Mount Nemrut and its colossal statues", notableTr: "Nemrut Dağı ve dev heykellere ev sahipliği yapar" },
+  { name: "Kars", nameTr: "Kars", nameKu: "Qers", population: 290000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 40.60, lng: 43.09, elevation: 1768, area: 18557, notable: "Former Armenian capital, Ani ruins UNESCO site", notableTr: "Eski Ermeni başkenti, Ani harabeleri UNESCO alanı" },
+  { name: "Iğdır", nameTr: "Iğdır", nameKu: "Qeledost", population: 200000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 39.92, lng: 44.05, elevation: 840, area: 3587, notable: "Located at the foot of Mount Ararat, near Armenian border", notableTr: "Ağrı Dağı eteklerinde, Ermenistan sınırı yakınında" },
+  { name: "Malatya", nameTr: "Malatya", nameKu: "Meletî", population: 800000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 38.35, lng: 38.31, elevation: 964, area: 12313, notable: "World's largest apricot producer", notableTr: "Dünyanın en büyük kayısı üreticisi" },
+  { name: "Cizre", nameTr: "Cizre", nameKu: "Cizîr", population: 140000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 37.33, lng: 42.19, elevation: 380, area: 18, notable: "Historic capital of Botan emirate, on the Tigris River", notableTr: "Tarihi Botan Beyliği başkenti, Dicle Nehri üzerinde" },
+  { name: "Nusaybin", nameTr: "Nusaybin", nameKu: "Nisêbîn", population: 105000, region: "Northern Kurdistan", regionTr: "Kuzey Kürdistan", country: "Turkey", countryTr: "Türkiye", lat: 37.08, lng: 41.22, elevation: 460, area: 12, notable: "Ancient Nisibis, twin city of Qamishli across the Syrian border", notableTr: "Antik Nisibis, Suriye sınırındaki Kamışlı'nın ikiz şehri" },
+
+  // ── Eastern Kurdistan (Iran) ──
+  { name: "Mahabad", nameTr: "Mehabad", nameKu: "Mehabad", population: 170000, region: "Eastern Kurdistan", regionTr: "Doğu Kürdistan", country: "Iran", countryTr: "İran", lat: 36.76, lng: 45.72, elevation: 1320, area: 42, notable: "Capital of the 1946 Republic of Kurdistan", notableTr: "1946 Kürdistan Cumhuriyeti'nin başkenti" },
+  { name: "Sanandaj", nameTr: "Senendec", nameKu: "Sine", population: 430000, region: "Eastern Kurdistan", regionTr: "Doğu Kürdistan", country: "Iran", countryTr: "İran", lat: 35.31, lng: 46.99, elevation: 1373, area: 68, notable: "Capital of Kurdistan Province in Iran, cultural center", notableTr: "İran Kürdistan eyaleti başkenti, kültür merkezi" },
+  { name: "Kermanshah", nameTr: "Kirmanşah", nameKu: "Kirmaşan", population: 950000, region: "Eastern Kurdistan", regionTr: "Doğu Kürdistan", country: "Iran", countryTr: "İran", lat: 34.31, lng: 47.07, elevation: 1322, area: 96, notable: "Bisotun inscription UNESCO site, Taq-e Bostan reliefs", notableTr: "Bisotun yazıtı UNESCO alanı, Tak-ı Bostan kabartmaları" },
+  { name: "Ilam", nameTr: "İlam", nameKu: "Îlam", population: 195000, region: "Eastern Kurdistan", regionTr: "Doğu Kürdistan", country: "Iran", countryTr: "İran", lat: 33.64, lng: 46.42, elevation: 1337, area: 38, notable: "Capital of Ilam Province, ancient Elamite territory", notableTr: "İlam eyaleti başkenti, antik Elam toprakları" },
+  { name: "Saqqez", nameTr: "Sakız", nameKu: "Seqiz", population: 160000, region: "Eastern Kurdistan", regionTr: "Doğu Kürdistan", country: "Iran", countryTr: "İran", lat: 36.25, lng: 46.27, elevation: 1522, area: 35, notable: "Burial site of Cyrus the Younger, known for walnuts", notableTr: "Genç Kyros'un mezar yeri, cevizleriyle tanınır" },
+  { name: "Baneh", nameTr: "Bane", nameKu: "Bane", population: 110000, region: "Eastern Kurdistan", regionTr: "Doğu Kürdistan", country: "Iran", countryTr: "İran", lat: 35.99, lng: 45.88, elevation: 1540, area: 28, notable: "Major trade hub near Iraqi border, known for bazaars", notableTr: "Irak sınırı yakınında ticaret merkezi, pazarlarıyla tanınır" },
+  { name: "Marivan", nameTr: "Merivan", nameKu: "Merîwan", population: 95000, region: "Eastern Kurdistan", regionTr: "Doğu Kürdistan", country: "Iran", countryTr: "İran", lat: 35.52, lng: 46.18, elevation: 1287, area: 25, notable: "Near Lake Zrebar, known for natural beauty", notableTr: "Zrebar Gölü yakınında, doğal güzelliğiyle tanınır" },
+  { name: "Paveh", nameTr: "Paveh", nameKu: "Pawe", population: 55000, region: "Eastern Kurdistan", regionTr: "Doğu Kürdistan", country: "Iran", countryTr: "İran", lat: 35.04, lng: 46.35, elevation: 1600, area: 18, notable: "Mountainous Hawraman region, UNESCO-listed cultural landscape", notableTr: "Dağlık Hewraman bölgesi, UNESCO kültürel peyzajı" },
+  { name: "Kamyaran", nameTr: "Kamyaran", nameKu: "Kamyaran", population: 65000, region: "Eastern Kurdistan", regionTr: "Doğu Kürdistan", country: "Iran", countryTr: "İran", lat: 34.80, lng: 46.94, elevation: 1405, area: 20, notable: "Agricultural center in Kurdistan Province", notableTr: "Kürdistan eyaletinde tarım merkezi" },
+  { name: "Divandarreh", nameTr: "Divandere", nameKu: "Dîwandere", population: 45000, region: "Eastern Kurdistan", regionTr: "Doğu Kürdistan", country: "Iran", countryTr: "İran", lat: 35.92, lng: 47.02, elevation: 1820, area: 15, notable: "Known for cold winters and nomadic Kurdish culture", notableTr: "Soğuk kışları ve göçebe Kürt kültürüyle tanınır" },
+
+  // ── Western Kurdistan (Syria) ──
+  { name: "Qamishli", nameTr: "Kamışlı", nameKu: "Qamişlo", population: 250000, region: "Western Kurdistan", regionTr: "Batı Kürdistan", country: "Syria", countryTr: "Suriye", lat: 37.05, lng: 41.22, elevation: 452, area: 35, notable: "De facto capital of Autonomous NE Syria (Rojava)", notableTr: "Rojava Özerk Yönetimi'nin fiili başkenti" },
+  { name: "Afrin", nameTr: "Afrin", nameKu: "Efrîn", population: 200000, region: "Western Kurdistan", regionTr: "Batı Kürdistan", country: "Syria", countryTr: "Suriye", lat: 36.51, lng: 36.87, elevation: 350, area: 30, notable: "Historic olive-producing region, Ain Dara temple nearby", notableTr: "Tarihi zeytin bölgesi, yakınında Ain Dara tapınağı" },
+  { name: "Kobanî", nameTr: "Kobanê", nameKu: "Kobanê", population: 55000, region: "Western Kurdistan", regionTr: "Batı Kürdistan", country: "Syria", countryTr: "Suriye", lat: 36.89, lng: 38.35, elevation: 520, area: 15, notable: "Symbol of Kurdish resistance against ISIS (2014-2015 siege)", notableTr: "IŞİD'e karşı Kürt direnişinin sembolü (2014-2015 kuşatması)" },
+  { name: "Hasakah", nameTr: "Haseke", nameKu: "Hesekê", population: 250000, region: "Western Kurdistan", regionTr: "Batı Kürdistan", country: "Syria", countryTr: "Suriye", lat: 36.50, lng: 40.75, elevation: 300, area: 40, notable: "Major agricultural center in the Khabur River valley", notableTr: "Habur Nehri vadisinde büyük tarım merkezi" },
+  { name: "Derik", nameTr: "Derik", nameKu: "Dêrik", population: 65000, region: "Western Kurdistan", regionTr: "Batı Kürdistan", country: "Syria", countryTr: "Suriye", lat: 37.07, lng: 42.07, elevation: 470, area: 18, notable: "Oil-rich area in northeast Syria, near Iraqi and Turkish borders", notableTr: "Kuzeydoğu Suriye'de petrol zengini bölge" },
+  { name: "Amuda", nameTr: "Amude", nameKu: "Amûdê", population: 50000, region: "Western Kurdistan", regionTr: "Batı Kürdistan", country: "Syria", countryTr: "Suriye", lat: 37.10, lng: 40.93, elevation: 440, area: 14, notable: "Known as the city of cinema and culture in Rojava", notableTr: "Rojava'nın sinema ve kültür şehri olarak bilinir" },
+  { name: "Tirbespiye", nameTr: "Tirbespiye", nameKu: "Tirbespiyê", population: 40000, region: "Western Kurdistan", regionTr: "Batı Kürdistan", country: "Syria", countryTr: "Suriye", lat: 37.00, lng: 40.48, elevation: 380, area: 12, notable: "Multi-ethnic town, important junction in Al-Jazira region", notableTr: "Çok etnikli kasaba, Cezire bölgesinde önemli kavşak" },
+  { name: "Manbij", nameTr: "Menbic", nameKu: "Minbic", population: 100000, region: "Western Kurdistan", regionTr: "Batı Kürdistan", country: "Syria", countryTr: "Suriye", lat: 36.53, lng: 37.96, elevation: 460, area: 25, notable: "Ancient Hierapolis Bambyce, freed from ISIS in 2016", notableTr: "Antik Hierapolis Bambyce, 2016'da IŞİD'den kurtarıldı" },
+  { name: "Ras al-Ayn", nameTr: "Resulayn", nameKu: "Serêkaniyê", population: 30000, region: "Western Kurdistan", regionTr: "Batı Kürdistan", country: "Syria", countryTr: "Suriye", lat: 36.85, lng: 40.07, elevation: 360, area: 10, notable: "Source of the Khabur River, historically significant", notableTr: "Habur Nehri'nin kaynağı, tarihi öneme sahip" },
+];
+
+export const regionColors: Record<string, string> = {
+  "Northern Kurdistan": "bg-red-500/10 text-red-600 border-red-500/20",
+  "Southern Kurdistan": "bg-green-500/10 text-green-600 border-green-500/20",
+  "Eastern Kurdistan": "bg-amber-500/10 text-amber-600 border-amber-500/20",
+  "Western Kurdistan": "bg-blue-500/10 text-blue-600 border-blue-500/20",
+};
+
+export const regionDotColor: Record<string, string> = {
+  "Northern Kurdistan": "#ef4444",
+  "Southern Kurdistan": "#22c55e",
+  "Eastern Kurdistan": "#f59e0b",
+  "Western Kurdistan": "#3b82f6",
+};
+
+export const formatPop = (n: number) => {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
+  if (n >= 1000) return (n / 1000).toFixed(0) + "K";
+  return n.toString();
+};

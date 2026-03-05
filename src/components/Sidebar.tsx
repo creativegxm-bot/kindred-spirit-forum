@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { TrendingUp, Flame, Clock, Star, Plus, MessageSquare, FileImage, Heart, Newspaper, Smartphone, Mail, Shield, Gamepad2, Eye, ChevronDown, ChevronRight, AppWindow, Brain, Globe } from "lucide-react";
+import { TrendingUp, Flame, Clock, Star, Plus, MessageSquare, FileImage, Heart, Newspaper, Smartphone, Mail, Shield, Gamepad2, Eye, ChevronDown, ChevronRight, AppWindow, Brain, Globe, Home, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useCommunities } from "@/hooks/usePosts";
@@ -155,6 +155,18 @@ const Sidebar = ({ isOpen, onClose, onOpenAuth }: SidebarProps) => {
             <Button variant="ghost" className="w-full justify-start gap-3">
               <Globe className="h-5 w-5 text-teal-500" />
               {language === "tr" ? "Dünya Nüfusu" : "World Population"}
+            </Button>
+          </Link>
+          <Link to={localePath("/roommates")}>
+            <Button variant="ghost" className="w-full justify-start gap-3">
+              <Home className="h-5 w-5 text-amber-500" />
+              {language === "tr" ? "Ev Arkadaşı Bul" : "Find Roommate"}
+            </Button>
+          </Link>
+          <Link to={localePath("/job-board")}>
+            <Button variant="ghost" className="w-full justify-start gap-3">
+              <Briefcase className="h-5 w-5 text-sky-500" />
+              {language === "tr" ? "İş İlanları" : "Job Board"}
             </Button>
           </Link>
 

@@ -497,6 +497,60 @@ export type Database = {
         }
         Relationships: []
       }
+      job_listings: {
+        Row: {
+          company: string | null
+          created_at: string
+          currency: string
+          description: string
+          id: string
+          is_active: boolean
+          job_type: string
+          language_code: string
+          listing_type: string
+          location: string
+          salary_max: number | null
+          salary_min: number | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          currency?: string
+          description: string
+          id?: string
+          is_active?: boolean
+          job_type?: string
+          language_code?: string
+          listing_type?: string
+          location: string
+          salary_max?: number | null
+          salary_min?: number | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          currency?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          job_type?: string
+          language_code?: string
+          listing_type?: string
+          location?: string
+          salary_max?: number | null
+          salary_min?: number | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           comment_id: string | null
@@ -735,6 +789,57 @@ export type Database = {
           updated_at?: string
           user_id?: string
           username?: string
+        }
+        Relationships: []
+      }
+      roommate_listings: {
+        Row: {
+          budget_max: number | null
+          budget_min: number | null
+          created_at: string
+          currency: string
+          description: string
+          id: string
+          is_active: boolean
+          language_code: string
+          listing_type: string
+          location: string
+          move_in_date: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string
+          currency?: string
+          description: string
+          id?: string
+          is_active?: boolean
+          language_code?: string
+          listing_type?: string
+          location: string
+          move_in_date?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string
+          currency?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          language_code?: string
+          listing_type?: string
+          location?: string
+          move_in_date?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

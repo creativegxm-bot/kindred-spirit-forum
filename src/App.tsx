@@ -36,6 +36,8 @@ import AboutUs from "./pages/AboutUs";
 import SecurityTrust from "./pages/SecurityTrust";
 import HelpSupport from "./pages/HelpSupport";
 import Jobs from "./pages/Jobs";
+import RoommateSeekers from "./pages/RoommateSeekers";
+import JobSeekers from "./pages/JobSeekers";
 import EditorialGuidelines from "./pages/EditorialGuidelines";
 import AddSoftware from "./pages/AddSoftware";
 import MonetizationSolutions from "./pages/MonetizationSolutions";
@@ -121,6 +123,8 @@ const App = () => (
                   <Route path="security" element={<SecurityTrust />} />
                   <Route path="help" element={<HelpSupport />} />
                   <Route path="jobs" element={<Jobs />} />
+                  <Route path="roommates" element={<RoommateSeekers />} />
+                  <Route path="job-board" element={<JobSeekers />} />
                   <Route path="editorial" element={<EditorialGuidelines />} />
                   <Route path="add-software" element={<AddSoftware />} />
                   <Route path="monetization" element={<MonetizationSolutions />} />

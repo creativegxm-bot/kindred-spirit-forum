@@ -14,19 +14,11 @@ const CountryContext = createContext<CountryContextType | undefined>(undefined);
 
 // Map common country codes to our supported country codes
 const countryCodeMapping: Record<string, string> = {
-  TR: "TR",
-  US: "US",
-  GB: "GB",
-  UK: "GB",
-  DE: "DE",
-  FR: "FR",
-  ES: "ES",
-  IN: "IN",
-  CN: "CN",
-  JP: "JP",
-  BR: "BR",
-  RU: "RU",
-  IT: "IT",
+  TR: "TR", US: "US", GB: "GB", UK: "GB", DE: "DE", FR: "FR", ES: "ES",
+  IN: "IN", CN: "CN", JP: "JP", BR: "BR", RU: "RU", IT: "IT",
+  ID: "ID", PK: "PK", NG: "NG", BD: "BD", MX: "MX", ET: "ET",
+  PH: "PH", EG: "EG", CD: "CD", VN: "VN", IR: "IR", TH: "TH",
+  ZA: "ZA", TZ: "TZ", KR: "KR", CO: "CO", KE: "KE", AR: "AR",
 };
 
 export const CountryProvider = ({ children }: { children: ReactNode }) => {

@@ -11,7 +11,9 @@ import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 import AuthModal from "@/components/AuthModal";
-import { usePosts } from "@/hooks/usePosts";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import type { Post as PostType } from "@/hooks/usePosts";
 import { useComments, useCreateComment } from "@/hooks/useComments";
 import { useRealtimeComments } from "@/hooks/useRealtimeSubscription";
 import { useAuth } from "@/hooks/useAuth";
@@ -33,13 +35,58 @@ const Post = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const { toast } = useToast();
-  const { data: postsData, isLoading: postsLoading } = usePosts();
+  const { data: post, isLoading: postsLoading } = useQuery({
+    queryKey: ["post", postId],
+    queryFn: async () => {
+      if (!postId) return null;
+      
+      const { data: postData, error } = await supabase
+        .from("posts")
+        .select(`*, community:communities(name, icon)`)
+        .eq("id", postId)
+        .maybeSingle();
+      
+      if (error) throw error;
+      if (!postData) return null;
+
+      // Fetch author profile
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("user_id, username, avatar_url")
+        .eq("user_id", postData.author_id)
+        .maybeSingle();
+
+      // Fetch media
+      const { data: media } = await supabase
+        .from("post_media")
+        .select("*")
+        .eq("post_id", postData.id)
+        .order("sort_order", { ascending: true });
+
+      let userVote = null;
+      let isSaved = false;
+
+      if (user) {
+        const [votesRes, savedRes] = await Promise.all([
+          supabase.from("votes").select("vote_type").eq("user_id", user.id).eq("post_id", postData.id).maybeSingle(),
+          supabase.from("saved_posts").select("id").eq("user_id", user.id).eq("post_id", postData.id).maybeSingle(),
+        ]);
+        userVote = votesRes.data?.vote_type ?? null;
+        isSaved = !!savedRes.data;
+      }
+
+      return {
+        ...postData,
+        author: profile || { username: "deleted", avatar_url: null },
+        media: (media || []) as PostType["media"],
+        user_vote: userVote,
+        is_saved: isSaved,
+      } as PostType;
+    },
+    enabled: !!postId,
+  });
   const { data: comments = [], isLoading: commentsLoading } = useComments(postId || null);
   const createComment = useCreateComment();
-
-  // Find the specific post from paginated data
-  const allPosts = postsData?.pages?.flatMap(page => page.posts) ?? [];
-  const post = allPosts.find(p => p.id === postId);
 
   // Enable real-time updates for comments and votes
   useRealtimeComments(postId || null);

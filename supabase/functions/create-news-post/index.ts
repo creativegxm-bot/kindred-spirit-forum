@@ -40,6 +40,7 @@ serve(async (req) => {
 
     const body = await req.json().catch(() => ({}));
     const targetLangs: string[] = body.languages || LANGUAGES;
+    const customTopic: string | null = body.topic || null;
 
     const results: any[] = [];
 
@@ -48,12 +49,15 @@ serve(async (req) => {
       const communityId = COMMUNITIES[lang];
       const authorId = profiles[Math.floor(Math.random() * profiles.length)].user_id;
 
-      const prompt = `Write a brief breaking news article in ${langName} about the death of Iran's Supreme Leader Ali Khamenei. 
+      const defaultTopic = `the death of Iran's Supreme Leader Ali Khamenei`;
+      const topic = customTopic || defaultTopic;
+
+      const prompt = `Write a brief breaking news article in ${langName} about ${topic}. 
 
 Return ONLY valid JSON (no markdown, no backticks) with this structure:
 {
   "title": "news headline in ${langName} (max 100 chars)",
-  "content": "2-3 paragraph news article in ${langName} about Khamenei's death, covering the event, reactions, and implications for Iran's future. Write as a news report.",
+  "content": "2-3 paragraph news article in ${langName}. Write as a news report.",
   "comments": [
     {"text": "a natural reaction comment in ${langName}, 1-3 sentences, like someone reacting to the news on a forum"},
     {"text": "another different perspective comment in ${langName}"},

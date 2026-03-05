@@ -38,6 +38,7 @@ import HelpSupport from "./pages/HelpSupport";
 import Jobs from "./pages/Jobs";
 import RoommateSeekers from "./pages/RoommateSeekers";
 import JobSeekers from "./pages/JobSeekers";
+import Kurdistan from "./pages/Kurdistan";
 import EditorialGuidelines from "./pages/EditorialGuidelines";
 import AddSoftware from "./pages/AddSoftware";
 import MonetizationSolutions from "./pages/MonetizationSolutions";
@@ -142,6 +143,7 @@ const App = () => (
                   <Route path="iq-test" element={<IQTest />} />
                   <Route path="million-dollar-draw" element={<MillionDollarDraw />} />
                   <Route path="world-population" element={<WorldPopulation />} />
+                  <Route path="kurdistan" element={<Kurdistan />} />
                 </Route>
 
                 {/* Catch-all */}

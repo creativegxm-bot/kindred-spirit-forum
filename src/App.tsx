@@ -50,6 +50,7 @@ import ChineseFolklore from "./pages/ChineseFolklore";
 import ChildrenStories from "./pages/ChildrenStories";
 import IQTest from "./pages/IQTest";
 import MillionDollarDraw from "./pages/MillionDollarDraw";
+import WorldPopulation from "./pages/WorldPopulation";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -136,6 +137,7 @@ const App = () => (
                   <Route path="stories/:storyId" element={<ChildrenStories />} />
                   <Route path="iq-test" element={<IQTest />} />
                   <Route path="million-dollar-draw" element={<MillionDollarDraw />} />
+                  <Route path="world-population" element={<WorldPopulation />} />
                 </Route>
 
                 {/* Catch-all */}

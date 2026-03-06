@@ -3,7 +3,7 @@ import { Language } from "./translations";
 // Language to primary country mapping (reverse of countryToLanguage)
 export const languageToCountry: Record<Language, string> = {
   tr: "TR",
-  en: "US", // Default English to US
+  en: "US",
   de: "DE",
   fr: "FR",
   es: "ES",
@@ -13,6 +13,7 @@ export const languageToCountry: Record<Language, string> = {
   pt: "BR",
   ru: "RU",
   it: "IT",
+  he: "IL",
 };
 
 // Language display names
@@ -28,9 +29,10 @@ export const languageNames: Record<Language, { native: string; english: string }
   pt: { native: "Português", english: "Portuguese" },
   ru: { native: "Русский", english: "Russian" },
   it: { native: "Italiano", english: "Italian" },
+  he: { native: "עברית", english: "Hebrew" },
 };
 
 // All supported languages
 export const SUPPORTED_LANGUAGES: Language[] = [
-  "tr", "en", "de", "fr", "es", "hi", "zh", "ja", "pt", "ru", "it"
+  "tr", "en", "de", "fr", "es", "hi", "zh", "ja", "pt", "ru", "it", "he"
 ];

@@ -17,6 +17,7 @@ const languageFlags: Record<Language, string> = {
   pt: "🇧🇷",
   ru: "🇷🇺",
   it: "🇮🇹",
+  he: "🇮🇱",
 };
 
 const LanguageFilter = () => {

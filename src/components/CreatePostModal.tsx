@@ -29,7 +29,7 @@ type PostType = "text" | "image" | "video" | "link" | "poll";
 
 const languageFlags: Record<Language, string> = {
   tr: "🇹🇷", en: "🇬🇧", de: "🇩🇪", fr: "🇫🇷", es: "🇪🇸",
-  hi: "🇮🇳", zh: "🇨🇳", ja: "🇯🇵", pt: "🇧🇷", ru: "🇷🇺", it: "🇮🇹",
+  hi: "🇮🇳", zh: "🇨🇳", ja: "🇯🇵", pt: "🇧🇷", ru: "🇷🇺", it: "🇮🇹", he: "🇮🇱",
 };
 
 const CreatePostModal = ({ isOpen, onClose, onAuthRequired }: CreatePostModalProps) => {

@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SUPPORTED_LANGUAGES = ["tr", "en", "de", "fr", "es", "hi", "zh", "ja", "pt", "ru", "it"];
+const SUPPORTED_LANGUAGES = ["tr", "en", "de", "fr", "es", "hi", "zh", "ja", "pt", "ru", "it", "he"];
 
 const LANG_PROMPTS: Record<string, string> = {
   tr: "Türkçe olarak kısa ve doğal bir yorum yaz.",
@@ -20,6 +20,7 @@ const LANG_PROMPTS: Record<string, string> = {
   pt: "Escreva um comentário curto e natural em português.",
   ru: "Напишите короткий и естественный комментарий на русском.",
   it: "Scrivi un breve commento naturale in italiano.",
+  he: "כתוב תגובה קצרה וטבעית בעברית.",
 };
 
 serve(async (req) => {

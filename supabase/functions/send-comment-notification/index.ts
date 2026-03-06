@@ -55,7 +55,32 @@ serve(async (req) => {
   }
 
   try {
+    // Validate JWT - only authenticated users can trigger notifications
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+
+    const authSupabase = createClient(supabaseUrl, anonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await authSupabase.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Use service role client for admin operations
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
@@ -107,7 +132,6 @@ serve(async (req) => {
 
     // Check if this is a reply to another comment
     if (record.parent_id) {
-      // This is a reply - also notify the parent comment author
       const { data: parentComment } = await supabase
         .from("comments")
         .select("author_id")
@@ -118,7 +142,6 @@ serve(async (req) => {
         const { data: parentAuthorAuth } = await supabase.auth.admin.getUserById(parentComment.author_id);
         
         if (parentAuthorAuth?.user?.email) {
-          // Send reply notification to parent comment author
           await sendEmail(
             parentAuthorAuth.user.email,
             `${commenterName} yorumunuza yanıt verdi`,
@@ -164,7 +187,7 @@ serve(async (req) => {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     console.error("Error in send-comment-notification:", errorMessage);
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: "Internal server error" }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

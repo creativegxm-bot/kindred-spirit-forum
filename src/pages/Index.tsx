@@ -19,6 +19,7 @@ const TrendingSidebar = lazy(() => import("@/components/TrendingSidebar"));
 const TrendingGames = lazy(() => import("@/components/TrendingGames"));
 const TrendingApps = lazy(() => import("@/components/TrendingApps"));
 const TrendingAIApps = lazy(() => import("@/components/TrendingAIApps"));
+const TrendingNews = lazy(() => import("@/components/TrendingNews"));
 
 const Index = () => {
   const { navigate } = useLocalizedNavigate();

@@ -17,12 +17,14 @@ const COMMUNITIES: Record<string, string> = {
   pt: "2d3993c7-6c3e-4d64-ba67-5760bc4deeda",
   ru: "69f7c33c-d994-49f0-8527-0828798480f5",
   it: "62123ca2-31be-4288-9d91-ef650a477d87",
+  he: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
 };
 
-const LANGUAGES = ["en", "tr", "fr", "es", "de", "ja", "hi", "pt", "ru", "it"];
+const LANGUAGES = ["en", "tr", "fr", "es", "de", "ja", "hi", "pt", "ru", "it", "he"];
 const LANG_NAMES: Record<string, string> = {
   en: "English", tr: "Turkish", fr: "French", es: "Spanish", de: "German",
   ja: "Japanese", hi: "Hindi", pt: "Portuguese", ru: "Russian", it: "Italian",
+  he: "Hebrew",
 };
 
 serve(async (req) => {

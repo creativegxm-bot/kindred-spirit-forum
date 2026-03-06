@@ -13,7 +13,7 @@ export const useLocalizedNavigate = () => {
   const localePath = useCallback(
     (path: string) => {
       // If path already starts with a language prefix, return as-is
-      if (path.match(/^\/(tr|en|de|fr|es|hi|zh|ja|pt|ru|it)(\/|$)/)) {
+      if (path.match(/^\/(tr|en|de|fr|es|hi|zh|ja|pt|ru|it|he)(\/|$)/)) {
         return path;
       }
       // Ensure path starts with /

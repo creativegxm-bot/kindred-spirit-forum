@@ -1,0 +1,2 @@
+INSERT INTO communities (id, name, description, icon, language_code, member_count)
+VALUES ('a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'עברית', 'הקהילה העברית של ondabir - דיונים, חדשות ועוד', '🇮🇱', 'he', 0);

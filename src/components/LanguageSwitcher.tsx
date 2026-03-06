@@ -23,6 +23,7 @@ const languageLabels: Record<Language, { flag: string; name: string; short: stri
   ja: { flag: "🇯🇵", name: "日本語", short: "日" },
   zh: { flag: "🇨🇳", name: "中文", short: "中" },
   hi: { flag: "🇮🇳", name: "हिंदी", short: "हि" },
+  he: { flag: "🇮🇱", name: "עברית", short: "עב" },
 };
 
 const LanguageSwitcher = () => {

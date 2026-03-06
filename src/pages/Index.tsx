@@ -19,6 +19,7 @@ const TrendingSidebar = lazy(() => import("@/components/TrendingSidebar"));
 const TrendingGames = lazy(() => import("@/components/TrendingGames"));
 const TrendingApps = lazy(() => import("@/components/TrendingApps"));
 const TrendingAIApps = lazy(() => import("@/components/TrendingAIApps"));
+const TrendingNews = lazy(() => import("@/components/TrendingNews"));
 
 const Index = () => {
   const { navigate } = useLocalizedNavigate();
@@ -57,6 +58,7 @@ const Index = () => {
           <div className="flex gap-6 justify-center">
             <div className="w-full max-w-2xl space-y-4">
               <Suspense fallback={null}>
+                <TrendingNews />
                 <TrendingGames />
                 <TrendingApps />
                 <TrendingAIApps />

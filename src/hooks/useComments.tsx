@@ -126,24 +126,29 @@ export const useCreateComment = () => {
       if (error) throw error;
 
       // Send email notification asynchronously (don't wait for it)
-      fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-comment-notification`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          type: "INSERT",
-          table: "comments",
-          record: {
-            id: data.id,
-            post_id: data.post_id,
-            author_id: data.author_id,
-            content: data.content,
-            parent_id: data.parent_id,
-            created_at: data.created_at,
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-comment-notification`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session.access_token}`,
+            "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
           },
-        }),
-      }).catch((err) => console.error("Email notification error:", err));
+          body: JSON.stringify({
+            type: "INSERT",
+            table: "comments",
+            record: {
+              id: data.id,
+              post_id: data.post_id,
+              author_id: data.author_id,
+              content: data.content,
+              parent_id: data.parent_id,
+              created_at: data.created_at,
+            },
+          }),
+        }).catch((err) => console.error("Email notification error:", err));
+      }
 
       return data;
     },

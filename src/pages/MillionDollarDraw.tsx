@@ -274,10 +274,10 @@ const MillionDollarDraw = () => {
 
   useEffect(() => {
     const fetchCount = async () => {
-      const { count } = await supabase
-        .from("draw_entries")
-        .select("*", { count: "exact", head: true });
-      setParticipantCount(count || 0);
+      const { data, error } = await supabase.rpc("get_draw_entry_count");
+      if (!error && data !== null) {
+        setParticipantCount(Number(data));
+      }
     };
     fetchCount();
   }, [hasEntered]);

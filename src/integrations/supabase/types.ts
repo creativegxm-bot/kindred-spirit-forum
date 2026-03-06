@@ -948,6 +948,7 @@ export type Database = {
         Args: { other_user_id: string }
         Returns: string
       }
+      get_draw_entry_count: { Args: never; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

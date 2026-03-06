@@ -20,6 +20,7 @@ const LANG_PROMPTS: Record<string, string> = {
   pt: "Escreva um comentário curto e natural em português.",
   ru: "Напишите короткий и естественный комментарий на русском.",
   it: "Scrivi un breve commento naturale in italiano.",
+  he: "כתוב תגובה קצרה וטבעית בעברית.",
 };
 
 serve(async (req) => {

@@ -58,6 +58,7 @@ const Index = () => {
           <div className="flex gap-6 justify-center">
             <div className="w-full max-w-2xl space-y-4">
               <Suspense fallback={null}>
+                <TrendingNews />
                 <TrendingGames />
                 <TrendingApps />
                 <TrendingAIApps />

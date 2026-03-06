@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SUPPORTED_LANGUAGES = ["tr", "en", "de", "fr", "es", "hi", "zh", "ja", "pt", "ru", "it"];
+const SUPPORTED_LANGUAGES = ["tr", "en", "de", "fr", "es", "hi", "zh", "ja", "pt", "ru", "it", "he"];
 
 const LANG_PROMPTS: Record<string, string> = {
   tr: "Türkçe olarak kısa ve doğal bir yorum yaz.",

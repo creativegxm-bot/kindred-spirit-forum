@@ -110,7 +110,7 @@ const News = () => {
                 </p>
               )}
             </div>
-            <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
+            <Globe className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
           </div>
         </CardContent>
       </Card>

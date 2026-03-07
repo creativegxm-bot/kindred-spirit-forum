@@ -15,6 +15,7 @@ import Chat from "./pages/Chat";
 import FileConverter from "./pages/FileConverter";
 import MatchFinder from "./pages/MatchFinder";
 import News from "./pages/News";
+import NewsArticle from "./pages/NewsArticle";
 import TechNews from "./pages/TechNews";
 import TopApps from "./pages/TopApps";
 import EmailAlias from "./pages/EmailAlias";

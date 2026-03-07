@@ -4,6 +4,8 @@ export interface TechNewsArticle {
   titleTr: string;
   summary: string;
   summaryTr: string;
+  content?: string;
+  contentTr?: string;
   category: "game" | "app" | "ai" | "space";
   imageUrl: string;
   sourceUrl: string;

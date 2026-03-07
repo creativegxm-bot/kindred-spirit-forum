@@ -73,13 +73,12 @@ const TrendingNews = () => {
                     ? categoryLabels[article.category].tr
                     : categoryLabels[article.category].en}
                 </Badge>
-                <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
+                <span className="text-[10px] text-muted-foreground">
                   {article.sourceName}
-                  <ExternalLink className="h-2.5 w-2.5" />
                 </span>
               </div>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
     </div>

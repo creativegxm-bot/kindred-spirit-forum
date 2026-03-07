@@ -106,6 +106,7 @@ const App = () => (
                   <Route path="tools/match-finder" element={<MatchFinder />} />
                   <Route path="news" element={<News />} />
                   <Route path="tech-news" element={<TechNews />} />
+                  <Route path="tech-news/:articleId" element={<NewsArticle />} />
                   <Route path="top-apps" element={<TopApps />} />
                   <Route path="email" element={<EmailAlias />} />
                   <Route path="advertise" element={<Advertise />} />

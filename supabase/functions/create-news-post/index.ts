@@ -60,6 +60,7 @@ Return ONLY valid JSON (no markdown, no backticks) with this structure:
 {
   "title": "news headline in ${langName} (max 100 chars)",
   "content": "2-3 paragraph news article in ${langName}. Write as a news report.",
+  "image_url": "a relevant Unsplash image URL in format https://images.unsplash.com/photo-XXXX?w=800&q=80 that relates to the topic",
   "comments": [
     {"text": "a natural reaction comment in ${langName}, 1-3 sentences, like someone reacting to the news on a forum"},
     {"text": "another different perspective comment in ${langName}"},
@@ -89,6 +90,15 @@ Write naturally as real news and real people commenting. No emojis. No AI discla
         text = text.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
         const parsed = JSON.parse(text);
 
+        // Fallback images for news posts if AI doesn't provide one
+        const NEWS_FALLBACK_IMAGES = [
+          "https://images.unsplash.com/photo-1504711434969-e33886168d6c?w=800&q=80",
+          "https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&q=80",
+          "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80",
+          "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80",
+        ];
+        const newsImage = parsed.image_url || NEWS_FALLBACK_IMAGES[Math.floor(Math.random() * NEWS_FALLBACK_IMAGES.length)];
+
         // Insert post
         const { data: post, error: postError } = await supabase
           .from("posts")
@@ -98,6 +108,7 @@ Write naturally as real news and real people commenting. No emojis. No AI discla
             author_id: authorId,
             community_id: communityId,
             language_code: lang,
+            image_url: newsImage,
           })
           .select("id")
           .single();

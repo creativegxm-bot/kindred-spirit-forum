@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { ExternalLink, Newspaper, Globe, ChevronDown, ChevronUp } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Newspaper, Globe, ChevronDown, ChevronUp } from "lucide-react";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import AuthModal from "@/components/AuthModal";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -108,7 +110,7 @@ const News = () => {
                 </p>
               )}
             </div>
-            <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
+            <Globe className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
           </div>
         </CardContent>
       </Card>

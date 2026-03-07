@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { ExternalLink, Gamepad2, Smartphone, Bot, Clock, TrendingUp, Rocket } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Gamepad2, Smartphone, Bot, Clock, TrendingUp, Rocket } from "lucide-react";
 import { format } from "date-fns";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import AuthModal from "@/components/AuthModal";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,10 +42,12 @@ const TechNews = () => {
     readMore: language === "tr" ? "Devamını Oku" : "Read More",
   };
 
+  const { localePath } = useLocalizedNavigate();
+
   const NewsCard = ({ article, featured = false }: { article: TechNewsArticle; featured?: boolean }) => {
     const cat = categoryConfig[article.category];
     return (
-      <a href={article.sourceUrl} target="_blank" rel="noopener noreferrer" className="block group">
+      <Link to={localePath(`/tech-news/${article.id}`)} className="block group">
         <Card className={`overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/40 ${featured ? "" : "h-full"}`}>
           <div className={featured ? "md:flex" : ""}>
             <div className={`relative overflow-hidden ${featured ? "md:w-1/2 h-64 md:h-auto" : "h-48"}`}>
@@ -72,10 +76,7 @@ const TechNews = () => {
                   <Clock className="h-3 w-3" />
                   <span>{format(new Date(article.publishedAt), "MMM d, yyyy")}</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <span className="font-medium">{article.sourceName}</span>
-                  <ExternalLink className="h-3 w-3" />
-                </div>
+                <span className="font-medium">{article.sourceName}</span>
               </div>
               {featured && (
                 <div className="flex flex-wrap gap-1.5 mt-3">
@@ -87,7 +88,7 @@ const TechNews = () => {
             </CardContent>
           </div>
         </Card>
-      </a>
+      </Link>
     );
   };
 

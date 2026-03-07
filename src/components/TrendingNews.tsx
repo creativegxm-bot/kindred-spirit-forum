@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Newspaper, ExternalLink, Flame } from "lucide-react";
+import { Flame } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { techNewsArticles } from "@/data/techNews";
@@ -44,11 +44,9 @@ const TrendingNews = () => {
 
       <div className="divide-y divide-border">
         {topNews.map((article, index) => (
-          <a
+          <Link
             key={article.id}
-            href={article.sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+            to={localePath(`/tech-news/${article.id}`)}
             className="flex gap-3 px-4 py-2.5 hover:bg-accent/50 transition-colors group"
           >
             <div className="relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden">
@@ -75,13 +73,12 @@ const TrendingNews = () => {
                     ? categoryLabels[article.category].tr
                     : categoryLabels[article.category].en}
                 </Badge>
-                <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
+                <span className="text-[10px] text-muted-foreground">
                   {article.sourceName}
-                  <ExternalLink className="h-2.5 w-2.5" />
                 </span>
               </div>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
     </div>

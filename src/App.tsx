@@ -15,6 +15,7 @@ import Chat from "./pages/Chat";
 import FileConverter from "./pages/FileConverter";
 import MatchFinder from "./pages/MatchFinder";
 import News from "./pages/News";
+import NewsArticle from "./pages/NewsArticle";
 import TechNews from "./pages/TechNews";
 import TopApps from "./pages/TopApps";
 import EmailAlias from "./pages/EmailAlias";
@@ -105,6 +106,7 @@ const App = () => (
                   <Route path="tools/match-finder" element={<MatchFinder />} />
                   <Route path="news" element={<News />} />
                   <Route path="tech-news" element={<TechNews />} />
+                  <Route path="tech-news/:articleId" element={<NewsArticle />} />
                   <Route path="top-apps" element={<TopApps />} />
                   <Route path="email" element={<EmailAlias />} />
                   <Route path="advertise" element={<Advertise />} />

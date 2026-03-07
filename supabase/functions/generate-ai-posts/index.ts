@@ -407,47 +407,33 @@ No explanations. No markdown. Only JSON.`;
 
           const randomUser = users[Math.floor(Math.random() * users.length)];
 
-          // Auto-assign an image based on post type
+          // Auto-assign an image based on post type (using storage-hosted images)
+          const STORAGE_BASE = "https://prksphzxxawvaootvwau.supabase.co/storage/v1/object/public/post-media/ai-posts";
           const POST_IMAGES: Record<string, string[]> = {
             dailylife: [
-              "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800&q=80",
-              "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80",
-              "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80",
-              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80",
-              "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=80",
-              "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&q=80",
+              `${STORAGE_BASE}/dailylife-1.jpg`,
+              `${STORAGE_BASE}/social-media-loneliness.jpg`,
             ],
             quora: [
-              "https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=800&q=80",
-              "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80",
-              "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
-              "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80",
-              "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80",
+              `${STORAGE_BASE}/quora-1.jpg`,
+              `${STORAGE_BASE}/university-scam.jpg`,
             ],
             hims: [
-              "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=80",
-              "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80",
-              "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=800&q=80",
-              "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
+              `${STORAGE_BASE}/hims-1.jpg`,
             ],
             hers: [
-              "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
-              "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80",
-              "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=800&q=80",
-              "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=80",
+              `${STORAGE_BASE}/hers-1.jpg`,
             ],
             jokes: [
-              "https://images.unsplash.com/photo-1543512214-318c7553f230?w=800&q=80",
-              "https://images.unsplash.com/photo-1527224857830-43a7acc85260?w=800&q=80",
+              `${STORAGE_BASE}/dailylife-1.jpg`,
             ],
             trivia: [
-              "https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=800&q=80",
-              "https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=800&q=80",
+              `${STORAGE_BASE}/quora-1.jpg`,
             ],
             general: [
-              "https://images.unsplash.com/photo-1504711434969-e33886168d6c?w=800&q=80",
-              "https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&q=80",
-              "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=800&q=80",
+              `${STORAGE_BASE}/news-1.jpg`,
+              `${STORAGE_BASE}/surveillance-privacy.jpg`,
+              `${STORAGE_BASE}/mars-vs-earth.jpg`,
             ],
           };
           const imagePool = POST_IMAGES[postType] || POST_IMAGES["general"];

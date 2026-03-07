@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { ExternalLink, Newspaper, Globe, ChevronDown, ChevronUp } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Newspaper, Globe, ChevronDown, ChevronUp } from "lucide-react";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import AuthModal from "@/components/AuthModal";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";

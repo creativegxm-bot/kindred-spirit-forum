@@ -90,12 +90,13 @@ Write naturally as real news and real people commenting. No emojis. No AI discla
         text = text.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
         const parsed = JSON.parse(text);
 
-        // Fallback images for news posts if AI doesn't provide one
+        // Fallback images for news posts (storage-hosted)
+        const STORAGE_BASE = "https://prksphzxxawvaootvwau.supabase.co/storage/v1/object/public/post-media/ai-posts";
         const NEWS_FALLBACK_IMAGES = [
-          "https://images.unsplash.com/photo-1504711434969-e33886168d6c?w=800&q=80",
-          "https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&q=80",
-          "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80",
-          "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80",
+          `${STORAGE_BASE}/news-1.jpg`,
+          `${STORAGE_BASE}/surveillance-privacy.jpg`,
+          `${STORAGE_BASE}/mars-vs-earth.jpg`,
+          `${STORAGE_BASE}/university-scam.jpg`,
         ];
         const newsImage = parsed.image_url || NEWS_FALLBACK_IMAGES[Math.floor(Math.random() * NEWS_FALLBACK_IMAGES.length)];
 

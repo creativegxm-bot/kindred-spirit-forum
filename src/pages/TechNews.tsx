@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ExternalLink, Gamepad2, Smartphone, Bot, Clock, TrendingUp } from "lucide-react";
+import { ExternalLink, Gamepad2, Smartphone, Bot, Clock, TrendingUp, Rocket } from "lucide-react";
 import { format } from "date-fns";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
@@ -11,12 +11,13 @@ import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import { techNewsArticles, type TechNewsArticle } from "@/data/techNews";
 
-type CategoryFilter = "all" | "game" | "app" | "ai";
+type CategoryFilter = "all" | "game" | "app" | "ai" | "space";
 
 const categoryConfig: Record<string, { icon: React.ReactNode; label: string; labelTr: string; color: string }> = {
   game: { icon: <Gamepad2 className="h-4 w-4" />, label: "Games", labelTr: "Oyunlar", color: "bg-red-500/10 text-red-500 border-red-500/20" },
   app: { icon: <Smartphone className="h-4 w-4" />, label: "Apps", labelTr: "Uygulamalar", color: "bg-blue-500/10 text-blue-500 border-blue-500/20" },
   ai: { icon: <Bot className="h-4 w-4" />, label: "AI", labelTr: "Yapay Zeka", color: "bg-purple-500/10 text-purple-500 border-purple-500/20" },
+  space: { icon: <Rocket className="h-4 w-4" />, label: "Space", labelTr: "Uzay", color: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" },
 };
 
 const TechNews = () => {

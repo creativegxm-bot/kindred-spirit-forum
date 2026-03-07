@@ -9,12 +9,14 @@ const categoryColors: Record<string, string> = {
   game: "bg-red-500/10 text-red-500 border-red-500/20",
   app: "bg-blue-500/10 text-blue-500 border-blue-500/20",
   ai: "bg-purple-500/10 text-purple-500 border-purple-500/20",
+  space: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
 };
 
 const categoryLabels: Record<string, { en: string; tr: string }> = {
   game: { en: "Game", tr: "Oyun" },
   app: { en: "App", tr: "Uygulama" },
   ai: { en: "AI", tr: "YZ" },
+  space: { en: "Space", tr: "Uzay" },
 };
 
 const TrendingNews = () => {

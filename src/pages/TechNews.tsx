@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { ExternalLink, Gamepad2, Smartphone, Bot, Clock, TrendingUp, Rocket } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Gamepad2, Smartphone, Bot, Clock, TrendingUp, Rocket } from "lucide-react";
 import { format } from "date-fns";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import AuthModal from "@/components/AuthModal";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

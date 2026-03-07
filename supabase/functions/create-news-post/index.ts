@@ -60,6 +60,7 @@ Return ONLY valid JSON (no markdown, no backticks) with this structure:
 {
   "title": "news headline in ${langName} (max 100 chars)",
   "content": "2-3 paragraph news article in ${langName}. Write as a news report.",
+  "image_url": "a relevant Unsplash image URL in format https://images.unsplash.com/photo-XXXX?w=800&q=80 that relates to the topic",
   "comments": [
     {"text": "a natural reaction comment in ${langName}, 1-3 sentences, like someone reacting to the news on a forum"},
     {"text": "another different perspective comment in ${langName}"},

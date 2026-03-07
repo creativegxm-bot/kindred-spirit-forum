@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ExternalLink, Gamepad2, Smartphone, Bot, Clock, TrendingUp } from "lucide-react";
+import { ExternalLink, Gamepad2, Smartphone, Bot, Clock, TrendingUp, Rocket } from "lucide-react";
 import { format } from "date-fns";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";

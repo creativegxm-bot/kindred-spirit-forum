@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Newspaper, ExternalLink, Flame } from "lucide-react";
+import { Flame } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useLocalizedNavigate } from "@/hooks/useLocalizedNavigate";
 import { techNewsArticles } from "@/data/techNews";

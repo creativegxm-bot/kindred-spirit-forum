@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Home, ArrowLeft, Clock, Calculator } from "lucide-react";
 import { blogPosts } from "@/data/blogPosts";
+import SEO from "@/components/SEO";
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -10,8 +11,26 @@ const BlogPost = () => {
 
   if (!post) return <Navigate to="/blog" replace />;
 
+  const canonical = `https://ondabir.com/blog/${post.slug}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    author: { "@type": "Organization", name: "Mortgage Calculator" },
+    mainEntityOfPage: canonical,
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={`${post.title} | Mortgage Blog`}
+        description={post.excerpt}
+        canonical={canonical}
+        ogType="article"
+      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <header className="border-b border-border bg-card">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
           <Link to="/blog" className="flex items-center gap-2 text-muted-foreground hover:text-primary">

@@ -1,11 +1,13 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Home, Calculator, TrendingUp } from "lucide-react";
+import { Home, Calculator, TrendingUp, BookOpen, Clock, ArrowRight } from "lucide-react";
+import { blogPosts } from "@/data/blogPosts";
 
 interface ScheduleRow {
   month: number;
@@ -215,6 +217,37 @@ const MortgageCalculator = () => {
             </CardContent>
           </Card>
         )}
+
+        <section className="mt-12">
+          <div className="flex items-end justify-between mb-4">
+            <div>
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-primary" /> Mortgage Guides
+              </h2>
+              <p className="text-sm text-muted-foreground">Tips and explainers to make smarter loan decisions.</p>
+            </div>
+            <Link to="/blog" className="text-sm text-primary hover:underline flex items-center gap-1">
+              View all <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            {blogPosts.slice(0, 4).map((post) => (
+              <Link key={post.slug} to={`/blog/${post.slug}`}>
+                <Card className="h-full hover:border-primary transition-colors">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">{post.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-2">{post.excerpt}</p>
+                    <div className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Clock className="h-3 w-3" /> {post.readTime}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </section>
       </main>
 
       <footer className="border-t border-border mt-12 py-6 text-center text-sm text-muted-foreground">

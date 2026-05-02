@@ -2,9 +2,15 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Home, ArrowLeft, Clock } from "lucide-react";
 import { blogPosts } from "@/data/blogPosts";
+import SEO from "@/components/SEO";
 
 const Blog = () => (
   <div className="min-h-screen bg-background">
+    <SEO
+      title="Mortgage Blog - Insights & Guides"
+      description="Practical mortgage advice: rates, affordability, extra payments, PMI, and more to help you make smarter home loan decisions."
+      canonical="https://ondabir.com/blog"
+    />
     <header className="border-b border-border bg-card">
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
         <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-primary">

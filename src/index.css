@@ -6,55 +6,55 @@
 
 @layer base {
   :root {
-    --background: 220 13% 8%;
-    --foreground: 210 20% 95%;
+    --background: 0 0% 100%;
+    --foreground: 220 15% 15%;
 
-    --card: 220 13% 11%;
-    --card-foreground: 210 20% 95%;
-    --card-hover: 220 13% 14%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 15%;
+    --card-hover: 220 14% 97%;
 
-    --popover: 220 13% 11%;
-    --popover-foreground: 210 20% 95%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 15%;
 
-    --primary: 16 100% 55%;
+    --primary: 16 100% 50%;
     --primary-foreground: 0 0% 100%;
     --primary-glow: 16 100% 60%;
 
-    --secondary: 220 13% 16%;
-    --secondary-foreground: 210 20% 85%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 15% 20%;
 
-    --muted: 220 13% 18%;
-    --muted-foreground: 215 15% 55%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 10% 45%;
 
-    --accent: 16 100% 55%;
+    --accent: 16 100% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 18%;
-    --input: 220 13% 16%;
-    --ring: 16 100% 55%;
+    --border: 220 13% 90%;
+    --input: 220 13% 90%;
+    --ring: 16 100% 50%;
 
     --radius: 0.75rem;
 
-    --upvote: 16 100% 55%;
-    --downvote: 240 60% 60%;
-    --comment: 200 80% 55%;
-    
-    --gradient-card: linear-gradient(135deg, hsl(220 13% 11%) 0%, hsl(220 13% 9%) 100%);
-    --gradient-hover: linear-gradient(135deg, hsl(220 13% 14%) 0%, hsl(220 13% 12%) 100%);
-    --shadow-card: 0 4px 20px -4px rgba(0, 0, 0, 0.4);
-    --shadow-hover: 0 8px 30px -8px rgba(0, 0, 0, 0.5);
+    --upvote: 16 100% 50%;
+    --downvote: 240 60% 55%;
+    --comment: 200 80% 50%;
 
-    --sidebar-background: 220 13% 10%;
-    --sidebar-foreground: 210 20% 85%;
-    --sidebar-primary: 16 100% 55%;
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(220 14% 98%) 100%);
+    --gradient-hover: linear-gradient(135deg, hsl(220 14% 97%) 0%, hsl(220 14% 95%) 100%);
+    --shadow-card: 0 2px 12px -4px rgba(15, 23, 42, 0.08);
+    --shadow-hover: 0 8px 24px -8px rgba(15, 23, 42, 0.14);
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 15% 25%;
+    --sidebar-primary: 16 100% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 13% 16%;
-    --sidebar-accent-foreground: 210 20% 95%;
-    --sidebar-border: 220 13% 16%;
-    --sidebar-ring: 16 100% 55%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 220 15% 15%;
+    --sidebar-border: 220 13% 90%;
+    --sidebar-ring: 16 100% 50%;
   }
 }
 

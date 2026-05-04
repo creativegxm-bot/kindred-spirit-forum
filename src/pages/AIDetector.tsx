@@ -310,6 +310,23 @@ const AIDetector = () => {
 
               <p className="text-sm leading-relaxed">{result.summary}</p>
 
+              {result.likely_model && result.likely_model !== "Unknown" && (
+                <div className="rounded-lg border border-border bg-secondary/40 p-3">
+                  <div className="text-xs text-muted-foreground mb-0.5">Most likely generator</div>
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="font-semibold flex items-center gap-2">
+                      <Sparkles className="size-4 text-primary" />
+                      {result.likely_model}
+                    </div>
+                    {result.model_confidence && (
+                      <Badge variant="outline" className="text-[10px]">
+                        {result.model_confidence} confidence
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {result.signals?.length > 0 && (
                 <div>
                   <h3 className="text-sm font-semibold mb-2 flex items-center gap-1.5">

@@ -12,8 +12,40 @@ interface DetectRequest {
   url?: string;
 }
 
-const YT_REGEX = /(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
-const extractYouTubeId = (u: string) => u.match(YT_REGEX)?.[1] ?? null;
+// Supported YouTube URL shapes:
+//   youtube.com/watch?v=ID, youtube.com/shorts/ID, youtube.com/embed/ID,
+//   youtube.com/live/ID, youtube.com/v/ID, youtu.be/ID,
+//   m.youtube.com/*, music.youtube.com/*, with extra query params like &list=, &t=, &si=
+const YT_HOST_REGEX = /^(?:https?:\/\/)?(?:www\.|m\.|music\.)?(?:youtube\.com|youtu\.be)\//i;
+const YT_ID_REGEXES: RegExp[] = [
+  /[?&]v=([A-Za-z0-9_-]{11})/,
+  /\/shorts\/([A-Za-z0-9_-]{11})/,
+  /\/embed\/([A-Za-z0-9_-]{11})/,
+  /\/live\/([A-Za-z0-9_-]{11})/,
+  /\/v\/([A-Za-z0-9_-]{11})/,
+  /youtu\.be\/([A-Za-z0-9_-]{11})/,
+];
+const YT_PLAYLIST_REGEX = /[?&]list=([A-Za-z0-9_-]+)/;
+
+function extractYouTubeId(u: string): string | null {
+  for (const re of YT_ID_REGEXES) {
+    const m = u.match(re);
+    if (m?.[1]) return m[1];
+  }
+  return null;
+}
+
+function isKnownVideoHost(u: string): boolean {
+  return (
+    YT_HOST_REGEX.test(u) ||
+    /^(?:https?:\/\/)?(?:www\.|player\.)?vimeo\.com\//i.test(u) ||
+    /^(?:https?:\/\/)?(?:www\.|vm\.|vt\.)?tiktok\.com\//i.test(u) ||
+    /^(?:https?:\/\/)?(?:www\.|mobile\.)?(?:twitter|x)\.com\//i.test(u) ||
+    /^(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:reel|p|tv)\//i.test(u) ||
+    /^(?:https?:\/\/)?(?:www\.|web\.)?facebook\.com\/.+\/videos?\//i.test(u) ||
+    /^(?:https?:\/\/)?fb\.watch\//i.test(u)
+  );
+}
 
 async function fetchAsDataUrl(url: string): Promise<string | null> {
   try {

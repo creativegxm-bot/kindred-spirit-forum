@@ -137,6 +137,25 @@ const BlogPost = () => {
             <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {post.readTime}</span>
           </div>
 
+          {isAdmin && (
+            <Card className="mb-6 border-primary/30">
+              <CardContent className="p-4 flex items-center justify-between gap-4">
+                <div>
+                  <Label htmlFor="robots-toggle" className="font-semibold">Hide from search engines</Label>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Current robots: <code>{robots}</code>. Toggle on to set <code>noindex,follow</code>.
+                  </p>
+                </div>
+                <Switch
+                  id="robots-toggle"
+                  checked={robots === "noindex,follow"}
+                  disabled={saving}
+                  onCheckedChange={toggleRobots}
+                />
+              </CardContent>
+            </Card>
+          )}
+
           <div className="prose prose-lg max-w-none space-y-4 text-foreground">
             {post.content.split("\n\n").map((para, i) => (
               <p key={i} className="leading-relaxed">{para}</p>

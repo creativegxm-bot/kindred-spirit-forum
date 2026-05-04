@@ -126,7 +126,7 @@ const AIDetector = () => {
           confidence: r.confidence,
           signals: r.signals,
           summary: r.summary,
-          text_snippet: tab === "text" ? text.slice(0, 2000) : null,
+          text_snippet: tab === "text" ? text.slice(0, 2000) : tab === "url" ? url.slice(0, 500) : null,
           preview_url: previewPublicUrl,
         })
         .select("id")

@@ -40,7 +40,8 @@ const fileToDataUrl = (file: File) =>
 
 const AIDetector = () => {
   const { toast } = useToast();
-  const [tab, setTab] = useState<"text" | "image" | "video">("text");
+  const [tab, setTab] = useState<"text" | "image" | "video" | "url">("text");
+  const [url, setUrl] = useState("");
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);

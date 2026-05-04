@@ -60,11 +60,11 @@ const BlogPost = () => {
           <Card className="mt-10 bg-secondary border-primary/20">
             <CardContent className="p-6 flex items-center justify-between gap-4 flex-wrap">
               <div>
-                <h3 className="font-bold mb-1">Ready to run the numbers?</h3>
-                <p className="text-sm text-muted-foreground">Use our free calculator to see your monthly payment.</p>
+                <h3 className="font-bold mb-1">Check if your content is AI-generated</h3>
+                <p className="text-sm text-muted-foreground">Run text, an image, a video or a video URL through our free detector.</p>
               </div>
               <Link to="/">
-                <Button><Calculator className="h-4 w-4 mr-2" /> Open Calculator</Button>
+                <Button><Sparkles className="h-4 w-4 mr-2" /> Open Detector</Button>
               </Link>
             </CardContent>
           </Card>

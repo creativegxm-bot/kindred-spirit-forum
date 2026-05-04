@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Upload, Sparkles, FileText, Image as ImageIcon, Video, ShieldCheck, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import SEO from "@/components/SEO";
 
 type Result = {
   ai_probability: number;
@@ -108,6 +109,11 @@ const AIDetector = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="AI Content Detector – Spot AI-Written Text, Images & Videos Instantly"
+        description="Know what's real. Free AI detector for text, photos, and videos — get an instant probability score backed by forensic signals."
+        canonical="https://ondabir.com/"
+      />
       <header className="border-b border-border bg-card/50 backdrop-blur sticky top-0 z-40">
         <div className="container max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">

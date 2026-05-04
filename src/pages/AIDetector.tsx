@@ -123,7 +123,8 @@ const AIDetector = () => {
         .select("id")
         .single();
       if (!insErr && inserted) {
-        setShareUrl(`${window.location.origin}/r/${inserted.id}`);
+        const shareEndpoint = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/share-result/${inserted.id}`;
+        setShareUrl(shareEndpoint);
       }
     } catch (e: any) {
       toast({

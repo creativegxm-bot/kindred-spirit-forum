@@ -215,10 +215,11 @@ const AIDetector = () => {
           </CardHeader>
           <CardContent>
             <Tabs value={tab} onValueChange={(v) => { setTab(v as any); reset(); }}>
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="text"><FileText className="size-4 mr-1.5" />Text</TabsTrigger>
                 <TabsTrigger value="image"><ImageIcon className="size-4 mr-1.5" />Image</TabsTrigger>
                 <TabsTrigger value="video"><Video className="size-4 mr-1.5" />Video</TabsTrigger>
+                <TabsTrigger value="url"><Link2 className="size-4 mr-1.5" />Link</TabsTrigger>
               </TabsList>
 
               <TabsContent value="text" className="mt-4">
@@ -251,6 +252,19 @@ const AIDetector = () => {
                   hint="MP4, MOV, WEBM up to 20MB"
                   isVideo
                 />
+              </TabsContent>
+
+              <TabsContent value="url" className="mt-4 space-y-3">
+                <Input
+                  type="url"
+                  placeholder="Paste a YouTube, Vimeo, TikTok or X video URL…"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  inputMode="url"
+                />
+                <p className="text-xs text-muted-foreground">
+                  We analyze the video's thumbnail and metadata. Best with public links (e.g. https://youtube.com/watch?v=…).
+                </p>
               </TabsContent>
             </Tabs>
 

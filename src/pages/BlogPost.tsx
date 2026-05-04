@@ -20,7 +20,14 @@ const BlogPost = () => {
     headline: post.title,
     description: post.excerpt,
     datePublished: post.date,
+    dateModified: post.date,
     author: { "@type": "Organization", name: "AI Content Detector" },
+    publisher: {
+      "@type": "Organization",
+      name: "AI Content Detector",
+      logo: { "@type": "ImageObject", url: "https://ondabir.com/favicon.png" },
+    },
+    image: "https://ondabir.com/og-image.png",
     mainEntityOfPage: canonical,
   };
 
@@ -31,6 +38,7 @@ const BlogPost = () => {
         description={post.excerpt}
         canonical={canonical}
         ogType="article"
+        image="https://ondabir.com/og-image.png"
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <header className="border-b border-border bg-card">

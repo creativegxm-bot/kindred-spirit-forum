@@ -257,7 +257,7 @@ const AIDetector = () => {
               <TabsContent value="url" className="mt-4 space-y-3">
                 <Input
                   type="url"
-                  placeholder="Paste a YouTube, Vimeo, TikTok or X video URL…"
+                  placeholder="Paste a YouTube (video, Shorts, playlist), Vimeo, TikTok, X, Instagram or Facebook video URL…"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   inputMode="url"

@@ -159,6 +159,8 @@ const AIDetector = () => {
     setFile(null);
     setPreview(null);
     setResult(null);
+    setShareUrl(null);
+    setCopied(false);
   };
 
   return (
@@ -291,6 +293,23 @@ const AIDetector = () => {
                       </li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+              {shareUrl && (
+                <div className="border-t border-border pt-4">
+                  <p className="text-xs text-muted-foreground mb-2">Shareable link (with social previews):</p>
+                  <div className="flex gap-2">
+                    <input
+                      readOnly
+                      value={shareUrl}
+                      onFocus={(e) => e.currentTarget.select()}
+                      className="flex-1 text-xs bg-secondary/40 border border-border rounded-md px-3 py-2 font-mono"
+                    />
+                    <Button onClick={handleShare} size="sm">
+                      {copied ? <><Check className="size-4 mr-1.5" />Copied</> : <><Share2 className="size-4 mr-1.5" />Share</>}
+                    </Button>
+                  </div>
                 </div>
               )}
             </CardContent>

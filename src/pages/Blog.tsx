@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Home, ArrowLeft, Clock } from "lucide-react";
+import { Sparkles, ArrowLeft, Clock } from "lucide-react";
 import { blogPosts } from "@/data/blogPosts";
 import SEO from "@/components/SEO";
 
 const Blog = () => (
   <div className="min-h-screen bg-background">
     <SEO
-      title="Mortgage Blog - Insights & Guides"
-      description="Practical mortgage advice: rates, affordability, extra payments, PMI, and more to help you make smarter home loan decisions."
+      title="AI Detection Blog – Guides on Spotting AI Text, Images & Video"
+      description="Practical guides on detecting AI-generated text, images, and video — how detectors work, what signals matter, and the limits of every tool."
       canonical="https://ondabir.com/blog"
     />
     <header className="border-b border-border bg-card">
@@ -17,17 +17,17 @@ const Blog = () => (
           <ArrowLeft className="h-4 w-4" /> Back
         </Link>
         <div className="flex items-center gap-2 ml-4">
-          <Home className="h-6 w-6 text-primary" />
-          <h1 className="text-xl font-bold">Mortgage Blog</h1>
+          <Sparkles className="h-6 w-6 text-primary" />
+          <h1 className="text-xl font-bold">AI Detection Blog</h1>
         </div>
       </div>
     </header>
 
     <main className="max-w-4xl mx-auto px-4 py-8">
       <div className="text-center mb-8">
-        <h2 className="text-3xl md:text-4xl font-bold mb-2">Mortgage Insights & Guides</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-2">AI Content Detection: Guides & Insights</h2>
         <p className="text-muted-foreground">
-          Practical advice to help you make smarter home loan decisions.
+          Know what's real. Learn how to spot AI-generated text, images, and video.
         </p>
       </div>
 
@@ -54,3 +54,4 @@ const Blog = () => (
 );
 
 export default Blog;
+

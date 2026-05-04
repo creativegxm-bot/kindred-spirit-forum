@@ -18,7 +18,7 @@ const BlogPost = () => {
     headline: post.title,
     description: post.excerpt,
     datePublished: post.date,
-    author: { "@type": "Organization", name: "Mortgage Calculator" },
+    author: { "@type": "Organization", name: "AI Content Detector" },
     mainEntityOfPage: canonical,
   };
 

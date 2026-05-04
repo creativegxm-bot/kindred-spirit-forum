@@ -1,7 +1,7 @@
 import { Link, useParams, Navigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Home, ArrowLeft, Clock, Calculator } from "lucide-react";
+import { Sparkles, ArrowLeft, Clock } from "lucide-react";
 import { blogPosts } from "@/data/blogPosts";
 import SEO from "@/components/SEO";
 

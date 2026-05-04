@@ -25,7 +25,7 @@ const BlogPost = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title={`${post.title} | Mortgage Blog`}
+        title={`${post.title} | AI Detection Blog`}
         description={post.excerpt}
         canonical={canonical}
         ogType="article"
@@ -37,8 +37,8 @@ const BlogPost = () => {
             <ArrowLeft className="h-4 w-4" /> All articles
           </Link>
           <div className="flex items-center gap-2 ml-4">
-            <Home className="h-6 w-6 text-primary" />
-            <span className="font-bold">Mortgage Blog</span>
+            <Sparkles className="h-6 w-6 text-primary" />
+            <span className="font-bold">AI Detection Blog</span>
           </div>
         </div>
       </header>

@@ -1,4 +1,50 @@
+# robots.txt for ondabir.com — AI Content Detector
+# Aligned with /sitemap.xml
+
 User-agent: *
 Allow: /
+
+# Block private/per-user result share pages (not meant for indexing)
+Disallow: /r/
+
+# Block common non-content paths
+Disallow: /api/
+Disallow: /auth/
+Disallow: /*?*       # URLs with query strings (tracking params, etc.)
+
+# Allow major search engines explicit access to public content
+User-agent: Googlebot
+Allow: /
+Allow: /blog
+Allow: /blog/
+Disallow: /r/
+
+User-agent: Bingbot
+Allow: /
+Allow: /blog
+Allow: /blog/
+Disallow: /r/
+
+# Block known AI training crawlers (opt-out)
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
 
 Sitemap: https://ondabir.com/sitemap.xml

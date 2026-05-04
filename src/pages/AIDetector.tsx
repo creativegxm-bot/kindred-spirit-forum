@@ -5,7 +5,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Upload, Sparkles, FileText, Image as ImageIcon, Video, ShieldCheck, AlertTriangle, Share2, Check } from "lucide-react";
+import { Loader2, Upload, Sparkles, FileText, Image as ImageIcon, Video, ShieldCheck, AlertTriangle, Share2, Check, Link2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
@@ -39,7 +40,8 @@ const fileToDataUrl = (file: File) =>
 
 const AIDetector = () => {
   const { toast } = useToast();
-  const [tab, setTab] = useState<"text" | "image" | "video">("text");
+  const [tab, setTab] = useState<"text" | "image" | "video" | "url">("text");
+  const [url, setUrl] = useState("");
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -78,6 +80,13 @@ const AIDetector = () => {
           return;
         }
         payload.text = text;
+      } else if (tab === "url") {
+        if (!/^https?:\/\/.+/i.test(url.trim())) {
+          toast({ title: "Invalid URL", description: "Paste a YouTube, Vimeo, TikTok or X video link.", variant: "destructive" });
+          setLoading(false);
+          return;
+        }
+        payload.url = url.trim();
       } else {
         if (!file) {
           toast({ title: "No file selected", variant: "destructive" });
@@ -117,7 +126,7 @@ const AIDetector = () => {
           confidence: r.confidence,
           signals: r.signals,
           summary: r.summary,
-          text_snippet: tab === "text" ? text.slice(0, 2000) : null,
+          text_snippet: tab === "text" ? text.slice(0, 2000) : tab === "url" ? url.slice(0, 500) : null,
           preview_url: previewPublicUrl,
         })
         .select("id")
@@ -157,6 +166,7 @@ const AIDetector = () => {
 
   const reset = () => {
     setText("");
+    setUrl("");
     setFile(null);
     setPreview(null);
     setResult(null);
@@ -205,10 +215,11 @@ const AIDetector = () => {
           </CardHeader>
           <CardContent>
             <Tabs value={tab} onValueChange={(v) => { setTab(v as any); reset(); }}>
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="text"><FileText className="size-4 mr-1.5" />Text</TabsTrigger>
                 <TabsTrigger value="image"><ImageIcon className="size-4 mr-1.5" />Image</TabsTrigger>
                 <TabsTrigger value="video"><Video className="size-4 mr-1.5" />Video</TabsTrigger>
+                <TabsTrigger value="url"><Link2 className="size-4 mr-1.5" />Link</TabsTrigger>
               </TabsList>
 
               <TabsContent value="text" className="mt-4">
@@ -242,6 +253,19 @@ const AIDetector = () => {
                   isVideo
                 />
               </TabsContent>
+
+              <TabsContent value="url" className="mt-4 space-y-3">
+                <Input
+                  type="url"
+                  placeholder="Paste a YouTube, Vimeo, TikTok or X video URL…"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  inputMode="url"
+                />
+                <p className="text-xs text-muted-foreground">
+                  We analyze the video's thumbnail and metadata. Best with public links (e.g. https://youtube.com/watch?v=…).
+                </p>
+              </TabsContent>
             </Tabs>
 
             <div className="flex gap-2 mt-6">
@@ -252,7 +276,7 @@ const AIDetector = () => {
                   <><Sparkles className="size-4 mr-2" />Detect AI</>
                 )}
               </Button>
-              {(text || file || result) && (
+              {(text || url || file || result) && (
                 <Button variant="outline" onClick={reset} disabled={loading}>Clear</Button>
               )}
             </div>

@@ -1,0 +1,2 @@
+ALTER TABLE public.detection_results DROP CONSTRAINT IF EXISTS detection_results_kind_check;
+ALTER TABLE public.detection_results ADD CONSTRAINT detection_results_kind_check CHECK (kind IN ('text','image','video','url'));

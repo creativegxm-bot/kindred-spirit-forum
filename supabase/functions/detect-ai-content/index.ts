@@ -3,11 +3,46 @@ import { corsHeaders } from "https://esm.sh/@supabase/supabase-js@2.95.0/cors";
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
 interface DetectRequest {
-  type: "text" | "image" | "video";
+  type: "text" | "image" | "video" | "url";
   text?: string;
   // data URL (base64) for image/video
   fileDataUrl?: string;
   fileMimeType?: string;
+  // Public URL (e.g. YouTube, Vimeo, TikTok, Twitter/X video)
+  url?: string;
+}
+
+const YT_REGEX = /(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
+const extractYouTubeId = (u: string) => u.match(YT_REGEX)?.[1] ?? null;
+
+async function fetchAsDataUrl(url: string): Promise<string | null> {
+  try {
+    const r = await fetch(url);
+    if (!r.ok) return null;
+    const buf = new Uint8Array(await r.arrayBuffer());
+    const mime = r.headers.get("content-type") ?? "image/jpeg";
+    let bin = "";
+    for (let i = 0; i < buf.length; i++) bin += String.fromCharCode(buf[i]);
+    return `data:${mime};base64,${btoa(bin)}`;
+  } catch { return null; }
+}
+
+async function fetchOEmbed(url: string): Promise<{ title?: string; author?: string; thumbnail?: string } | null> {
+  const endpoints = [
+    `https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(url)}`,
+    `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}`,
+    `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`,
+  ];
+  for (const ep of endpoints) {
+    try {
+      const r = await fetch(ep);
+      if (r.ok) {
+        const j = await r.json();
+        return { title: j.title, author: j.author_name, thumbnail: j.thumbnail_url };
+      }
+    } catch { /* next */ }
+  }
+  return null;
 }
 
 const SYSTEM_PROMPT = `You are an expert AI-content forensics analyst. Given text, an image, or a video, estimate the probability (0-100) that it was generated or substantially altered by AI.
@@ -65,6 +100,39 @@ Deno.serve(async (req) => {
         { type: "text", text: `Analyze this ${body.type} for AI-generation likelihood.` },
         { type: "image_url", image_url: { url: body.fileDataUrl } },
       ];
+    } else if (body.type === "url") {
+      const url = (body.url ?? "").trim();
+      if (!/^https?:\/\//i.test(url)) {
+        return new Response(JSON.stringify({ error: "Provide a valid http(s) video URL." }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const ytId = extractYouTubeId(url);
+      const oembed = await fetchOEmbed(url);
+      let thumbDataUrl: string | null = null;
+      if (ytId) {
+        thumbDataUrl =
+          (await fetchAsDataUrl(`https://i.ytimg.com/vi/${ytId}/maxresdefault.jpg`)) ||
+          (await fetchAsDataUrl(`https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`));
+      } else if (oembed?.thumbnail) {
+        thumbDataUrl = await fetchAsDataUrl(oembed.thumbnail);
+      }
+
+      const meta = [
+        `URL: ${url}`,
+        oembed?.title ? `Title: ${oembed.title}` : null,
+        oembed?.author ? `Author/Channel: ${oembed.author}` : null,
+        ytId ? `YouTube ID: ${ytId}` : null,
+      ].filter(Boolean).join("\n");
+
+      const textPart = `Analyze this online video for AI-generation likelihood. We cannot fetch full frames, so reason from the available metadata and ${thumbDataUrl ? "the attached thumbnail (a representative frame)" : "the title/channel signals"}. Look for: synthetic-looking thumbnails, AI-narration channel patterns, generic stock-style titles, deepfake indicators, and known AI-generation channels. Be explicit that the verdict is based on limited signals.\n\n${meta}`;
+
+      userContent = thumbDataUrl
+        ? [
+            { type: "text", text: textPart },
+            { type: "image_url", image_url: { url: thumbDataUrl } },
+          ]
+        : textPart;
     } else {
       return new Response(JSON.stringify({ error: "Invalid type" }), {
         status: 400,

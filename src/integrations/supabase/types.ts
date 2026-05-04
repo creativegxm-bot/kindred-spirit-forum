@@ -41,6 +41,33 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_post_seo: {
+        Row: {
+          created_at: string
+          id: string
+          robots: string
+          slug: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          robots?: string
+          slug: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          robots?: string
+          slug?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       chat_message_reactions: {
         Row: {
           created_at: string

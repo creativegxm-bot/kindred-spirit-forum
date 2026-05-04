@@ -100,6 +100,39 @@ Deno.serve(async (req) => {
         { type: "text", text: `Analyze this ${body.type} for AI-generation likelihood.` },
         { type: "image_url", image_url: { url: body.fileDataUrl } },
       ];
+    } else if (body.type === "url") {
+      const url = (body.url ?? "").trim();
+      if (!/^https?:\/\//i.test(url)) {
+        return new Response(JSON.stringify({ error: "Provide a valid http(s) video URL." }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const ytId = extractYouTubeId(url);
+      const oembed = await fetchOEmbed(url);
+      let thumbDataUrl: string | null = null;
+      if (ytId) {
+        thumbDataUrl =
+          (await fetchAsDataUrl(`https://i.ytimg.com/vi/${ytId}/maxresdefault.jpg`)) ||
+          (await fetchAsDataUrl(`https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`));
+      } else if (oembed?.thumbnail) {
+        thumbDataUrl = await fetchAsDataUrl(oembed.thumbnail);
+      }
+
+      const meta = [
+        `URL: ${url}`,
+        oembed?.title ? `Title: ${oembed.title}` : null,
+        oembed?.author ? `Author/Channel: ${oembed.author}` : null,
+        ytId ? `YouTube ID: ${ytId}` : null,
+      ].filter(Boolean).join("\n");
+
+      const textPart = `Analyze this online video for AI-generation likelihood. We cannot fetch full frames, so reason from the available metadata and ${thumbDataUrl ? "the attached thumbnail (a representative frame)" : "the title/channel signals"}. Look for: synthetic-looking thumbnails, AI-narration channel patterns, generic stock-style titles, deepfake indicators, and known AI-generation channels. Be explicit that the verdict is based on limited signals.\n\n${meta}`;
+
+      userContent = thumbDataUrl
+        ? [
+            { type: "text", text: textPart },
+            { type: "image_url", image_url: { url: thumbDataUrl } },
+          ]
+        : textPart;
     } else {
       return new Response(JSON.stringify({ error: "Invalid type" }), {
         status: 400,

@@ -23,6 +23,31 @@ const BlogPost = () => {
     .map((x) => x.post);
 
   const canonical = `https://ondabir.com/blog/${post.slug}`;
+  const sectionMap: Record<string, string> = {
+    text: "AI Text Detection",
+    image: "AI Image Detection",
+    video: "AI Video Detection",
+    deepfake: "Deepfake Detection",
+    scams: "AI Safety",
+    detection: "Detection Fundamentals",
+    "how-it-works": "Detection Fundamentals",
+    limits: "Detection Fundamentals",
+  };
+  const articleSection = post.tags.map((t) => sectionMap[t]).find(Boolean) ?? "AI Detection";
+  const wordCount = post.content.split(/\s+/).filter(Boolean).length;
+
+  const publisher = {
+    "@type": "Organization",
+    name: "AI Content Detector",
+    url: "https://ondabir.com",
+    logo: { "@type": "ImageObject", url: "https://ondabir.com/favicon.png" },
+  };
+  const author = {
+    "@type": "Organization",
+    name: "AI Content Detector Editorial",
+    url: "https://ondabir.com/blog",
+  };
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -30,14 +55,15 @@ const BlogPost = () => {
     description: post.excerpt,
     datePublished: post.date,
     dateModified: post.date,
-    author: { "@type": "Organization", name: "AI Content Detector" },
-    publisher: {
-      "@type": "Organization",
-      name: "AI Content Detector",
-      logo: { "@type": "ImageObject", url: "https://ondabir.com/favicon.png" },
-    },
+    author,
+    publisher,
     image: "https://ondabir.com/og-image.png",
-    mainEntityOfPage: canonical,
+    mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
+    url: canonical,
+    articleSection,
+    keywords: post.tags.join(", "),
+    wordCount,
+    inLanguage: "en",
   };
 
   return (

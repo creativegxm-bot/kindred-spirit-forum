@@ -79,6 +79,8 @@ async function fetchOEmbed(url: string): Promise<{ title?: string; author?: stri
 
 const SYSTEM_PROMPT = `You are an expert AI-content forensics analyst. Given text, an image, or a video, estimate the probability (0-100) that it was generated or substantially altered by AI.
 
+When likely AI, ALSO try to identify the most probable generator by NAME. Pick from: ChatGPT (GPT-4/GPT-5), Claude (Anthropic), Gemini (Google), Llama (Meta), Mistral, DeepSeek, Grok (xAI), Perplexity, Midjourney, DALL·E 3, Stable Diffusion (SD/SDXL/SD3), Flux (Black Forest Labs), Adobe Firefly, Ideogram, Leonardo, Runway (Gen-2/Gen-3), Sora (OpenAI), Pika, Kling, HeyGen, Synthesia, Veo (Google). Use stylistic + artifact tells (e.g. ChatGPT's "It's important to note", "not just X but Y"; Claude's longer hedged paragraphs; Midjourney's painterly compositions; SDXL hands; Sora's physics-but-not-quite). Return Unknown only when truly unclear.
+
 Return ONLY a JSON object via the provided tool. Be concise but specific. Cite concrete signals (perplexity, burstiness, repeated phrasing, watermark/diffusion artifacts, anatomical inconsistencies, lighting, frame interpolation artifacts, codec smoothness, etc.). Never refuse — always provide your best estimate.`;
 
 const tool = {
@@ -98,8 +100,13 @@ const tool = {
           description: "Specific observations that support the verdict",
         },
         summary: { type: "string", description: "1-3 sentence plain-English summary." },
+        likely_model: {
+          type: "string",
+          description: "Most likely AI model/tool by name (e.g. 'ChatGPT (GPT-4)', 'Claude 3.5 Sonnet', 'Midjourney v6', 'Stable Diffusion XL', 'Sora', 'Runway Gen-3'). Use 'Unknown' if not confident or if content is human.",
+        },
+        model_confidence: { type: "string", enum: ["low", "medium", "high"], description: "Confidence in the likely_model attribution." },
       },
-      required: ["ai_probability", "verdict", "confidence", "signals", "summary"],
+      required: ["ai_probability", "verdict", "confidence", "signals", "summary", "likely_model", "model_confidence"],
       additionalProperties: false,
     },
   },

@@ -6,6 +6,7 @@ interface SEOProps {
   canonical?: string;
   ogType?: "website" | "article";
   image?: string;
+  robots?: string; // e.g. "index,follow" | "noindex,follow"
 }
 
 const setMeta = (selector: string, attr: string, value: string) => {
@@ -29,7 +30,7 @@ const setLink = (rel: string, href: string) => {
   el.setAttribute("href", href);
 };
 
-const SEO = ({ title, description, canonical, ogType = "website", image }: SEOProps) => {
+const SEO = ({ title, description, canonical, ogType = "website", image, robots = "index,follow,max-image-preview:large,max-snippet:-1" }: SEOProps) => {
   useEffect(() => {
     const fullTitle = title.length > 60 ? title.slice(0, 57) + "..." : title;
     const desc = description.length > 160 ? description.slice(0, 157) + "..." : description;
@@ -38,6 +39,7 @@ const SEO = ({ title, description, canonical, ogType = "website", image }: SEOPr
 
     document.title = fullTitle;
     setMeta('meta[name="description"]', "content", desc);
+    setMeta('meta[name="robots"]', "content", robots);
     setMeta('meta[property="og:title"]', "content", fullTitle);
     setMeta('meta[property="og:description"]', "content", desc);
     setMeta('meta[property="og:type"]', "content", ogType);
@@ -48,7 +50,7 @@ const SEO = ({ title, description, canonical, ogType = "website", image }: SEOPr
     setMeta('meta[name="twitter:description"]', "content", desc);
     setMeta('meta[name="twitter:image"]', "content", img);
     setLink("canonical", url);
-  }, [title, description, canonical, ogType, image]);
+  }, [title, description, canonical, ogType, image, robots]);
 
   return null;
 };

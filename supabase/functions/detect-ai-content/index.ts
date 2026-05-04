@@ -133,14 +133,44 @@ Deno.serve(async (req) => {
         { type: "image_url", image_url: { url: body.fileDataUrl } },
       ];
     } else if (body.type === "url") {
-      const url = (body.url ?? "").trim();
-      if (!/^https?:\/\//i.test(url)) {
-        return new Response(JSON.stringify({ error: "Provide a valid http(s) video URL." }), {
+      let raw = (body.url ?? "").trim();
+      if (!raw) {
+        return new Response(JSON.stringify({ error: "Please paste a video URL." }), {
           status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      const ytId = extractYouTubeId(url);
-      const oembed = await fetchOEmbed(url);
+      // Allow users to omit the scheme
+      if (!/^https?:\/\//i.test(raw)) raw = `https://${raw}`;
+
+      let parsed: URL;
+      try { parsed = new URL(raw); }
+      catch {
+        return new Response(JSON.stringify({ error: "That doesn't look like a valid URL. Please check it and try again." }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const url = parsed.toString();
+
+      if (!isKnownVideoHost(url)) {
+        return new Response(JSON.stringify({
+          error: "Unsupported link. Paste a YouTube (video, Shorts, playlist), Vimeo, TikTok, X/Twitter, Instagram Reel, or Facebook video URL.",
+        }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      let ytId = extractYouTubeId(url);
+      const playlistId = url.match(YT_PLAYLIST_REGEX)?.[1] ?? null;
+      // Playlist-only link (e.g. /playlist?list=...): try to resolve first video via oEmbed
+      let oembed = await fetchOEmbed(url);
+
+      if (!ytId && playlistId && YT_HOST_REGEX.test(url)) {
+        // No usable video id and oEmbed couldn't resolve a single video
+        if (!oembed) {
+          return new Response(JSON.stringify({
+            error: "This looks like a YouTube playlist. Paste a single video URL instead (e.g. youtube.com/watch?v=… or youtu.be/…).",
+          }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        }
+      }
+
       let thumbDataUrl: string | null = null;
       if (ytId) {
         thumbDataUrl =
@@ -150,11 +180,19 @@ Deno.serve(async (req) => {
         thumbDataUrl = await fetchAsDataUrl(oembed.thumbnail);
       }
 
+      // If we have neither a recognizable video id nor any oEmbed metadata, we cannot analyze.
+      if (!ytId && !oembed && !thumbDataUrl) {
+        return new Response(JSON.stringify({
+          error: "Couldn't read this video link. Make sure it's public and points to a single video, then try again.",
+        }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
       const meta = [
         `URL: ${url}`,
         oembed?.title ? `Title: ${oembed.title}` : null,
         oembed?.author ? `Author/Channel: ${oembed.author}` : null,
         ytId ? `YouTube ID: ${ytId}` : null,
+        playlistId ? `Playlist ID: ${playlistId}` : null,
       ].filter(Boolean).join("\n");
 
       const textPart = `Analyze this online video for AI-generation likelihood. We cannot fetch full frames, so reason from the available metadata and ${thumbDataUrl ? "the attached thumbnail (a representative frame)" : "the title/channel signals"}. Look for: synthetic-looking thumbnails, AI-narration channel patterns, generic stock-style titles, deepfake indicators, and known AI-generation channels. Be explicit that the verdict is based on limited signals.\n\n${meta}`;

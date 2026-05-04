@@ -192,9 +192,12 @@ const AIDetector = () => {
               <span className="text-[10px] text-muted-foreground hidden sm:block">Know what's real.</span>
             </div>
           </div>
-          <Badge variant="outline" className="hidden sm:inline-flex">
-            <ShieldCheck className="size-3 mr-1" /> Powered by Gemini 2.5 Pro
-          </Badge>
+          <div className="flex items-center gap-3">
+            <a href="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">Blog</a>
+            <Badge variant="outline" className="hidden sm:inline-flex">
+              <ShieldCheck className="size-3 mr-1" /> Powered by Gemini 2.5 Pro
+            </Badge>
+          </div>
         </div>
       </header>
 

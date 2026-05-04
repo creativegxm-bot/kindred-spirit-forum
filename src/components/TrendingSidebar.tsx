@@ -75,7 +75,7 @@ const TrendingSidebar = () => {
           <a href="#" className="hover:underline">{t("about")}</a>
           <a href="#" className="hover:underline">{t("careers")}</a>
           <a href="#" className="hover:underline">{t("press")}</a>
-          <a href="#" className="hover:underline">{t("blog")}</a>
+          <Link to="/blog" className="hover:underline">{t("blog")}</Link>
         </div>
         <p>© 2024 Readit, Inc. {t("allRightsReserved")}</p>
       </div>

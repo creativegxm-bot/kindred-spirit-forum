@@ -407,6 +407,45 @@ export type Database = {
           },
         ]
       }
+      detection_results: {
+        Row: {
+          ai_probability: number
+          confidence: string
+          created_at: string
+          id: string
+          kind: string
+          preview_url: string | null
+          signals: Json
+          summary: string
+          text_snippet: string | null
+          verdict: string
+        }
+        Insert: {
+          ai_probability: number
+          confidence: string
+          created_at?: string
+          id?: string
+          kind: string
+          preview_url?: string | null
+          signals?: Json
+          summary: string
+          text_snippet?: string | null
+          verdict: string
+        }
+        Update: {
+          ai_probability?: number
+          confidence?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          preview_url?: string | null
+          signals?: Json
+          summary?: string
+          text_snippet?: string | null
+          verdict?: string
+        }
+        Relationships: []
+      }
       draw_entries: {
         Row: {
           country: string | null

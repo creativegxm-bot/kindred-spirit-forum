@@ -4,13 +4,50 @@ import { Sparkles, ArrowLeft, Clock } from "lucide-react";
 import { blogPosts } from "@/data/blogPosts";
 import SEO from "@/components/SEO";
 
-const Blog = () => (
+const Blog = () => {
+  const publisher = {
+    "@type": "Organization",
+    name: "AI Content Detector",
+    url: "https://ondabir.com",
+    logo: { "@type": "ImageObject", url: "https://ondabir.com/favicon.png" },
+  };
+  const author = {
+    "@type": "Organization",
+    name: "AI Content Detector Editorial",
+    url: "https://ondabir.com/blog",
+  };
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "AI Detection Blog",
+    description:
+      "Practical guides on detecting AI-generated text, images, and video — how detectors work, what signals matter, and the limits of every tool.",
+    url: "https://ondabir.com/blog",
+    inLanguage: "en",
+    publisher,
+    author,
+    blogPost: blogPosts.map((p) => ({
+      "@type": "BlogPosting",
+      headline: p.title,
+      description: p.excerpt,
+      url: `https://ondabir.com/blog/${p.slug}`,
+      datePublished: p.date,
+      dateModified: p.date,
+      author,
+      publisher,
+      articleSection: "AI Detection",
+      keywords: p.tags.join(", "),
+    })),
+  };
+
+  return (
   <div className="min-h-screen bg-background">
     <SEO
       title="AI Detection Blog – Guides on Spotting AI Text, Images & Video"
       description="Practical guides on detecting AI-generated text, images, and video — how detectors work, what signals matter, and the limits of every tool."
       canonical="https://ondabir.com/blog"
     />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     <header className="border-b border-border bg-card">
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
         <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-primary">

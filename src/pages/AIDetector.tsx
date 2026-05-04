@@ -276,7 +276,7 @@ const AIDetector = () => {
                   <><Sparkles className="size-4 mr-2" />Detect AI</>
                 )}
               </Button>
-              {(text || file || result) && (
+              {(text || url || file || result) && (
                 <Button variant="outline" onClick={reset} disabled={loading}>Clear</Button>
               )}
             </div>

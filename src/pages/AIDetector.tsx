@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
+import sampleReal from "@/assets/sample-real.jpg";
+import sampleAi from "@/assets/sample-ai.jpg";
 
 type Result = {
   ai_probability: number;

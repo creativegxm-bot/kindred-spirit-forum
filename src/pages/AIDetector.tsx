@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Upload, Sparkles, FileText, Image as ImageIcon, Video, ShieldCheck, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import SEO from "@/components/SEO";
 
 type Result = {
   ai_probability: number;

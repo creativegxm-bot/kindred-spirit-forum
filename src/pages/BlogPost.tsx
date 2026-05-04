@@ -11,6 +11,8 @@ const BlogPost = () => {
 
   if (!post) return <Navigate to="/blog" replace />;
 
+  const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+
   const canonical = `https://ondabir.com/blog/${post.slug}`;
   const jsonLd = {
     "@context": "https://schema.org",
@@ -68,6 +70,27 @@ const BlogPost = () => {
               </Link>
             </CardContent>
           </Card>
+
+          {related.length > 0 && (
+            <section className="mt-12">
+              <h2 className="text-2xl font-bold mb-4">Related articles</h2>
+              <div className="grid gap-4 md:grid-cols-3">
+                {related.map((r) => (
+                  <Link key={r.slug} to={`/blog/${r.slug}`} className="group">
+                    <Card className="h-full hover:border-primary/40 transition-colors">
+                      <CardContent className="p-4">
+                        <h3 className="font-semibold mb-2 group-hover:text-primary line-clamp-2">{r.title}</h3>
+                        <p className="text-sm text-muted-foreground line-clamp-3 mb-3">{r.excerpt}</p>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Clock className="h-3 w-3" /> {r.readTime}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
         </article>
       </main>
     </div>

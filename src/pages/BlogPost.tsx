@@ -11,7 +11,16 @@ const BlogPost = () => {
 
   if (!post) return <Navigate to="/blog" replace />;
 
-  const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const related = blogPosts
+    .filter((p) => p.slug !== post.slug)
+    .map((p) => {
+      const sharedTags = p.tags.filter((t) => post.tags.includes(t)).length;
+      const recencyBoost = 1 / (1 + Math.abs(new Date(p.date).getTime() - new Date(post.date).getTime()) / (1000 * 60 * 60 * 24 * 30));
+      return { post: p, score: sharedTags * 10 + recencyBoost };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map((x) => x.post);
 
   const canonical = `https://ondabir.com/blog/${post.slug}`;
   const jsonLd = {

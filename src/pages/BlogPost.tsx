@@ -1,15 +1,55 @@
 import { Link, useParams, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Sparkles, ArrowLeft, Clock } from "lucide-react";
 import { blogPosts } from "@/data/blogPosts";
 import SEO from "@/components/SEO";
+import { supabase } from "@/integrations/supabase/client";
+import { useAdmin } from "@/hooks/useAdmin";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+
+type RobotsValue = "index,follow" | "noindex,follow";
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
   const post = blogPosts.find((p) => p.slug === slug);
+  const { isAdmin } = useAdmin();
+  const [robots, setRobots] = useState<RobotsValue>("index,follow");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!slug) return;
+    supabase
+      .from("blog_post_seo")
+      .select("robots")
+      .eq("slug", slug)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data?.robots === "noindex,follow" || data?.robots === "index,follow") {
+          setRobots(data.robots);
+        }
+      });
+  }, [slug]);
 
   if (!post) return <Navigate to="/blog" replace />;
+
+  const toggleRobots = async (noindex: boolean) => {
+    const newVal: RobotsValue = noindex ? "noindex,follow" : "index,follow";
+    setSaving(true);
+    const { error } = await supabase
+      .from("blog_post_seo")
+      .upsert({ slug: post.slug, robots: newVal }, { onConflict: "slug" });
+    setSaving(false);
+    if (error) {
+      toast.error("Failed to update SEO setting");
+      return;
+    }
+    setRobots(newVal);
+    toast.success(`Robots set to ${newVal}`);
+  };
 
   const related = blogPosts
     .filter((p) => p.slug !== post.slug)
@@ -74,6 +114,7 @@ const BlogPost = () => {
         canonical={canonical}
         ogType="article"
         image="https://ondabir.com/og-image.png"
+        robots={robots === "noindex,follow" ? "noindex,follow" : undefined}
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <header className="border-b border-border bg-card">
@@ -95,6 +136,25 @@ const BlogPost = () => {
             <span>{new Date(post.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
             <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {post.readTime}</span>
           </div>
+
+          {isAdmin && (
+            <Card className="mb-6 border-primary/30">
+              <CardContent className="p-4 flex items-center justify-between gap-4">
+                <div>
+                  <Label htmlFor="robots-toggle" className="font-semibold">Hide from search engines</Label>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Current robots: <code>{robots}</code>. Toggle on to set <code>noindex,follow</code>.
+                  </p>
+                </div>
+                <Switch
+                  id="robots-toggle"
+                  checked={robots === "noindex,follow"}
+                  disabled={saving}
+                  onCheckedChange={toggleRobots}
+                />
+              </CardContent>
+            </Card>
+          )}
 
           <div className="prose prose-lg max-w-none space-y-4 text-foreground">
             {post.content.split("\n\n").map((para, i) => (

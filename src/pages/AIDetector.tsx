@@ -114,7 +114,10 @@ const AIDetector = () => {
             <div className="size-8 rounded-lg bg-primary/15 grid place-items-center">
               <Sparkles className="size-4 text-primary" />
             </div>
-            <h1 className="font-bold text-lg">AI Content Detector</h1>
+            <div className="flex flex-col leading-tight">
+              <h1 className="font-bold text-lg">AI Content Detector</h1>
+              <span className="text-[10px] text-muted-foreground hidden sm:block">Know what's real.</span>
+            </div>
           </div>
           <Badge variant="outline" className="hidden sm:inline-flex">
             <ShieldCheck className="size-3 mr-1" /> Powered by Gemini 2.5 Pro

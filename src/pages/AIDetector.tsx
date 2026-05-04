@@ -80,6 +80,13 @@ const AIDetector = () => {
           return;
         }
         payload.text = text;
+      } else if (tab === "url") {
+        if (!/^https?:\/\/.+/i.test(url.trim())) {
+          toast({ title: "Invalid URL", description: "Paste a YouTube, Vimeo, TikTok or X video link.", variant: "destructive" });
+          setLoading(false);
+          return;
+        }
+        payload.url = url.trim();
       } else {
         if (!file) {
           toast({ title: "No file selected", variant: "destructive" });

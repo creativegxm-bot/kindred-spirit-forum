@@ -61,10 +61,15 @@ const buildHead = ({ title, description, canonical, ogType, robots, jsonLd }) =>
   ].join("\n    ");
 };
 
-// Strip default <title> and existing meta description from the shell, then inject ours before </head>.
+// Strip shell tags that we're about to override (title, description, robots, canonical,
+// og:*, twitter:*) so crawlers see only the per-route values.
 const renderShell = (headBlock) => {
   let out = indexHtml.replace(/<title>[\s\S]*?<\/title>/i, "");
-  out = out.replace(/<meta\s+name="description"[^>]*>/i, "");
+  out = out.replace(/<meta\s+name="description"[^>]*>\s*/gi, "");
+  out = out.replace(/<meta\s+name="robots"[^>]*>\s*/gi, "");
+  out = out.replace(/<link\s+rel="canonical"[^>]*>\s*/gi, "");
+  out = out.replace(/<meta\s+property="og:[^"]+"[^>]*>\s*/gi, "");
+  out = out.replace(/<meta\s+name="twitter:[^"]+"[^>]*>\s*/gi, "");
   return out.replace(/<\/head>/i, `    ${headBlock}\n  </head>`);
 };
 

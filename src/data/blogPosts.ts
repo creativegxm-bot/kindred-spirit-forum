@@ -4,6 +4,7 @@ export interface BlogPost {
   excerpt: string;
   date: string;
   readTime: string;
+  tags: string[];
   content: string; // rendered as paragraphs (split on blank lines)
 }
 

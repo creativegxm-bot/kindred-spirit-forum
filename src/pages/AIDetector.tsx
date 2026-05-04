@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Upload, Sparkles, FileText, Image as ImageIcon, Video, ShieldCheck, AlertTriangle } from "lucide-react";
+import { Loader2, Upload, Sparkles, FileText, Image as ImageIcon, Video, ShieldCheck, AlertTriangle, Share2, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
@@ -45,6 +45,8 @@ const AIDetector = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleFile = async (f: File) => {
@@ -66,6 +68,7 @@ const AIDetector = () => {
   const analyze = async () => {
     setLoading(true);
     setResult(null);
+    setShareUrl(null);
     try {
       let payload: Record<string, unknown> = { type: tab };
       if (tab === "text") {
@@ -88,7 +91,40 @@ const AIDetector = () => {
       const { data, error } = await supabase.functions.invoke("detect-ai-content", { body: payload });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
-      setResult(data as Result);
+      const r = data as Result;
+      setResult(r);
+
+      // Persist + upload preview for shareable URL
+      let previewPublicUrl: string | null = null;
+      if (file && tab !== "text") {
+        const ext = (file.name.split(".").pop() || "bin").toLowerCase();
+        const path = `shares/${crypto.randomUUID()}.${ext}`;
+        const { error: upErr } = await supabase.storage.from("post-media").upload(path, file, {
+          contentType: file.type,
+          upsert: false,
+        });
+        if (!upErr) {
+          previewPublicUrl = supabase.storage.from("post-media").getPublicUrl(path).data.publicUrl;
+        }
+      }
+
+      const { data: inserted, error: insErr } = await supabase
+        .from("detection_results")
+        .insert({
+          kind: tab,
+          ai_probability: r.ai_probability,
+          verdict: r.verdict,
+          confidence: r.confidence,
+          signals: r.signals,
+          summary: r.summary,
+          text_snippet: tab === "text" ? text.slice(0, 2000) : null,
+          preview_url: previewPublicUrl,
+        })
+        .select("id")
+        .single();
+      if (!insErr && inserted) {
+        setShareUrl(`${window.location.origin}/r/${inserted.id}`);
+      }
     } catch (e: any) {
       toast({
         title: "Analysis failed",
@@ -97,6 +133,24 @@ const AIDetector = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleShare = async () => {
+    if (!shareUrl) return;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "AI Detection Result", url: shareUrl });
+        return;
+      }
+    } catch { /* fallthrough to clipboard */ }
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+      toast({ title: "Link copied", description: "Share URL is on your clipboard." });
+    } catch {
+      toast({ title: "Could not copy", description: shareUrl, variant: "destructive" });
     }
   };
 

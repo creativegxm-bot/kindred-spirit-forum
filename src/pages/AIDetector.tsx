@@ -166,6 +166,7 @@ const AIDetector = () => {
 
   const reset = () => {
     setText("");
+    setUrl("");
     setFile(null);
     setPreview(null);
     setResult(null);

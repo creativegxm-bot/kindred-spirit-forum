@@ -20,3 +20,9 @@ verify_jwt = false
 
 [functions.notify-advertise-inquiry]
 verify_jwt = false
+
+[functions.detect-ai-content]
+verify_jwt = false
+
+[functions.share-result]
+verify_jwt = false

@@ -3,11 +3,46 @@ import { corsHeaders } from "https://esm.sh/@supabase/supabase-js@2.95.0/cors";
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
 interface DetectRequest {
-  type: "text" | "image" | "video";
+  type: "text" | "image" | "video" | "url";
   text?: string;
   // data URL (base64) for image/video
   fileDataUrl?: string;
   fileMimeType?: string;
+  // Public URL (e.g. YouTube, Vimeo, TikTok, Twitter/X video)
+  url?: string;
+}
+
+const YT_REGEX = /(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
+const extractYouTubeId = (u: string) => u.match(YT_REGEX)?.[1] ?? null;
+
+async function fetchAsDataUrl(url: string): Promise<string | null> {
+  try {
+    const r = await fetch(url);
+    if (!r.ok) return null;
+    const buf = new Uint8Array(await r.arrayBuffer());
+    const mime = r.headers.get("content-type") ?? "image/jpeg";
+    let bin = "";
+    for (let i = 0; i < buf.length; i++) bin += String.fromCharCode(buf[i]);
+    return `data:${mime};base64,${btoa(bin)}`;
+  } catch { return null; }
+}
+
+async function fetchOEmbed(url: string): Promise<{ title?: string; author?: string; thumbnail?: string } | null> {
+  const endpoints = [
+    `https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(url)}`,
+    `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}`,
+    `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`,
+  ];
+  for (const ep of endpoints) {
+    try {
+      const r = await fetch(ep);
+      if (r.ok) {
+        const j = await r.json();
+        return { title: j.title, author: j.author_name, thumbnail: j.thumbnail_url };
+      }
+    } catch { /* next */ }
+  }
+  return null;
 }
 
 const SYSTEM_PROMPT = `You are an expert AI-content forensics analyst. Given text, an image, or a video, estimate the probability (0-100) that it was generated or substantially altered by AI.

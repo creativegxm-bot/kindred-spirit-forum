@@ -114,6 +114,7 @@ const BlogPost = () => {
         canonical={canonical}
         ogType="article"
         image="https://ondabir.com/og-image.png"
+        robots={robots === "noindex,follow" ? "noindex,follow" : undefined}
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <header className="border-b border-border bg-card">

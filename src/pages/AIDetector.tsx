@@ -17,6 +17,8 @@ type Result = {
   confidence: "low" | "medium" | "high";
   signals: string[];
   summary: string;
+  likely_model?: string;
+  model_confidence?: "low" | "medium" | "high";
 };
 
 const verdictMeta: Record<Result["verdict"], { label: string; className: string }> = {

@@ -428,6 +428,84 @@ const MortgageCalculator = () => {
       <footer className="border-t border-border mt-12 py-6 text-center text-sm text-muted-foreground">
         © {new Date().getFullYear()} Mortgage Calculator. For informational purposes only.
       </footer>
+
+      <Dialog open={saveOpen} onOpenChange={setSaveOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Save scenario</DialogTitle>
+            <DialogDescription>
+              Give this scenario a name. It's stored only on this device.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <Label htmlFor="scenarioName">Scenario name</Label>
+            <Input
+              id="scenarioName"
+              autoFocus
+              placeholder={`e.g. ${homePrice.toLocaleString()} @ ${rate}%`}
+              value={scenarioName}
+              onChange={(e) => setScenarioName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") saveCurrentScenario();
+              }}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSaveOpen(false)}>Cancel</Button>
+            <Button onClick={saveCurrentScenario}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={loadOpen} onOpenChange={setLoadOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Saved scenarios</DialogTitle>
+            <DialogDescription>
+              Click a scenario to load its values into the calculator.
+            </DialogDescription>
+          </DialogHeader>
+          {savedScenarios.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-6 text-center">
+              No saved scenarios yet. Use Save to store the current values.
+            </p>
+          ) : (
+            <ul className="space-y-2 max-h-[60vh] overflow-auto">
+              {savedScenarios.map((s) => {
+                const principal = Math.max(0, s.values.homePrice - s.values.downPayment);
+                return (
+                  <li
+                    key={s.id}
+                    className="flex items-center gap-2 border border-border rounded-md p-3 hover:border-primary transition-colors"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => loadScenario(s)}
+                      className="flex-1 text-left"
+                    >
+                      <div className="font-medium">{s.name}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {fmt(principal)} loan · {s.values.rate}% · {s.values.years}y
+                      </div>
+                      <div className="text-[10px] text-muted-foreground mt-0.5">
+                        Saved {new Date(s.savedAt).toLocaleString()}
+                      </div>
+                    </button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => deleteScenario(s.id)}
+                      aria-label={`Delete ${s.name}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

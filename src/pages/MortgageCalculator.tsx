@@ -248,9 +248,17 @@ const MortgageCalculator = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-2 flex-wrap">
           <Home className="h-6 w-6 text-primary" />
           <h1 className="text-xl font-bold flex-1">Mortgage Calculator</h1>
+          <Button size="sm" variant="outline" onClick={() => setLoadOpen(true)}>
+            <Bookmark className="h-4 w-4 sm:mr-1.5" />
+            <span className="hidden sm:inline">Saved{savedScenarios.length ? ` (${savedScenarios.length})` : ""}</span>
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => setSaveOpen(true)}>
+            <Save className="h-4 w-4 sm:mr-1.5" />
+            <span className="hidden sm:inline">Save</span>
+          </Button>
           <Button size="sm" variant="outline" onClick={resetScenario}>
             <RotateCcw className="h-4 w-4 sm:mr-1.5" />
             <span className="hidden sm:inline">Reset</span>

@@ -6,7 +6,15 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Home, Calculator, TrendingUp, BookOpen, Clock, ArrowRight, Share2, Check, RotateCcw } from "lucide-react";
+import { Home, Calculator, TrendingUp, BookOpen, Clock, ArrowRight, Share2, Check, RotateCcw, Save, Bookmark, Trash2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { blogPosts } from "@/data/blogPosts";
 import { useToast } from "@/hooks/use-toast";
 

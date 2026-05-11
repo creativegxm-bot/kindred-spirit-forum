@@ -48,6 +48,43 @@ const numFromParam = (sp: URLSearchParams, key: string, fallback: number) => {
   return Number.isFinite(n) ? n : fallback;
 };
 
+interface SavedScenario {
+  id: string;
+  name: string;
+  savedAt: number;
+  values: {
+    homePrice: number;
+    downPayment: number;
+    rate: number;
+    years: number;
+    propertyTax: number;
+    insurance: number;
+    pmi: number;
+    extraMonthly: number;
+  };
+}
+
+const STORAGE_KEY = "mortgage_saved_scenarios_v1";
+
+const loadSaved = (): SavedScenario[] => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
+const persistSaved = (list: SavedScenario[]) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  } catch {
+    /* ignore quota errors */
+  }
+};
+
 const MortgageCalculator = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { toast } = useToast();

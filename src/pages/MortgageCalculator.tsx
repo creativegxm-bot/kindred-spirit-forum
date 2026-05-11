@@ -1,13 +1,14 @@
-import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Home, Calculator, TrendingUp, BookOpen, Clock, ArrowRight } from "lucide-react";
+import { Home, Calculator, TrendingUp, BookOpen, Clock, ArrowRight, Share2, Check, RotateCcw } from "lucide-react";
 import { blogPosts } from "@/data/blogPosts";
+import { useToast } from "@/hooks/use-toast";
 
 interface ScheduleRow {
   month: number;
@@ -21,16 +22,89 @@ interface ScheduleRow {
 const fmt = (n: number) =>
   n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
 
+const DEFAULTS = {
+  homePrice: 400000,
+  downPayment: 80000,
+  rate: 6.5,
+  years: 30,
+  propertyTax: 3600,
+  insurance: 1200,
+  pmi: 0,
+  extraMonthly: 0,
+};
+
+const numFromParam = (sp: URLSearchParams, key: string, fallback: number) => {
+  const v = sp.get(key);
+  if (v === null || v === "") return fallback;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : fallback;
+};
+
 const MortgageCalculator = () => {
-  const [homePrice, setHomePrice] = useState(400000);
-  const [downPayment, setDownPayment] = useState(80000);
-  const [rate, setRate] = useState(6.5);
-  const [years, setYears] = useState(30);
-  const [propertyTax, setPropertyTax] = useState(3600);
-  const [insurance, setInsurance] = useState(1200);
-  const [pmi, setPmi] = useState(0);
-  const [extraMonthly, setExtraMonthly] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { toast } = useToast();
+  const [copied, setCopied] = useState(false);
+
+  const [homePrice, setHomePrice] = useState(() => numFromParam(searchParams, "price", DEFAULTS.homePrice));
+  const [downPayment, setDownPayment] = useState(() => numFromParam(searchParams, "down", DEFAULTS.downPayment));
+  const [rate, setRate] = useState(() => numFromParam(searchParams, "rate", DEFAULTS.rate));
+  const [years, setYears] = useState(() => numFromParam(searchParams, "years", DEFAULTS.years));
+  const [propertyTax, setPropertyTax] = useState(() => numFromParam(searchParams, "tax", DEFAULTS.propertyTax));
+  const [insurance, setInsurance] = useState(() => numFromParam(searchParams, "ins", DEFAULTS.insurance));
+  const [pmi, setPmi] = useState(() => numFromParam(searchParams, "pmi", DEFAULTS.pmi));
+  const [extraMonthly, setExtraMonthly] = useState(() => numFromParam(searchParams, "extra", DEFAULTS.extraMonthly));
   const [showSchedule, setShowSchedule] = useState(false);
+
+  // Sync state -> URL (debounced via effect). Only include non-default values to keep URLs clean.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const next = new URLSearchParams();
+      const setIf = (key: string, val: number, def: number) => {
+        if (val !== def) next.set(key, String(val));
+      };
+      setIf("price", homePrice, DEFAULTS.homePrice);
+      setIf("down", downPayment, DEFAULTS.downPayment);
+      setIf("rate", rate, DEFAULTS.rate);
+      setIf("years", years, DEFAULTS.years);
+      setIf("tax", propertyTax, DEFAULTS.propertyTax);
+      setIf("ins", insurance, DEFAULTS.insurance);
+      setIf("pmi", pmi, DEFAULTS.pmi);
+      setIf("extra", extraMonthly, DEFAULTS.extraMonthly);
+      setSearchParams(next, { replace: true });
+    }, 250);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [homePrice, downPayment, rate, years, propertyTax, insurance, pmi, extraMonthly]);
+
+  const shareScenario = async () => {
+    const url = window.location.href;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "Mortgage scenario", url });
+        return;
+      }
+    } catch { /* fall through to clipboard */ }
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+      toast({ title: "Link copied", description: "Share this URL to reopen the same scenario." });
+    } catch {
+      toast({ title: "Could not copy link", description: url, variant: "destructive" });
+    }
+  };
+
+  const resetScenario = () => {
+    setHomePrice(DEFAULTS.homePrice);
+    setDownPayment(DEFAULTS.downPayment);
+    setRate(DEFAULTS.rate);
+    setYears(DEFAULTS.years);
+    setPropertyTax(DEFAULTS.propertyTax);
+    setInsurance(DEFAULTS.insurance);
+    setPmi(DEFAULTS.pmi);
+    setExtraMonthly(DEFAULTS.extraMonthly);
+  };
+
 
   const result = useMemo(() => {
     const principal = Math.max(0, homePrice - downPayment);
@@ -91,7 +165,15 @@ const MortgageCalculator = () => {
       <header className="border-b border-border bg-card">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
           <Home className="h-6 w-6 text-primary" />
-          <h1 className="text-xl font-bold">Mortgage Calculator</h1>
+          <h1 className="text-xl font-bold flex-1">Mortgage Calculator</h1>
+          <Button size="sm" variant="outline" onClick={resetScenario}>
+            <RotateCcw className="h-4 w-4 sm:mr-1.5" />
+            <span className="hidden sm:inline">Reset</span>
+          </Button>
+          <Button size="sm" onClick={shareScenario}>
+            {copied ? <Check className="h-4 w-4 sm:mr-1.5" /> : <Share2 className="h-4 w-4 sm:mr-1.5" />}
+            <span className="hidden sm:inline">{copied ? "Copied" : "Share scenario"}</span>
+          </Button>
         </div>
       </header>
 

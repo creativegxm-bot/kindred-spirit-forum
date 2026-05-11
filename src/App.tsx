@@ -7,6 +7,7 @@ import AIDetector from "./pages/AIDetector";
 import ResultPage from "./pages/ResultPage";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import MortgageCalculator from "./pages/MortgageCalculator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/r/:id" element={<ResultPage />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/mortgage-calculator" element={<MortgageCalculator />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

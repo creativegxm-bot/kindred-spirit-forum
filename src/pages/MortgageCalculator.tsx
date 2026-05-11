@@ -165,7 +165,15 @@ const MortgageCalculator = () => {
       <header className="border-b border-border bg-card">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
           <Home className="h-6 w-6 text-primary" />
-          <h1 className="text-xl font-bold">Mortgage Calculator</h1>
+          <h1 className="text-xl font-bold flex-1">Mortgage Calculator</h1>
+          <Button size="sm" variant="outline" onClick={resetScenario}>
+            <RotateCcw className="h-4 w-4 sm:mr-1.5" />
+            <span className="hidden sm:inline">Reset</span>
+          </Button>
+          <Button size="sm" onClick={shareScenario}>
+            {copied ? <Check className="h-4 w-4 sm:mr-1.5" /> : <Share2 className="h-4 w-4 sm:mr-1.5" />}
+            <span className="hidden sm:inline">{copied ? "Copied" : "Share scenario"}</span>
+          </Button>
         </div>
       </header>
 

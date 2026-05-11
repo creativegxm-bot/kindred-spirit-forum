@@ -150,6 +150,46 @@ const MortgageCalculator = () => {
     setExtraMonthly(DEFAULTS.extraMonthly);
   };
 
+  const [savedScenarios, setSavedScenarios] = useState<SavedScenario[]>(() => loadSaved());
+  const [saveOpen, setSaveOpen] = useState(false);
+  const [loadOpen, setLoadOpen] = useState(false);
+  const [scenarioName, setScenarioName] = useState("");
+
+  useEffect(() => {
+    persistSaved(savedScenarios);
+  }, [savedScenarios]);
+
+  const saveCurrentScenario = () => {
+    const name = scenarioName.trim() || `Scenario ${savedScenarios.length + 1}`;
+    const entry: SavedScenario = {
+      id: (crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`),
+      name,
+      savedAt: Date.now(),
+      values: { homePrice, downPayment, rate, years, propertyTax, insurance, pmi, extraMonthly },
+    };
+    setSavedScenarios((prev) => [entry, ...prev]);
+    setScenarioName("");
+    setSaveOpen(false);
+    toast({ title: "Scenario saved", description: `"${name}" is stored on this device.` });
+  };
+
+  const loadScenario = (s: SavedScenario) => {
+    setHomePrice(s.values.homePrice);
+    setDownPayment(s.values.downPayment);
+    setRate(s.values.rate);
+    setYears(s.values.years);
+    setPropertyTax(s.values.propertyTax);
+    setInsurance(s.values.insurance);
+    setPmi(s.values.pmi);
+    setExtraMonthly(s.values.extraMonthly);
+    setLoadOpen(false);
+    toast({ title: "Scenario loaded", description: s.name });
+  };
+
+  const deleteScenario = (id: string) => {
+    setSavedScenarios((prev) => prev.filter((s) => s.id !== id));
+  };
+
 
   const result = useMemo(() => {
     const principal = Math.max(0, homePrice - downPayment);

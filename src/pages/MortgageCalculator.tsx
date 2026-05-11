@@ -6,7 +6,15 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Home, Calculator, TrendingUp, BookOpen, Clock, ArrowRight, Share2, Check, RotateCcw } from "lucide-react";
+import { Home, Calculator, TrendingUp, BookOpen, Clock, ArrowRight, Share2, Check, RotateCcw, Save, Bookmark, Trash2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { blogPosts } from "@/data/blogPosts";
 import { useToast } from "@/hooks/use-toast";
 
@@ -38,6 +46,43 @@ const numFromParam = (sp: URLSearchParams, key: string, fallback: number) => {
   if (v === null || v === "") return fallback;
   const n = Number(v);
   return Number.isFinite(n) ? n : fallback;
+};
+
+interface SavedScenario {
+  id: string;
+  name: string;
+  savedAt: number;
+  values: {
+    homePrice: number;
+    downPayment: number;
+    rate: number;
+    years: number;
+    propertyTax: number;
+    insurance: number;
+    pmi: number;
+    extraMonthly: number;
+  };
+}
+
+const STORAGE_KEY = "mortgage_saved_scenarios_v1";
+
+const loadSaved = (): SavedScenario[] => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
+const persistSaved = (list: SavedScenario[]) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  } catch {
+    /* ignore quota errors */
+  }
 };
 
 const MortgageCalculator = () => {
@@ -105,6 +150,46 @@ const MortgageCalculator = () => {
     setExtraMonthly(DEFAULTS.extraMonthly);
   };
 
+  const [savedScenarios, setSavedScenarios] = useState<SavedScenario[]>(() => loadSaved());
+  const [saveOpen, setSaveOpen] = useState(false);
+  const [loadOpen, setLoadOpen] = useState(false);
+  const [scenarioName, setScenarioName] = useState("");
+
+  useEffect(() => {
+    persistSaved(savedScenarios);
+  }, [savedScenarios]);
+
+  const saveCurrentScenario = () => {
+    const name = scenarioName.trim() || `Scenario ${savedScenarios.length + 1}`;
+    const entry: SavedScenario = {
+      id: (crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`),
+      name,
+      savedAt: Date.now(),
+      values: { homePrice, downPayment, rate, years, propertyTax, insurance, pmi, extraMonthly },
+    };
+    setSavedScenarios((prev) => [entry, ...prev]);
+    setScenarioName("");
+    setSaveOpen(false);
+    toast({ title: "Scenario saved", description: `"${name}" is stored on this device.` });
+  };
+
+  const loadScenario = (s: SavedScenario) => {
+    setHomePrice(s.values.homePrice);
+    setDownPayment(s.values.downPayment);
+    setRate(s.values.rate);
+    setYears(s.values.years);
+    setPropertyTax(s.values.propertyTax);
+    setInsurance(s.values.insurance);
+    setPmi(s.values.pmi);
+    setExtraMonthly(s.values.extraMonthly);
+    setLoadOpen(false);
+    toast({ title: "Scenario loaded", description: s.name });
+  };
+
+  const deleteScenario = (id: string) => {
+    setSavedScenarios((prev) => prev.filter((s) => s.id !== id));
+  };
+
 
   const result = useMemo(() => {
     const principal = Math.max(0, homePrice - downPayment);
@@ -163,9 +248,17 @@ const MortgageCalculator = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-2 flex-wrap">
           <Home className="h-6 w-6 text-primary" />
           <h1 className="text-xl font-bold flex-1">Mortgage Calculator</h1>
+          <Button size="sm" variant="outline" onClick={() => setLoadOpen(true)}>
+            <Bookmark className="h-4 w-4 sm:mr-1.5" />
+            <span className="hidden sm:inline">Saved{savedScenarios.length ? ` (${savedScenarios.length})` : ""}</span>
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => setSaveOpen(true)}>
+            <Save className="h-4 w-4 sm:mr-1.5" />
+            <span className="hidden sm:inline">Save</span>
+          </Button>
           <Button size="sm" variant="outline" onClick={resetScenario}>
             <RotateCcw className="h-4 w-4 sm:mr-1.5" />
             <span className="hidden sm:inline">Reset</span>
@@ -335,6 +428,84 @@ const MortgageCalculator = () => {
       <footer className="border-t border-border mt-12 py-6 text-center text-sm text-muted-foreground">
         © {new Date().getFullYear()} Mortgage Calculator. For informational purposes only.
       </footer>
+
+      <Dialog open={saveOpen} onOpenChange={setSaveOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Save scenario</DialogTitle>
+            <DialogDescription>
+              Give this scenario a name. It's stored only on this device.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <Label htmlFor="scenarioName">Scenario name</Label>
+            <Input
+              id="scenarioName"
+              autoFocus
+              placeholder={`e.g. ${homePrice.toLocaleString()} @ ${rate}%`}
+              value={scenarioName}
+              onChange={(e) => setScenarioName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") saveCurrentScenario();
+              }}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSaveOpen(false)}>Cancel</Button>
+            <Button onClick={saveCurrentScenario}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={loadOpen} onOpenChange={setLoadOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Saved scenarios</DialogTitle>
+            <DialogDescription>
+              Click a scenario to load its values into the calculator.
+            </DialogDescription>
+          </DialogHeader>
+          {savedScenarios.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-6 text-center">
+              No saved scenarios yet. Use Save to store the current values.
+            </p>
+          ) : (
+            <ul className="space-y-2 max-h-[60vh] overflow-auto">
+              {savedScenarios.map((s) => {
+                const principal = Math.max(0, s.values.homePrice - s.values.downPayment);
+                return (
+                  <li
+                    key={s.id}
+                    className="flex items-center gap-2 border border-border rounded-md p-3 hover:border-primary transition-colors"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => loadScenario(s)}
+                      className="flex-1 text-left"
+                    >
+                      <div className="font-medium">{s.name}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {fmt(principal)} loan · {s.values.rate}% · {s.values.years}y
+                      </div>
+                      <div className="text-[10px] text-muted-foreground mt-0.5">
+                        Saved {new Date(s.savedAt).toLocaleString()}
+                      </div>
+                    </button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => deleteScenario(s.id)}
+                      aria-label={`Delete ${s.name}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

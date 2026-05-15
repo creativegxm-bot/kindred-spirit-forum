@@ -72,6 +72,20 @@ const ShopInquiryForm = ({ defaultProduct = "" }: Props) => {
       company: parsed.data.company || null,
       message: composed,
     });
+    if (!error) {
+      supabase.functions
+        .invoke("send-shop-inquiry", {
+          body: {
+            name: parsed.data.name,
+            email: parsed.data.email,
+            company: parsed.data.company || "",
+            product: parsed.data.product || "",
+            quantity: parsed.data.quantity || "",
+            message: parsed.data.message,
+          },
+        })
+        .catch((e) => console.error("notify failed", e));
+    }
     setSubmitting(false);
     if (error) {
       toast({

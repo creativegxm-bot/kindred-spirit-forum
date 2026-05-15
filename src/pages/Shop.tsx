@@ -1,11 +1,12 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Phone, MessageSquare, ExternalLink, Search, Mail } from "lucide-react";
+import { ArrowLeft, Phone, MessageSquare, ExternalLink, Search, Mail, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import SEO from "@/components/SEO";
 import Footer from "@/components/Footer";
+import ShopInquiryForm from "@/components/ShopInquiryForm";
 import { wholesaleProducts } from "@/data/wholesaleProducts";
 
 const CONTACT_PHONE = "908-987-7387";
@@ -13,6 +14,16 @@ const CONTACT_TEL = "+19089877387";
 
 const Shop = () => {
   const [query, setQuery] = useState("");
+  const [inquiryProduct, setInquiryProduct] = useState<string>("");
+  const [formKey, setFormKey] = useState(0);
+  const formRef = useRef<HTMLDivElement>(null);
+
+  const openInquiry = (productTitle: string) => {
+    setInquiryProduct(productTitle);
+    setFormKey((k) => k + 1);
+    setTimeout(() => formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+  };
+
   const [activeCat, setActiveCat] = useState<string>("All");
 
   const categories = useMemo(() => {
@@ -117,12 +128,19 @@ const Shop = () => {
                 <h3 className="line-clamp-2 text-sm font-semibold leading-snug">{p.title}</h3>
                 <p className="line-clamp-3 text-xs text-muted-foreground">{p.description}</p>
                 <div className="mt-auto flex flex-col gap-1.5 pt-2">
-                  <a href={`tel:${CONTACT_TEL}`} className="w-full">
-                    <Button size="sm" className="h-8 w-full gap-1.5 text-xs">
-                      <Phone className="h-3.5 w-3.5" /> Call for Quote
-                    </Button>
-                  </a>
-                  <div className="grid grid-cols-2 gap-1.5">
+                  <Button
+                    size="sm"
+                    onClick={() => openInquiry(p.title)}
+                    className="h-8 w-full gap-1.5 text-xs"
+                  >
+                    <Send className="h-3.5 w-3.5" /> Inquire
+                  </Button>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    <a href={`tel:${CONTACT_TEL}`}>
+                      <Button variant="secondary" size="sm" className="h-8 w-full gap-1 text-[11px]">
+                        <Phone className="h-3 w-3" /> Call
+                      </Button>
+                    </a>
                     <a href={`sms:${CONTACT_TEL}?&body=${encodeURIComponent("Inquiry about: " + p.title)}`}>
                       <Button variant="secondary" size="sm" className="h-8 w-full gap-1 text-[11px]">
                         <MessageSquare className="h-3 w-3" /> Text
@@ -130,7 +148,7 @@ const Shop = () => {
                     </a>
                     <a href={p.url} target="_blank" rel="noopener noreferrer">
                       <Button variant="outline" size="sm" className="h-8 w-full gap-1 text-[11px]">
-                        <ExternalLink className="h-3 w-3" /> Details
+                        <ExternalLink className="h-3 w-3" />
                       </Button>
                     </a>
                   </div>
@@ -145,6 +163,10 @@ const Shop = () => {
             No products match your search.
           </div>
         )}
+
+        <div ref={formRef} className="mt-10 scroll-mt-20">
+          <ShopInquiryForm key={formKey} defaultProduct={inquiryProduct} />
+        </div>
 
         <section className="mt-10 rounded-2xl border border-primary/30 bg-primary/5 p-6 text-center">
           <h2 className="mb-2 text-xl font-bold">Ready to order in bulk?</h2>

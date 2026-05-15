@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
 import MortgageCalculatorBanner from "@/components/MortgageCalculatorBanner";
+import ShopBanner from "@/components/ShopBanner";
 import sampleReal from "@/assets/sample-real.jpg";
 import sampleAi from "@/assets/sample-ai.jpg";
 
@@ -207,7 +208,8 @@ const AIDetector = () => {
       </header>
 
       <main className="container max-w-5xl mx-auto px-4 py-8">
-        <div className="mb-6">
+        <div className="mb-6 space-y-3">
+          <ShopBanner />
           <MortgageCalculatorBanner />
         </div>
         <section className="text-center mb-10">

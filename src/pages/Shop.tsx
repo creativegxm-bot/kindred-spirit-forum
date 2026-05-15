@@ -128,12 +128,19 @@ const Shop = () => {
                 <h3 className="line-clamp-2 text-sm font-semibold leading-snug">{p.title}</h3>
                 <p className="line-clamp-3 text-xs text-muted-foreground">{p.description}</p>
                 <div className="mt-auto flex flex-col gap-1.5 pt-2">
-                  <a href={`tel:${CONTACT_TEL}`} className="w-full">
-                    <Button size="sm" className="h-8 w-full gap-1.5 text-xs">
-                      <Phone className="h-3.5 w-3.5" /> Call for Quote
-                    </Button>
-                  </a>
-                  <div className="grid grid-cols-2 gap-1.5">
+                  <Button
+                    size="sm"
+                    onClick={() => openInquiry(p.title)}
+                    className="h-8 w-full gap-1.5 text-xs"
+                  >
+                    <Send className="h-3.5 w-3.5" /> Inquire
+                  </Button>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    <a href={`tel:${CONTACT_TEL}`}>
+                      <Button variant="secondary" size="sm" className="h-8 w-full gap-1 text-[11px]">
+                        <Phone className="h-3 w-3" /> Call
+                      </Button>
+                    </a>
                     <a href={`sms:${CONTACT_TEL}?&body=${encodeURIComponent("Inquiry about: " + p.title)}`}>
                       <Button variant="secondary" size="sm" className="h-8 w-full gap-1 text-[11px]">
                         <MessageSquare className="h-3 w-3" /> Text
@@ -141,7 +148,7 @@ const Shop = () => {
                     </a>
                     <a href={p.url} target="_blank" rel="noopener noreferrer">
                       <Button variant="outline" size="sm" className="h-8 w-full gap-1 text-[11px]">
-                        <ExternalLink className="h-3 w-3" /> Details
+                        <ExternalLink className="h-3 w-3" />
                       </Button>
                     </a>
                   </div>
@@ -156,6 +163,10 @@ const Shop = () => {
             No products match your search.
           </div>
         )}
+
+        <div ref={formRef} className="mt-10 scroll-mt-20">
+          <ShopInquiryForm key={formKey} defaultProduct={inquiryProduct} />
+        </div>
 
         <section className="mt-10 rounded-2xl border border-primary/30 bg-primary/5 p-6 text-center">
           <h2 className="mb-2 text-xl font-bold">Ready to order in bulk?</h2>

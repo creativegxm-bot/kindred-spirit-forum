@@ -116,19 +116,26 @@ const Shop = () => {
               key={p.slug}
               className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card transition hover:border-primary/50 hover:shadow-lg"
             >
-              <div className="aspect-square overflow-hidden bg-muted">
+              <Link to={`/shop/${p.slug}`} className="block aspect-square overflow-hidden bg-muted">
                 <img
                   src={p.image}
                   alt={p.title}
                   loading="lazy"
                   className="h-full w-full object-cover transition group-hover:scale-105"
                 />
-              </div>
+              </Link>
               <div className="flex flex-1 flex-col gap-2 p-3">
                 <Badge variant="secondary" className="w-fit text-[10px]">{p.category}</Badge>
-                <h3 className="line-clamp-2 text-sm font-semibold leading-snug">{p.title}</h3>
+                <Link to={`/shop/${p.slug}`} className="hover:text-primary">
+                  <h3 className="line-clamp-2 text-sm font-semibold leading-snug">{p.title}</h3>
+                </Link>
                 <p className="line-clamp-3 text-xs text-muted-foreground">{p.description}</p>
                 <div className="mt-auto flex flex-col gap-1.5 pt-2">
+                  <Link to={`/shop/${p.slug}`}>
+                    <Button size="sm" variant="outline" className="h-8 w-full gap-1.5 text-xs">
+                      View Details
+                    </Button>
+                  </Link>
                   <Button
                     size="sm"
                     onClick={() => openInquiry(p.title)}

@@ -1,11 +1,12 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Phone, MessageSquare, ExternalLink, Search, Mail } from "lucide-react";
+import { ArrowLeft, Phone, MessageSquare, ExternalLink, Search, Mail, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import SEO from "@/components/SEO";
 import Footer from "@/components/Footer";
+import ShopInquiryForm from "@/components/ShopInquiryForm";
 import { wholesaleProducts } from "@/data/wholesaleProducts";
 
 const CONTACT_PHONE = "908-987-7387";
@@ -13,6 +14,16 @@ const CONTACT_TEL = "+19089877387";
 
 const Shop = () => {
   const [query, setQuery] = useState("");
+  const [inquiryProduct, setInquiryProduct] = useState<string>("");
+  const [formKey, setFormKey] = useState(0);
+  const formRef = useRef<HTMLDivElement>(null);
+
+  const openInquiry = (productTitle: string) => {
+    setInquiryProduct(productTitle);
+    setFormKey((k) => k + 1);
+    setTimeout(() => formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+  };
+
   const [activeCat, setActiveCat] = useState<string>("All");
 
   const categories = useMemo(() => {

@@ -191,7 +191,9 @@ const Shop = () => {
           </div>
         </section>
       </div>
-      <Footer />
+      <LanguageProvider>
+        <Footer />
+      </LanguageProvider>
     </div>
   );
 };

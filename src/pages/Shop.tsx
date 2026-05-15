@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import SEO from "@/components/SEO";
 import Footer from "@/components/Footer";
 import ShopInquiryForm from "@/components/ShopInquiryForm";
+import { LanguageProvider } from "@/hooks/useLanguage";
 import { wholesaleProducts } from "@/data/wholesaleProducts";
 
 const CONTACT_PHONE = "908-987-7387";
@@ -190,7 +191,9 @@ const Shop = () => {
           </div>
         </section>
       </div>
-      <Footer />
+      <LanguageProvider>
+        <Footer />
+      </LanguageProvider>
     </div>
   );
 };

@@ -5,17 +5,11 @@ const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 interface DetectRequest {
   type: "text" | "image" | "video" | "url";
   text?: string;
-  // data URL (base64) for image/video
   fileDataUrl?: string;
   fileMimeType?: string;
-  // Public URL (e.g. YouTube, Vimeo, TikTok, Twitter/X video)
   url?: string;
 }
 
-// Supported YouTube URL shapes:
-//   youtube.com/watch?v=ID, youtube.com/shorts/ID, youtube.com/embed/ID,
-//   youtube.com/live/ID, youtube.com/v/ID, youtu.be/ID,
-//   m.youtube.com/*, music.youtube.com/*, with extra query params like &list=, &t=, &si=
 const YT_HOST_REGEX = /^(?:https?:\/\/)?(?:www\.|m\.|music\.)?(?:youtube\.com|youtu\.be)\//i;
 const YT_ID_REGEXES: RegExp[] = [
   /[?&]v=([A-Za-z0-9_-]{11})/,
@@ -77,11 +71,58 @@ async function fetchOEmbed(url: string): Promise<{ title?: string; author?: stri
   return null;
 }
 
-const SYSTEM_PROMPT = `You are an expert AI-content forensics analyst. Given text, an image, or a video, estimate the probability (0-100) that it was generated or substantially altered by AI.
+const SYSTEM_PROMPT = `You are a rigorous AI-content forensics analyst. Your job is to estimate the probability (0-100) that the supplied content was generated or substantially edited by a generative AI model. You must match or beat the calibration of leading detectors (GPTZero, Originality.ai, Copyleaks, Sapling, Hive, Winston).
 
-When likely AI, ALSO try to identify the most probable generator by NAME. Pick from: ChatGPT (GPT-4/GPT-5), Claude (Anthropic), Gemini (Google), Llama (Meta), Mistral, DeepSeek, Grok (xAI), Perplexity, Midjourney, DALL·E 3, Stable Diffusion (SD/SDXL/SD3), Flux (Black Forest Labs), Adobe Firefly, Ideogram, Leonardo, Runway (Gen-2/Gen-3), Sora (OpenAI), Pika, Kling, HeyGen, Synthesia, Veo (Google). Use stylistic + artifact tells (e.g. ChatGPT's "It's important to note", "not just X but Y"; Claude's longer hedged paragraphs; Midjourney's painterly compositions; SDXL hands; Sora's physics-but-not-quite). Return Unknown only when truly unclear.
+CALIBRATION RULES (critical — follow strictly):
+- 0-15: Clearly human. Typos, idiosyncratic voice, personal anecdotes, irregular rhythm, factual quirks, dated references, emotional inconsistency, unique slang.
+- 16-35: Likely human but some polish. Possibly LLM-edited or grammar-checked.
+- 36-64: Genuinely uncertain — mixed signals, short sample, or heavy editing of either origin.
+- 65-84: Likely AI. Multiple structural tells present.
+- 85-100: Almost certainly AI. Strong, multiple, redundant tells.
 
-Return ONLY a JSON object via the provided tool. Be concise but specific. Cite concrete signals (perplexity, burstiness, repeated phrasing, watermark/diffusion artifacts, anatomical inconsistencies, lighting, frame interpolation artifacts, codec smoothness, etc.). Never refuse — always provide your best estimate.`;
+DO NOT default to 50. Pick a side when signals point that way. DO NOT collapse to round numbers (50, 75, 90) — give a specific number that reflects evidence weight (e.g., 71, 83, 27).
+
+TEXT TELLS (weigh cumulatively, no single signal is decisive):
+ChatGPT/GPT-4/5 family:
+- "It's important to note", "It's worth noting", "Certainly!", "Absolutely!", "In conclusion", "In summary", "Overall"
+- "not just X, but Y" / "not only X but also Y" antithesis pattern
+- "delve", "navigate", "tapestry", "landscape", "realm", "underscore", "showcase", "leverage", "robust", "seamless", "myriad", "multifaceted", "nuanced", "pivotal", "paramount", "intricate", "vibrant"
+- em-dashes used in pairs for asides — like this — repeatedly
+- Tricolons / rule-of-three lists very frequently
+- Perfectly balanced paragraph lengths
+- "Remember that...", hedging closers, moralizing conclusions
+- Markdown bullet/numbered lists with bolded lead-ins ("**Clarity:** ...")
+Claude:
+- Long hedged paragraphs, "I'd be happy to", "Let me", explicit structure signposting
+- "It's worth considering", careful caveats, balanced both-sides framing
+Gemini:
+- Slightly stiffer prose, frequent transitional adverbs, encyclopedic tone
+
+Human tells (push DOWN):
+- Typos, missing punctuation, inconsistent capitalization
+- Run-on sentences, fragments, "lol", "tbh", "imo"
+- Personal specifics with verifiable detail (names, dates, places)
+- Emotional swings, contradictions, asides that don't resolve
+- Regional spelling drift, profanity, sarcasm without explanation
+
+IMAGE TELLS:
+Midjourney: painterly hyperreal lighting, shallow DOF on everything, symmetrical compositions, glossy skin, identical lighting on disparate surfaces.
+SDXL/SD3: hand/finger anomalies, melted jewelry, text gibberish in signs, repeating background patterns, eye asymmetry.
+DALL·E 3: cartoonish vibrance, perfectly centered subject, characteristic glow, text often readable but stylized.
+Flux: extremely sharp realism, near-perfect hands, but tell-tale subject isolation and overly-clean backgrounds.
+Firefly: muted palette, slightly soft focus.
+Photograph tells (push DOWN): EXIF-consistent grain, lens distortion, motion blur, imperfect focus, real shadows matching scene geometry, signage with correct readable text, depth-of-field that matches a real lens.
+
+VIDEO TELLS (Sora/Veo/Runway/Kling/Pika):
+- Physics drift (objects morphing through each other, gravity off)
+- Background warping during camera motion
+- Faces inconsistent across frames
+- Hands/feet replaced or extra
+- Unnaturally smooth interpolation, codec-perfect with no compression artifacts
+
+Also identify the most probable generator BY NAME from: ChatGPT (GPT-4/5), Claude, Gemini, Llama, Mistral, DeepSeek, Grok, Perplexity, Midjourney, DALL·E 3, Stable Diffusion (SD/SDXL/SD3), Flux, Adobe Firefly, Ideogram, Leonardo, Runway, Sora, Pika, Kling, HeyGen, Synthesia, Veo. Use "Unknown" only if content is clearly human or you truly cannot narrow it.
+
+Be specific in signals — quote phrases, name artifacts, point to exact tells. Never refuse. Always return your best estimate via the tool.`;
 
 const tool = {
   type: "function",
@@ -91,26 +132,61 @@ const tool = {
     parameters: {
       type: "object",
       properties: {
-        ai_probability: { type: "number", description: "0-100 probability content is AI-generated" },
+        ai_probability: { type: "number", description: "0-100 probability content is AI-generated. Avoid round numbers; reflect evidence weight." },
         verdict: { type: "string", enum: ["human", "likely_human", "uncertain", "likely_ai", "ai"] },
         confidence: { type: "string", enum: ["low", "medium", "high"] },
         signals: {
           type: "array",
           items: { type: "string" },
-          description: "Specific observations that support the verdict",
+          description: "4-8 specific observations (quote phrases, name artifacts) that support the verdict.",
         },
-        summary: { type: "string", description: "1-3 sentence plain-English summary." },
+        summary: { type: "string", description: "2-3 sentence plain-English summary of why." },
         likely_model: {
           type: "string",
-          description: "Most likely AI model/tool by name (e.g. 'ChatGPT (GPT-4)', 'Claude 3.5 Sonnet', 'Midjourney v6', 'Stable Diffusion XL', 'Sora', 'Runway Gen-3'). Use 'Unknown' if not confident or if content is human.",
+          description: "Most likely AI model/tool by name. Use 'Unknown' only if truly unclear or content is human.",
         },
-        model_confidence: { type: "string", enum: ["low", "medium", "high"], description: "Confidence in the likely_model attribution." },
+        model_confidence: { type: "string", enum: ["low", "medium", "high"] },
       },
       required: ["ai_probability", "verdict", "confidence", "signals", "summary", "likely_model", "model_confidence"],
       additionalProperties: false,
     },
   },
 };
+
+function deriveVerdict(p: number): "human" | "likely_human" | "uncertain" | "likely_ai" | "ai" {
+  if (p < 15) return "human";
+  if (p < 40) return "likely_human";
+  if (p < 60) return "uncertain";
+  if (p < 85) return "likely_ai";
+  return "ai";
+}
+
+async function callModel(model: string, userContent: any) {
+  const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${LOVABLE_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: userContent },
+      ],
+      tools: [tool],
+      tool_choice: { type: "function", function: { name: "report_ai_detection" } },
+    }),
+  });
+  if (!resp.ok) {
+    const t = await resp.text().catch(() => "");
+    throw new Error(`gateway_${resp.status}:${t.slice(0, 200)}`);
+  }
+  const data = await resp.json();
+  const call = data.choices?.[0]?.message?.tool_calls?.[0];
+  if (!call?.function?.arguments) throw new Error("no_tool_call");
+  return JSON.parse(call.function.arguments);
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -120,6 +196,7 @@ Deno.serve(async (req) => {
     const body = (await req.json()) as DetectRequest;
 
     let userContent: any;
+    let isText = false;
     if (body.type === "text") {
       if (!body.text || body.text.trim().length < 20) {
         return new Response(
@@ -127,7 +204,8 @@ Deno.serve(async (req) => {
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
-      userContent = `Analyze this text for AI-generation likelihood:\n\n"""\n${body.text.slice(0, 20000)}\n"""`;
+      isText = true;
+      userContent = `Analyze the following text for AI-generation likelihood. Apply the calibration rules strictly and quote specific phrases as evidence.\n\n"""\n${body.text.slice(0, 20000)}\n"""`;
     } else if (body.type === "image" || body.type === "video") {
       if (!body.fileDataUrl) {
         return new Response(JSON.stringify({ error: "Missing file data" }), {
@@ -136,7 +214,7 @@ Deno.serve(async (req) => {
         });
       }
       userContent = [
-        { type: "text", text: `Analyze this ${body.type} for AI-generation likelihood.` },
+        { type: "text", text: `Analyze this ${body.type} for AI-generation likelihood. Examine artifacts, anatomy, lighting, text rendering, physics, and known generator tells. Quote concrete artifacts.` },
         { type: "image_url", image_url: { url: body.fileDataUrl } },
       ];
     } else if (body.type === "url") {
@@ -146,38 +224,28 @@ Deno.serve(async (req) => {
           status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      // Allow users to omit the scheme
       if (!/^https?:\/\//i.test(raw)) raw = `https://${raw}`;
-
       let parsed: URL;
       try { parsed = new URL(raw); }
       catch {
-        return new Response(JSON.stringify({ error: "That doesn't look like a valid URL. Please check it and try again." }), {
+        return new Response(JSON.stringify({ error: "That doesn't look like a valid URL." }), {
           status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       const url = parsed.toString();
-
       if (!isKnownVideoHost(url)) {
         return new Response(JSON.stringify({
-          error: "Unsupported link. Paste a YouTube (video, Shorts, playlist), Vimeo, TikTok, X/Twitter, Instagram Reel, or Facebook video URL.",
+          error: "Unsupported link. Paste a YouTube, Vimeo, TikTok, X/Twitter, Instagram Reel, or Facebook video URL.",
         }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
-
-      let ytId = extractYouTubeId(url);
+      const ytId = extractYouTubeId(url);
       const playlistId = url.match(YT_PLAYLIST_REGEX)?.[1] ?? null;
-      // Playlist-only link (e.g. /playlist?list=...): try to resolve first video via oEmbed
-      let oembed = await fetchOEmbed(url);
-
-      if (!ytId && playlistId && YT_HOST_REGEX.test(url)) {
-        // No usable video id and oEmbed couldn't resolve a single video
-        if (!oembed) {
-          return new Response(JSON.stringify({
-            error: "This looks like a YouTube playlist. Paste a single video URL instead (e.g. youtube.com/watch?v=… or youtu.be/…).",
-          }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-        }
+      const oembed = await fetchOEmbed(url);
+      if (!ytId && playlistId && YT_HOST_REGEX.test(url) && !oembed) {
+        return new Response(JSON.stringify({
+          error: "This looks like a YouTube playlist. Paste a single video URL.",
+        }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
-
       let thumbDataUrl: string | null = null;
       if (ytId) {
         thumbDataUrl =
@@ -186,29 +254,20 @@ Deno.serve(async (req) => {
       } else if (oembed?.thumbnail) {
         thumbDataUrl = await fetchAsDataUrl(oembed.thumbnail);
       }
-
-      // If we have neither a recognizable video id nor any oEmbed metadata, we cannot analyze.
       if (!ytId && !oembed && !thumbDataUrl) {
         return new Response(JSON.stringify({
-          error: "Couldn't read this video link. Make sure it's public and points to a single video, then try again.",
+          error: "Couldn't read this video link. Make sure it's public and try again.",
         }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
-
       const meta = [
         `URL: ${url}`,
         oembed?.title ? `Title: ${oembed.title}` : null,
         oembed?.author ? `Author/Channel: ${oembed.author}` : null,
         ytId ? `YouTube ID: ${ytId}` : null,
-        playlistId ? `Playlist ID: ${playlistId}` : null,
       ].filter(Boolean).join("\n");
-
-      const textPart = `Analyze this online video for AI-generation likelihood. We cannot fetch full frames, so reason from the available metadata and ${thumbDataUrl ? "the attached thumbnail (a representative frame)" : "the title/channel signals"}. Look for: synthetic-looking thumbnails, AI-narration channel patterns, generic stock-style titles, deepfake indicators, and known AI-generation channels. Be explicit that the verdict is based on limited signals.\n\n${meta}`;
-
+      const textPart = `Analyze this online video for AI-generation likelihood. We cannot fetch frames, so reason from metadata and ${thumbDataUrl ? "the attached thumbnail" : "the title/channel signals"}. Look for synthetic thumbnails, AI-narration channel patterns, generic stock titles, deepfake indicators.\n\n${meta}`;
       userContent = thumbDataUrl
-        ? [
-            { type: "text", text: textPart },
-            { type: "image_url", image_url: { url: thumbDataUrl } },
-          ]
+        ? [{ type: "text", text: textPart }, { type: "image_url", image_url: { url: thumbDataUrl } }]
         : textPart;
     } else {
       return new Response(JSON.stringify({ error: "Invalid type" }), {
@@ -217,50 +276,75 @@ Deno.serve(async (req) => {
       });
     }
 
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-pro",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: userContent },
-        ],
-        tools: [tool],
-        tool_choice: { type: "function", function: { name: "report_ai_detection" } },
-      }),
-    });
+    // Ensemble: run two strong models in parallel and average for better calibration.
+    // For text we use two different model families (better diversity). For images/video we use Gemini Pro (best vision).
+    const models = isText
+      ? ["google/gemini-2.5-pro", "openai/gpt-5"]
+      : ["google/gemini-2.5-pro"];
 
-    if (resp.status === 429) {
-      return new Response(JSON.stringify({ error: "Rate limit reached. Try again shortly." }), {
-        status: 429,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-    if (resp.status === 402) {
-      return new Response(
-        JSON.stringify({ error: "AI credits exhausted. Add credits in Workspace settings." }),
-        { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
-    }
-    if (!resp.ok) {
-      const t = await resp.text();
-      console.error("AI gateway error", resp.status, t);
+    const settled = await Promise.allSettled(models.map((m) => callModel(m, userContent)));
+    const results = settled
+      .filter((r): r is PromiseFulfilledResult<any> => r.status === "fulfilled")
+      .map((r) => r.value);
+
+    if (results.length === 0) {
+      const firstErr = (settled[0] as PromiseRejectedResult)?.reason;
+      const msg = String(firstErr?.message ?? firstErr ?? "unknown");
+      if (msg.includes("gateway_429")) {
+        return new Response(JSON.stringify({ error: "Rate limit reached. Try again shortly." }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (msg.includes("gateway_402")) {
+        return new Response(JSON.stringify({ error: "AI credits exhausted. Add credits in Workspace settings." }), {
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      console.error("All models failed", msg);
       return new Response(JSON.stringify({ error: "AI gateway error" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const data = await resp.json();
-    const call = data.choices?.[0]?.message?.tool_calls?.[0];
-    const args = call?.function?.arguments ? JSON.parse(call.function.arguments) : null;
-    if (!args) throw new Error("No structured response from model");
+    // Aggregate: average probability, merge signals, pick most-confident model attribution.
+    const avg = Math.round(
+      results.reduce((s, r) => s + (Number(r.ai_probability) || 0), 0) / results.length,
+    );
+    const allSignals: string[] = [];
+    const seen = new Set<string>();
+    for (const r of results) {
+      for (const s of (r.signals ?? []) as string[]) {
+        const key = s.trim().toLowerCase();
+        if (key && !seen.has(key)) { seen.add(key); allSignals.push(s); }
+      }
+    }
+    // Pick model attribution: prefer non-Unknown and highest model_confidence.
+    const confRank: Record<string, number> = { high: 3, medium: 2, low: 1 };
+    const named = results.filter((r) => r.likely_model && !/unknown/i.test(r.likely_model));
+    const pickFrom = named.length ? named : results;
+    pickFrom.sort((a, b) => (confRank[b.model_confidence] ?? 0) - (confRank[a.model_confidence] ?? 0));
+    const best = pickFrom[0];
 
-    return new Response(JSON.stringify(args), {
+    // Overall confidence: if models agree (spread <= 15) -> bump; if disagree (>30) -> downgrade.
+    const probs = results.map((r) => Number(r.ai_probability) || 0);
+    const spread = Math.max(...probs) - Math.min(...probs);
+    let confidence: "low" | "medium" | "high";
+    const avgConf = results.reduce((s, r) => s + (confRank[r.confidence] ?? 2), 0) / results.length;
+    if (spread > 30) confidence = "low";
+    else if (spread <= 12 && avgConf >= 2.5) confidence = "high";
+    else confidence = "medium";
+
+    const aggregated = {
+      ai_probability: avg,
+      verdict: deriveVerdict(avg),
+      confidence,
+      signals: allSignals.slice(0, 8),
+      summary: best.summary,
+      likely_model: best.likely_model ?? "Unknown",
+      model_confidence: best.model_confidence ?? "low",
+    };
+
+    return new Response(JSON.stringify(aggregated), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {

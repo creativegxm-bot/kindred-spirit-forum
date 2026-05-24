@@ -34,7 +34,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "OndaBir <notifications@ondabir.com>",
+        from: "OndaBir <onboarding@resend.dev>",
         to: ["resiaba2872@gmail.com"],
         subject: `New newsletter signup: ${email}`,
         html: `

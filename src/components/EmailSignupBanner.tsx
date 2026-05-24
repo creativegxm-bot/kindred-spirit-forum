@@ -33,6 +33,10 @@ const EmailSignupBanner = () => {
       if (error && error.code !== "23505") {
         throw error;
       }
+      // Notify admin (best effort — don't block UX on failure)
+      supabase.functions.invoke("notify-newsletter-signup", {
+        body: { email: trimmed, source_page: "ai-detector" },
+      }).catch(() => {});
       localStorage.setItem(STORAGE_KEY, trimmed);
       setSubscribed(true);
       toast({ title: "You're subscribed!", description: "New tools and detection tips will head your way." });

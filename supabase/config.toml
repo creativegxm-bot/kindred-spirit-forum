@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.share-result]
 verify_jwt = false
+
+[functions.notify-newsletter-signup]
+verify_jwt = false

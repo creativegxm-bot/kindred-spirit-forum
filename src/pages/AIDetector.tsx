@@ -145,6 +145,17 @@ const AIDetector = () => {
       if (!insErr && inserted) {
         const shareEndpoint = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/share-result/${inserted.id}`;
         setShareUrl(shareEndpoint);
+        saveEntry({
+          id: inserted.id,
+          kind: tab,
+          ai_probability: r.ai_probability,
+          verdict: r.verdict,
+          confidence: r.confidence,
+          summary: r.summary,
+          snippet: tab === "text" ? text.slice(0, 200) : tab === "url" ? url.slice(0, 200) : null,
+          preview_url: previewPublicUrl,
+          created_at: Date.now(),
+        });
       }
     } catch (e: any) {
       toast({

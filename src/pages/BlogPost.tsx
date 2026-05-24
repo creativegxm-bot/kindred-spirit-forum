@@ -6,7 +6,7 @@ import { Sparkles, ArrowLeft, Clock } from "lucide-react";
 import { blogPosts } from "@/data/blogPosts";
 import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
-import { useAdmin } from "@/hooks/useAdmin";
+
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -16,9 +16,25 @@ type RobotsValue = "index,follow" | "noindex,follow";
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
   const post = blogPosts.find((p) => p.slug === slug);
-  const { isAdmin } = useAdmin();
+  const [isAdmin, setIsAdmin] = useState(false);
   const [robots, setRobots] = useState<RobotsValue>("index,follow");
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (!cancelled) setIsAdmin(!!data);
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     if (!slug) return;

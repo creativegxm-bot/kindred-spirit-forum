@@ -390,6 +390,10 @@ const AIDetector = () => {
           </Card>
         )}
 
+        <SavedResults />
+
+
+
         <section className="mt-12">
           <div className="text-center mb-5">
             <h3 className="text-2xl font-bold">Spot the difference</h3>

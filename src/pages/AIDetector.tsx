@@ -393,7 +393,9 @@ const AIDetector = () => {
 
         <SavedResults />
 
-
+        <div className="mt-6">
+          <EmailSignupBanner />
+        </div>
 
         <section className="mt-12">
           <div className="text-center mb-5">

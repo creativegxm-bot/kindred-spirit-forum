@@ -483,6 +483,8 @@ const AIDetector = () => {
           ))}
         </section>
 
+        <DetectorFAQ />
+
         <footer className="text-center text-xs text-muted-foreground mt-12 pb-6">
           Results are probabilistic and not legal proof. Always combine with human judgment.
         </footer>

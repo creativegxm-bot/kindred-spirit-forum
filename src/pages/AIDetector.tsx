@@ -18,6 +18,7 @@ import StatsBar from "@/components/StatsBar";
 import SampleTexts from "@/components/SampleTexts";
 import SavedResults, { saveEntry } from "@/components/SavedResults";
 import EmailSignupBanner from "@/components/EmailSignupBanner";
+import DetectorFAQ from "@/components/DetectorFAQ";
 import sampleReal from "@/assets/sample-real.jpg";
 import sampleAi from "@/assets/sample-ai.jpg";
 
@@ -481,6 +482,8 @@ const AIDetector = () => {
             </Card>
           ))}
         </section>
+
+        <DetectorFAQ />
 
         <footer className="text-center text-xs text-muted-foreground mt-12 pb-6">
           Results are probabilistic and not legal proof. Always combine with human judgment.

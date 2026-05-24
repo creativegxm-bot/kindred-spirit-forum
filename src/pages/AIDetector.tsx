@@ -17,6 +17,7 @@ import UseCases from "@/components/UseCases";
 import StatsBar from "@/components/StatsBar";
 import SampleTexts from "@/components/SampleTexts";
 import SavedResults, { saveEntry } from "@/components/SavedResults";
+import EmailSignupBanner from "@/components/EmailSignupBanner";
 import sampleReal from "@/assets/sample-real.jpg";
 import sampleAi from "@/assets/sample-ai.jpg";
 

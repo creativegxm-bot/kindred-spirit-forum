@@ -247,6 +247,7 @@ const AIDetector = () => {
                   className="min-h-[200px]"
                 />
                 <p className="text-xs text-muted-foreground mt-2">{text.length} characters</p>
+                <SampleTexts onPick={(t) => { setText(t); setResult(null); }} />
               </TabsContent>
 
               <TabsContent value="image" className="mt-4">

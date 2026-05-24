@@ -12,6 +12,10 @@ import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
 import MortgageCalculatorBanner from "@/components/MortgageCalculatorBanner";
 import ShopBanner from "@/components/ShopBanner";
+import EngagementToolsGrid from "@/components/EngagementToolsGrid";
+import UseCases from "@/components/UseCases";
+import StatsBar from "@/components/StatsBar";
+import SampleTexts from "@/components/SampleTexts";
 import sampleReal from "@/assets/sample-real.jpg";
 import sampleAi from "@/assets/sample-ai.jpg";
 
@@ -222,6 +226,8 @@ const AIDetector = () => {
           </p>
         </section>
 
+        <StatsBar />
+
         <Card>
           <CardHeader>
             <CardTitle>Run a detection</CardTitle>
@@ -243,6 +249,7 @@ const AIDetector = () => {
                   className="min-h-[200px]"
                 />
                 <p className="text-xs text-muted-foreground mt-2">{text.length} characters</p>
+                <SampleTexts onPick={(t) => { setText(t); setResult(null); }} />
               </TabsContent>
 
               <TabsContent value="image" className="mt-4">
@@ -417,6 +424,10 @@ const AIDetector = () => {
             </Card>
           </div>
         </section>
+
+        <UseCases />
+
+        <EngagementToolsGrid className="mt-12" />
 
         <section className="mt-12">
           <div className="text-center mb-5">

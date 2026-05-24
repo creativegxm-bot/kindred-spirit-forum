@@ -226,6 +226,8 @@ const AIDetector = () => {
           </p>
         </section>
 
+        <StatsBar />
+
         <Card>
           <CardHeader>
             <CardTitle>Run a detection</CardTitle>

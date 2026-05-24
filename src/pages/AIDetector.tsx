@@ -12,6 +12,10 @@ import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
 import MortgageCalculatorBanner from "@/components/MortgageCalculatorBanner";
 import ShopBanner from "@/components/ShopBanner";
+import EngagementToolsGrid from "@/components/EngagementToolsGrid";
+import UseCases from "@/components/UseCases";
+import StatsBar from "@/components/StatsBar";
+import SampleTexts from "@/components/SampleTexts";
 import sampleReal from "@/assets/sample-real.jpg";
 import sampleAi from "@/assets/sample-ai.jpg";
 

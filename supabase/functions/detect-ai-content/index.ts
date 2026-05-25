@@ -105,13 +105,24 @@ Human tells (push DOWN):
 - Emotional swings, contradictions, asides that don't resolve
 - Regional spelling drift, profanity, sarcasm without explanation
 
-IMAGE TELLS:
-Midjourney: painterly hyperreal lighting, shallow DOF on everything, symmetrical compositions, glossy skin, identical lighting on disparate surfaces.
-SDXL/SD3: hand/finger anomalies, melted jewelry, text gibberish in signs, repeating background patterns, eye asymmetry.
-DALL·E 3: cartoonish vibrance, perfectly centered subject, characteristic glow, text often readable but stylized.
-Flux: extremely sharp realism, near-perfect hands, but tell-tale subject isolation and overly-clean backgrounds.
-Firefly: muted palette, slightly soft focus.
-Photograph tells (push DOWN): EXIF-consistent grain, lens distortion, motion blur, imperfect focus, real shadows matching scene geometry, signage with correct readable text, depth-of-field that matches a real lens.
+IMAGE TELLS (modern generators have largely fixed hands/eyes — DO NOT require obvious anatomical errors before calling AI. Weight these heavily):
+- Skin: poreless, waxy, airbrushed sheen, uniform micro-texture, no peach fuzz, suspiciously symmetric blemishes
+- Lighting: too-even key light, missing/contradictory shadows, catchlights that don't match the scene, soft global illumination with no real bounce
+- Background: blurred/bokeh that defies any real lens, repeating textures, mushy fine detail, signage that is gibberish or stylized
+- Composition: subject perfectly centered, dead-clean negative space, no environmental clutter, generic stock-photo vibe
+- Detail consistency: jewelry/clothing seams that don't close, asymmetric earrings, hair strands that fade into nothing, teeth too uniform, iris patterns too perfect
+- Color/Tone: oversaturated yet flat, HDR-but-no-real-HDR look, color grade identical across unrelated surfaces
+- Resolution: implausibly sharp at every depth (no real lens does this) OR uniformly soft with no grain
+- File: NO EXIF camera data, no compression artifacts, perfect codec output
+Generator fingerprints:
+Midjourney v6/v7: painterly hyperreal lighting, dramatic rim light, cinematic teal-orange grade, perfect symmetry, dreamy depth, glossy skin.
+SDXL/SD3/Flux: extremely sharp realism, near-perfect hands now, but tell-tale subject isolation, overly-clean backgrounds, slightly plastic skin.
+DALL·E 3 / GPT-Image: cartoonish vibrance, perfectly centered subject, characteristic glow, readable but stylized text, illustrative feel even on "photos".
+Firefly: muted palette, slightly soft focus, conservative composition.
+Ideogram: clean text rendering but still cartoonish lighting.
+Photograph tells (push DOWN, require MULTIPLE before calling human): real lens distortion, motion blur, imperfect focus, visible sensor grain, JPEG compression artifacts, real shadows matching scene geometry, correct readable signage, depth-of-field that matches a real focal length, ambient clutter, candid framing, EXIF-style imperfections.
+
+CRITICAL IMAGE RULE: If an image looks like a "perfect" portrait/landscape/product shot with flawless lighting, plastic-smooth skin, clean background, and no compression/grain — score ≥70 even without a single anatomical error. Modern AI rarely makes hand errors anymore; do not rely on them.
 
 VIDEO TELLS (Sora/Veo/Runway/Kling/Pika):
 - Physics drift (objects morphing through each other, gravity off)
@@ -278,9 +289,10 @@ Deno.serve(async (req) => {
 
     // Ensemble: run two strong models in parallel and average for better calibration.
     // For text we use two different model families (better diversity). For images/video we use Gemini Pro (best vision).
+    // Ensemble vision models too — single-model image detection was missing many AI images.
     const models = isText
       ? ["google/gemini-2.5-pro", "openai/gpt-5"]
-      : ["google/gemini-2.5-pro"];
+      : ["google/gemini-2.5-pro", "openai/gpt-5"];
 
     const settled = await Promise.allSettled(models.map((m) => callModel(m, userContent)));
     const results = settled

@@ -172,6 +172,37 @@ function deriveVerdict(p: number): "human" | "likely_human" | "uncertain" | "lik
   return "ai";
 }
 
+function clampProbability(value: number): number {
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
+function aggregateProbability(kind: DetectRequest["type"], probabilities: number[]): number {
+  const avg = probabilities.reduce((sum, probability) => sum + probability, 0) / probabilities.length;
+
+  if (kind === "image" || kind === "video") {
+    const max = Math.max(...probabilities);
+    const min = Math.min(...probabilities);
+    const spread = max - min;
+    const highHits = probabilities.filter((probability) => probability >= 70).length;
+    const veryHighHits = probabilities.filter((probability) => probability >= 85).length;
+    const lowHits = probabilities.filter((probability) => probability <= 35).length;
+
+    // Modern AI-image detection is asymmetric: one strong vision model spotting synthetic tells
+    // should not be diluted too heavily by a more conservative model.
+    if (veryHighHits >= 1 && lowHits === 0) {
+      return clampProbability(max - spread * 0.15);
+    }
+
+    if (highHits >= 1 && lowHits === 0) {
+      return clampProbability(avg * 0.3 + max * 0.7);
+    }
+
+    return clampProbability(avg * 0.45 + max * 0.55);
+  }
+
+  return clampProbability(avg);
+}
+
 async function callModel(model: string, userContent: any) {
   const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
@@ -318,10 +349,9 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Aggregate: average probability, merge signals, pick most-confident model attribution.
-    const avg = Math.round(
-      results.reduce((s, r) => s + (Number(r.ai_probability) || 0), 0) / results.length,
-    );
+    // Aggregate: preserve strong image/video detections instead of averaging them away.
+    const probs = results.map((r) => Number(r.ai_probability) || 0);
+    const aggregatedProbability = aggregateProbability(body.type, probs);
     const allSignals: string[] = [];
     const seen = new Set<string>();
     for (const r of results) {
@@ -330,15 +360,19 @@ Deno.serve(async (req) => {
         if (key && !seen.has(key)) { seen.add(key); allSignals.push(s); }
       }
     }
-    // Pick model attribution: prefer non-Unknown and highest model_confidence.
+    // Pick model attribution: for images/video, prefer the strongest detector hit.
     const confRank: Record<string, number> = { high: 3, medium: 2, low: 1 };
     const named = results.filter((r) => r.likely_model && !/unknown/i.test(r.likely_model));
     const pickFrom = named.length ? named : results;
-    pickFrom.sort((a, b) => (confRank[b.model_confidence] ?? 0) - (confRank[a.model_confidence] ?? 0));
+    pickFrom.sort((a, b) => {
+      if (body.type === "image" || body.type === "video") {
+        return (Number(b.ai_probability) || 0) - (Number(a.ai_probability) || 0);
+      }
+      return (confRank[b.model_confidence] ?? 0) - (confRank[a.model_confidence] ?? 0);
+    });
     const best = pickFrom[0];
 
     // Overall confidence: if models agree (spread <= 15) -> bump; if disagree (>30) -> downgrade.
-    const probs = results.map((r) => Number(r.ai_probability) || 0);
     const spread = Math.max(...probs) - Math.min(...probs);
     let confidence: "low" | "medium" | "high";
     const avgConf = results.reduce((s, r) => s + (confRank[r.confidence] ?? 2), 0) / results.length;
@@ -347,8 +381,8 @@ Deno.serve(async (req) => {
     else confidence = "medium";
 
     const aggregated = {
-      ai_probability: avg,
-      verdict: deriveVerdict(avg),
+      ai_probability: aggregatedProbability,
+      verdict: deriveVerdict(aggregatedProbability),
       confidence,
       signals: allSignals.slice(0, 8),
       summary: best.summary,

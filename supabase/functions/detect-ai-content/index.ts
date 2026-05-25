@@ -278,9 +278,10 @@ Deno.serve(async (req) => {
 
     // Ensemble: run two strong models in parallel and average for better calibration.
     // For text we use two different model families (better diversity). For images/video we use Gemini Pro (best vision).
+    // Ensemble vision models too — single-model image detection was missing many AI images.
     const models = isText
       ? ["google/gemini-2.5-pro", "openai/gpt-5"]
-      : ["google/gemini-2.5-pro"];
+      : ["google/gemini-2.5-pro", "openai/gpt-5"];
 
     const settled = await Promise.allSettled(models.map((m) => callModel(m, userContent)));
     const results = settled

@@ -294,47 +294,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Aggregate: preserve strong image/video detections instead of averaging them away.
-    const probs = results.map((r) => Number(r.ai_probability) || 0);
-    const aggregatedProbability = aggregateProbability(body.type, probs);
-    const allSignals: string[] = [];
-    const seen = new Set<string>();
-    for (const r of results) {
-      for (const s of (r.signals ?? []) as string[]) {
-        const key = s.trim().toLowerCase();
-        if (key && !seen.has(key)) { seen.add(key); allSignals.push(s); }
-      }
-    }
-    // Pick model attribution: for images/video, prefer the strongest detector hit.
-    const confRank: Record<string, number> = { high: 3, medium: 2, low: 1 };
-    const named = results.filter((r) => r.likely_model && !/unknown/i.test(r.likely_model));
-    const pickFrom = named.length ? named : results;
-    pickFrom.sort((a, b) => {
-      if (body.type === "image" || body.type === "video") {
-        return (Number(b.ai_probability) || 0) - (Number(a.ai_probability) || 0);
-      }
-      return (confRank[b.model_confidence] ?? 0) - (confRank[a.model_confidence] ?? 0);
-    });
-    const best = pickFrom[0];
-
-    // Overall confidence: if models agree (spread <= 15) -> bump; if disagree (>30) -> downgrade.
-    const spread = Math.max(...probs) - Math.min(...probs);
-    let confidence: "low" | "medium" | "high";
-    const avgConf = results.reduce((s, r) => s + (confRank[r.confidence] ?? 2), 0) / results.length;
-    if (spread > 30) confidence = "low";
-    else if (spread <= 12 && avgConf >= 2.5) confidence = "high";
-    else confidence = "medium";
-
-    const aggregated = {
-      ai_probability: aggregatedProbability,
-      verdict: deriveVerdict(aggregatedProbability),
-      confidence,
-      signals: allSignals.slice(0, 8),
-      summary: best.summary,
-      likely_model: best.likely_model ?? "Unknown",
-      model_confidence: best.model_confidence ?? "low",
-    };
-
+    const aggregated = aggregateResults(body.type, results as ModelResult[]);
     return new Response(JSON.stringify(aggregated), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

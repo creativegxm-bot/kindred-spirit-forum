@@ -5,7 +5,7 @@
 import "https://deno.land/std@0.224.0/dotenv/load.ts";
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
-import { IMAGE_FIXTURES } from "./fixtures.ts";
+import { IMAGE_FIXTURES, VIDEO_FIXTURES } from "./fixtures.ts";
 
 const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL") ?? Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_KEY =
@@ -23,7 +23,20 @@ async function loadFixtureAsDataUrl(
   return { dataUrl: `data:${mime};base64,${encodeBase64(bytes)}`, mime };
 }
 
-async function detectImage(dataUrl: string, mime: string) {
+interface DetectResult {
+  ai_probability: number;
+  verdict: string;
+  confidence: string;
+  signals: string[];
+  summary: string;
+  likely_model: string;
+}
+
+async function detectMedia(
+  type: "image" | "video",
+  dataUrl: string,
+  mime: string,
+): Promise<DetectResult> {
   const resp = await fetch(FN_URL, {
     method: "POST",
     headers: {
@@ -31,19 +44,15 @@ async function detectImage(dataUrl: string, mime: string) {
       Authorization: `Bearer ${SUPABASE_KEY}`,
       apikey: SUPABASE_KEY,
     },
-    body: JSON.stringify({ type: "image", fileDataUrl: dataUrl, fileMimeType: mime }),
+    body: JSON.stringify({ type, fileDataUrl: dataUrl, fileMimeType: mime }),
   });
   const text = await resp.text();
   if (!resp.ok) throw new Error(`detect ${resp.status}: ${text.slice(0, 300)}`);
-  return JSON.parse(text) as {
-    ai_probability: number;
-    verdict: string;
-    confidence: string;
-    signals: string[];
-    summary: string;
-    likely_model: string;
-  };
+  return JSON.parse(text) as DetectResult;
 }
+
+const detectImage = (dataUrl: string, mime: string) => detectMedia("image", dataUrl, mime);
+const detectVideo = (dataUrl: string, mime: string) => detectMedia("video", dataUrl, mime);
 
 Deno.test("rejects text below 20 chars", async () => {
   const resp = await fetch(FN_URL, {
@@ -154,3 +163,37 @@ for (const fx of IMAGE_FIXTURES) {
     }
   });
 }
+
+for (const fx of VIDEO_FIXTURES) {
+  Deno.test(`video fixture: ${fx.name}`, async () => {
+    const prepared = await loadFixtureAsDataUrl(fx.file, fx.mime);
+    const result = await detectVideo(prepared.dataUrl, prepared.mime);
+    console.log(
+      `[video:${fx.name}] prob=${result.ai_probability} verdict=${result.verdict} model=${result.likely_model}`,
+    );
+    assert(typeof result.ai_probability === "number", "ai_probability must be a number");
+    assert(Number.isFinite(result.ai_probability), "ai_probability must be finite");
+    assert(
+      result.ai_probability >= fx.minProbability && result.ai_probability <= fx.maxProbability,
+      `${fx.name}: expected ai_probability in [${fx.minProbability}, ${fx.maxProbability}], got ${result.ai_probability}`,
+    );
+    assert(typeof result.verdict === "string" && result.verdict.length > 0, "verdict must be non-empty");
+    assert(typeof result.confidence === "string" && result.confidence.length > 0, "confidence must be non-empty");
+    assert(Array.isArray(result.signals), "signals must be an array");
+    assert(typeof result.summary === "string", "summary must be a string");
+  });
+}
+
+Deno.test("video without fileDataUrl is rejected", async () => {
+  const resp = await fetch(FN_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      apikey: SUPABASE_KEY,
+    },
+    body: JSON.stringify({ type: "video" }),
+  });
+  await resp.text();
+  assertEquals(resp.status, 400);
+});

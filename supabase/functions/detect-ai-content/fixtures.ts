@@ -1,12 +1,13 @@
 // Test fixtures for detect-ai-content regression tests.
-// Each fixture is a publicly reachable image with a known origin so we can
-// assert calibration without storing large binaries in the repo.
+// Images are checked into the repo under ./fixtures/ so tests are
+// deterministic and do not depend on external hosts or asset changes.
 
 export interface ImageFixture {
   name: string;
-  url: string;
+  // Path relative to this file's directory.
+  file: string;
+  mime: string;
   expected: "ai" | "real";
-  // Probability thresholds the ensemble must satisfy.
   // For "ai": ai_probability must be >= minProbability.
   // For "real": ai_probability must be <= maxProbability.
   minProbability?: number;
@@ -17,33 +18,37 @@ export interface ImageFixture {
 export const IMAGE_FIXTURES: ImageFixture[] = [
   // --- AI-generated samples ---
   {
-    name: "thispersondoesnotexist-stylegan",
-    url: "https://thispersondoesnotexist.com/",
+    name: "tpdne-stylegan-portrait",
+    file: "fixtures/tpdne.jpg",
+    mime: "image/jpeg",
     expected: "ai",
     minProbability: 65,
-    notes: "StyleGAN portrait; classic flawless skin + symmetric features.",
+    notes: "Cached StyleGAN portrait from thispersondoesnotexist (resized 512px).",
   },
   {
-    name: "sdxl-sample-huggingface",
-    url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_offset_example-000001.png",
+    name: "diffusion-fantasy-landscape",
+    file: "fixtures/ai_landscape.jpg",
+    mime: "image/jpeg",
     expected: "ai",
     minProbability: 60,
-    notes: "Official SDXL sample image.",
+    notes: "Locally generated diffusion-model landscape, obviously synthetic.",
   },
 
-  // --- Real photographs ---
+  // --- Real photographs / non-AI ---
   {
-    name: "nasa-earth-photo",
-    url: "https://images-assets.nasa.gov/image/iss040e090540/iss040e090540~small.jpg",
+    name: "nasa-iss-photo",
+    file: "fixtures/nasa.jpg",
+    mime: "image/jpeg",
     expected: "real",
     maxProbability: 45,
-    notes: "Real NASA ISS photograph with sensor grain and natural lighting.",
+    notes: "Cached NASA ISS photograph (public domain).",
   },
   {
-    name: "wikimedia-street-photo",
-    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/640px-PNG_transparency_demonstration_1.png",
+    name: "wikimedia-png-demo",
+    file: "fixtures/wikimedia.png",
+    mime: "image/png",
     expected: "real",
     maxProbability: 60,
-    notes: "Wikimedia commons rendered demo (lenient threshold — borderline).",
+    notes: "Cached Wikimedia PNG transparency demo (lenient — borderline rendering).",
   },
 ];

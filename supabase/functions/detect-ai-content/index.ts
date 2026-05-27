@@ -1,4 +1,12 @@
 import { corsHeaders } from "https://esm.sh/@supabase/supabase-js@2.95.0/cors";
+import {
+  aggregateResults,
+  extractYouTubeId,
+  isKnownVideoHost,
+  YT_HOST_REGEX,
+  YT_PLAYLIST_REGEX,
+  type ModelResult,
+} from "./lib.ts";
 
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
@@ -10,36 +18,9 @@ interface DetectRequest {
   url?: string;
 }
 
-const YT_HOST_REGEX = /^(?:https?:\/\/)?(?:www\.|m\.|music\.)?(?:youtube\.com|youtu\.be)\//i;
-const YT_ID_REGEXES: RegExp[] = [
-  /[?&]v=([A-Za-z0-9_-]{11})/,
-  /\/shorts\/([A-Za-z0-9_-]{11})/,
-  /\/embed\/([A-Za-z0-9_-]{11})/,
-  /\/live\/([A-Za-z0-9_-]{11})/,
-  /\/v\/([A-Za-z0-9_-]{11})/,
-  /youtu\.be\/([A-Za-z0-9_-]{11})/,
-];
-const YT_PLAYLIST_REGEX = /[?&]list=([A-Za-z0-9_-]+)/;
 
-function extractYouTubeId(u: string): string | null {
-  for (const re of YT_ID_REGEXES) {
-    const m = u.match(re);
-    if (m?.[1]) return m[1];
-  }
-  return null;
-}
+// URL host/id helpers live in ./lib.ts
 
-function isKnownVideoHost(u: string): boolean {
-  return (
-    YT_HOST_REGEX.test(u) ||
-    /^(?:https?:\/\/)?(?:www\.|player\.)?vimeo\.com\//i.test(u) ||
-    /^(?:https?:\/\/)?(?:www\.|vm\.|vt\.)?tiktok\.com\//i.test(u) ||
-    /^(?:https?:\/\/)?(?:www\.|mobile\.)?(?:twitter|x)\.com\//i.test(u) ||
-    /^(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:reel|p|tv)\//i.test(u) ||
-    /^(?:https?:\/\/)?(?:www\.|web\.)?facebook\.com\/.+\/videos?\//i.test(u) ||
-    /^(?:https?:\/\/)?fb\.watch\//i.test(u)
-  );
-}
 
 async function fetchAsDataUrl(url: string): Promise<string | null> {
   try {

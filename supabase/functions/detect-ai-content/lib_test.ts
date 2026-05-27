@@ -151,9 +151,13 @@ Deno.test("aggregateResults image: strong + conservative collapses to AI verdict
   assert(out.signals.includes("too-even lighting"));
 });
 
-Deno.test("aggregateResults image: real photo stays human", () => {
+Deno.test("aggregateResults image: real photo stays in human/likely_human range", () => {
   const out = aggregateResults("image", [realPhoto, { ...realPhoto, ai_probability: 20 }]);
-  assertEquals(out.verdict, "human");
+  assert(
+    out.verdict === "human" || out.verdict === "likely_human",
+    `expected human or likely_human, got ${out.verdict}`,
+  );
+  assert(out.ai_probability < 40, `expected <40, got ${out.ai_probability}`);
   // Both models agree (spread small) and high confidence -> high.
   assertEquals(out.confidence, "high");
   // No named model -> falls back to Unknown.

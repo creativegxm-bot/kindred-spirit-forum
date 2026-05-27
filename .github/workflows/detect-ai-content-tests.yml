@@ -27,4 +27,5 @@ jobs:
           deno test \
             --allow-net \
             --allow-env \
+            --allow-read \
             supabase/functions/detect-ai-content/index_test.ts

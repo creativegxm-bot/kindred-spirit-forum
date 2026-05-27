@@ -52,3 +52,39 @@ export const IMAGE_FIXTURES: ImageFixture[] = [
     notes: "Cached Wikimedia PNG transparency demo (lenient — borderline rendering).",
   },
 ];
+
+export interface VideoFixture {
+  name: string;
+  file: string;
+  mime: string;
+  // Inclusive bounds the response's ai_probability must fall within.
+  minProbability: number;
+  maxProbability: number;
+  notes?: string;
+}
+
+export const VIDEO_FIXTURES: VideoFixture[] = [
+  {
+    name: "ffmpeg-testsrc-pattern",
+    file: "fixtures/sample_video.mp4",
+    mime: "video/mp4",
+    // Synthetic test-card pattern. We don't care about AI vs real here — only
+    // that the function returns a calibrated number in a plausible range
+    // without erroring. Bounds are intentionally wide.
+    minProbability: 0,
+    maxProbability: 100,
+    notes: "2s 320x240 ffmpeg testsrc clip used to exercise the video code path.",
+  },
+];
+
+export interface UrlRejectionFixture {
+  name: string;
+  url: string;
+  notes?: string;
+}
+
+export const UNSUPPORTED_URL_FIXTURES: UrlRejectionFixture[] = [
+  { name: "non-video-host", url: "https://example.com/video" },
+  { name: "youtube-playlist", url: "https://www.youtube.com/playlist?list=PL12345" },
+];
+

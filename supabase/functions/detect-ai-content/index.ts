@@ -145,44 +145,8 @@ const tool = {
   },
 };
 
-function deriveVerdict(p: number): "human" | "likely_human" | "uncertain" | "likely_ai" | "ai" {
-  if (p < 15) return "human";
-  if (p < 40) return "likely_human";
-  if (p < 60) return "uncertain";
-  if (p < 85) return "likely_ai";
-  return "ai";
-}
+// Calibration helpers (deriveVerdict, clampProbability, aggregateProbability) live in ./lib.ts
 
-function clampProbability(value: number): number {
-  return Math.max(0, Math.min(100, Math.round(value)));
-}
-
-function aggregateProbability(kind: DetectRequest["type"], probabilities: number[]): number {
-  const avg = probabilities.reduce((sum, probability) => sum + probability, 0) / probabilities.length;
-
-  if (kind === "image" || kind === "video") {
-    const max = Math.max(...probabilities);
-    const min = Math.min(...probabilities);
-    const spread = max - min;
-    const highHits = probabilities.filter((probability) => probability >= 70).length;
-    const veryHighHits = probabilities.filter((probability) => probability >= 85).length;
-    const lowHits = probabilities.filter((probability) => probability <= 35).length;
-
-    // Modern AI-image detection is asymmetric: one strong vision model spotting synthetic tells
-    // should not be diluted too heavily by a more conservative model.
-    if (veryHighHits >= 1 && lowHits === 0) {
-      return clampProbability(max - spread * 0.15);
-    }
-
-    if (highHits >= 1 && lowHits === 0) {
-      return clampProbability(avg * 0.3 + max * 0.7);
-    }
-
-    return clampProbability(avg * 0.45 + max * 0.55);
-  }
-
-  return clampProbability(avg);
-}
 
 async function callModel(model: string, userContent: any) {
   const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {

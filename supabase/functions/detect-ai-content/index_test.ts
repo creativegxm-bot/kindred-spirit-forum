@@ -4,6 +4,7 @@
 
 import "https://deno.land/std@0.224.0/dotenv/load.ts";
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
+import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
 import { IMAGE_FIXTURES } from "./fixtures.ts";
 
 const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL") ?? Deno.env.get("SUPABASE_URL")!;
@@ -13,14 +14,13 @@ const SUPABASE_KEY =
 
 const FN_URL = `${SUPABASE_URL}/functions/v1/detect-ai-content`;
 
-async function fetchAsDataUrl(url: string): Promise<{ dataUrl: string; mime: string }> {
-  const r = await fetch(url, { redirect: "follow" });
-  if (!r.ok) throw new Error(`fixture fetch ${r.status} for ${url}`);
-  const mime = r.headers.get("content-type") ?? "image/jpeg";
-  const buf = new Uint8Array(await r.arrayBuffer());
-  let bin = "";
-  for (let i = 0; i < buf.length; i++) bin += String.fromCharCode(buf[i]);
-  return { dataUrl: `data:${mime};base64,${btoa(bin)}`, mime };
+async function loadFixtureAsDataUrl(
+  file: string,
+  mime: string,
+): Promise<{ dataUrl: string; mime: string }> {
+  const path = new URL(`./${file}`, import.meta.url);
+  const bytes = await Deno.readFile(path);
+  return { dataUrl: `data:${mime};base64,${encodeBase64(bytes)}`, mime };
 }
 
 async function detectImage(dataUrl: string, mime: string) {
@@ -135,13 +135,7 @@ Deno.test("text detection: casual human text scores as human", async () => {
 
 for (const fx of IMAGE_FIXTURES) {
   Deno.test(`image fixture: ${fx.name} (${fx.expected})`, async () => {
-    let prepared: { dataUrl: string; mime: string };
-    try {
-      prepared = await fetchAsDataUrl(fx.url);
-    } catch (e) {
-      console.warn(`skipping ${fx.name}: ${(e as Error).message}`);
-      return;
-    }
+    const prepared = await loadFixtureAsDataUrl(fx.file, fx.mime);
     const result = await detectImage(prepared.dataUrl, prepared.mime);
     console.log(
       `[${fx.name}] prob=${result.ai_probability} verdict=${result.verdict} model=${result.likely_model}`,

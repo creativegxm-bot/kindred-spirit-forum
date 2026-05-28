@@ -197,3 +197,72 @@ Deno.test("video without fileDataUrl is rejected", async () => {
   await resp.text();
   assertEquals(resp.status, 400);
 });
+
+// ---- Corrupted / partial video upload integration tests ----
+
+async function postVideo(payload: Record<string, unknown>): Promise<{ status: number; body: any }> {
+  const resp = await fetch(FN_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      apikey: SUPABASE_KEY,
+    },
+    body: JSON.stringify(payload),
+  });
+  const text = await resp.text();
+  let body: any = null;
+  try { body = JSON.parse(text); } catch { body = text; }
+  return { status: resp.status, body };
+}
+
+Deno.test("video with empty base64 payload returns clear 400", async () => {
+  const { status, body } = await postVideo({
+    type: "video",
+    fileDataUrl: "data:video/mp4;base64,",
+    fileMimeType: "video/mp4",
+  });
+  assertEquals(status, 400);
+  assert(typeof body?.error === "string" && body.error.length > 0, "error message must be non-empty");
+  assert(/empty|interrupted|corrupt/i.test(body.error), `unexpected error: ${body.error}`);
+});
+
+Deno.test("video with truncated MP4 (head-only) returns clear 400", async () => {
+  // First 16 bytes of an MP4 ftyp box only — far below any real clip.
+  const truncated = new Uint8Array([
+    0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70,
+    0x69, 0x73, 0x6f, 0x6d, 0x00, 0x00, 0x02, 0x00,
+  ]);
+  const b64 = encodeBase64(truncated);
+  const { status, body } = await postVideo({
+    type: "video",
+    fileDataUrl: `data:video/mp4;base64,${b64}`,
+    fileMimeType: "video/mp4",
+  });
+  assertEquals(status, 400);
+  assert(/too small|incomplete|corrupt|truncat/i.test(body?.error ?? ""), `unexpected error: ${body?.error}`);
+});
+
+Deno.test("video with corrupted base64 payload returns clear 400", async () => {
+  const { status, body } = await postVideo({
+    type: "video",
+    fileDataUrl: "data:video/mp4;base64,!!!definitely-not-base64!!!",
+    fileMimeType: "video/mp4",
+  });
+  assertEquals(status, 400);
+  assert(/corrupt|base64/i.test(body?.error ?? ""), `unexpected error: ${body?.error}`);
+});
+
+Deno.test("video labelled mp4 but missing ftyp header returns clear 400", async () => {
+  // 2KB of zeros — passes the size floor but fails the MP4 magic check.
+  const garbage = new Uint8Array(2048);
+  const b64 = encodeBase64(garbage);
+  const { status, body } = await postVideo({
+    type: "video",
+    fileDataUrl: `data:video/mp4;base64,${b64}`,
+    fileMimeType: "video/mp4",
+  });
+  assertEquals(status, 400);
+  assert(/MP4 header|corrupt|truncat/i.test(body?.error ?? ""), `unexpected error: ${body?.error}`);
+});
+

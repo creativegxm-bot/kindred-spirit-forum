@@ -63,13 +63,18 @@ export interface VideoFixture {
   notes?: string;
 }
 
+// All current video fixtures are synthetic ffmpeg test-card clips. They should
+// reliably score LOW (non-AI) — the model has nothing AI-looking to latch onto.
+// Bounds are tightened from the trivial [0,100] so CI catches regressions where
+// the function starts emitting non-finite values, NaN, or wildly miscalibrated
+// scores on plain test patterns.
 export const VIDEO_FIXTURES: VideoFixture[] = [
   {
     name: "ffmpeg-testsrc-pattern",
     file: "fixtures/sample_video.mp4",
     mime: "video/mp4",
     minProbability: 0,
-    maxProbability: 100,
+    maxProbability: 95,
     notes: "2s 320x240 ffmpeg testsrc clip used to exercise the video code path.",
   },
   {
@@ -77,7 +82,7 @@ export const VIDEO_FIXTURES: VideoFixture[] = [
     file: "fixtures/h264_landscape_16x9.mp4",
     mime: "video/mp4",
     minProbability: 0,
-    maxProbability: 100,
+    maxProbability: 95,
     notes: "H.264/AVC MP4, 640x360 landscape — common YouTube/social aspect ratio.",
   },
   {
@@ -85,7 +90,7 @@ export const VIDEO_FIXTURES: VideoFixture[] = [
     file: "fixtures/h264_portrait_9x16.mp4",
     mime: "video/mp4",
     minProbability: 0,
-    maxProbability: 100,
+    maxProbability: 95,
     notes: "H.264/AVC MP4, 360x640 vertical — TikTok/Reels/Shorts aspect ratio.",
   },
   {
@@ -93,7 +98,7 @@ export const VIDEO_FIXTURES: VideoFixture[] = [
     file: "fixtures/h264_square_1x1.mp4",
     mime: "video/mp4",
     minProbability: 0,
-    maxProbability: 100,
+    maxProbability: 95,
     notes: "H.264/AVC MP4, 480x480 square — Instagram feed aspect ratio.",
   },
   {
@@ -101,7 +106,7 @@ export const VIDEO_FIXTURES: VideoFixture[] = [
     file: "fixtures/vp9_landscape_16x9.webm",
     mime: "video/webm",
     minProbability: 0,
-    maxProbability: 100,
+    maxProbability: 95,
     notes: "VP9 WebM, 640x360 — exercises the WebM/EBML decode path and non-MP4 codec.",
   },
 ];

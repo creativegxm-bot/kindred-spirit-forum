@@ -37,3 +37,29 @@ jobs:
             --allow-env \
             --allow-read \
             supabase/functions/detect-ai-content/index_test.ts
+
+  video:
+    name: Video fixture suite (codec + aspect-ratio matrix)
+    runs-on: ubuntu-latest
+    needs: offline
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      # Runs only the "video fixture: *" tests defined in index_test.ts.
+      # Each asserts ai_probability is a finite number and falls within the
+      # per-fixture [minProbability, maxProbability] bounds declared in
+      # fixtures.ts (VIDEO_FIXTURES). Any NaN, Infinity, or out-of-bounds
+      # score fails the job.
+      - name: Run video fixture suite
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          deno test \
+            --allow-net \
+            --allow-env \
+            --allow-read \
+            --filter "video fixture" \
+            supabase/functions/detect-ai-content/index_test.ts

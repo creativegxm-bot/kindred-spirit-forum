@@ -3,6 +3,7 @@ import {
   aggregateResults,
   extractYouTubeId,
   isKnownVideoHost,
+  validateMediaDataUrl,
   YT_HOST_REGEX,
   YT_PLAYLIST_REGEX,
   type ModelResult,
@@ -196,6 +197,13 @@ Deno.serve(async (req) => {
     } else if (body.type === "image" || body.type === "video") {
       if (!body.fileDataUrl) {
         return new Response(JSON.stringify({ error: "Missing file data" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const validation = validateMediaDataUrl(body.type, body.fileDataUrl, body.fileMimeType);
+      if (!validation.ok) {
+        return new Response(JSON.stringify({ error: validation.error }), {
           status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });

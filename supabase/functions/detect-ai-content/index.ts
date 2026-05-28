@@ -3,6 +3,7 @@ import {
   aggregateResults,
   extractYouTubeId,
   isKnownVideoHost,
+  validateMediaDataUrl,
   YT_HOST_REGEX,
   YT_PLAYLIST_REGEX,
   type ModelResult,

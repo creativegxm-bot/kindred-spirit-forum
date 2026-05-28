@@ -68,12 +68,41 @@ export const VIDEO_FIXTURES: VideoFixture[] = [
     name: "ffmpeg-testsrc-pattern",
     file: "fixtures/sample_video.mp4",
     mime: "video/mp4",
-    // Synthetic test-card pattern. We don't care about AI vs real here — only
-    // that the function returns a calibrated number in a plausible range
-    // without erroring. Bounds are intentionally wide.
     minProbability: 0,
     maxProbability: 100,
     notes: "2s 320x240 ffmpeg testsrc clip used to exercise the video code path.",
+  },
+  {
+    name: "h264-landscape-16x9",
+    file: "fixtures/h264_landscape_16x9.mp4",
+    mime: "video/mp4",
+    minProbability: 0,
+    maxProbability: 100,
+    notes: "H.264/AVC MP4, 640x360 landscape — common YouTube/social aspect ratio.",
+  },
+  {
+    name: "h264-portrait-9x16",
+    file: "fixtures/h264_portrait_9x16.mp4",
+    mime: "video/mp4",
+    minProbability: 0,
+    maxProbability: 100,
+    notes: "H.264/AVC MP4, 360x640 vertical — TikTok/Reels/Shorts aspect ratio.",
+  },
+  {
+    name: "h264-square-1x1",
+    file: "fixtures/h264_square_1x1.mp4",
+    mime: "video/mp4",
+    minProbability: 0,
+    maxProbability: 100,
+    notes: "H.264/AVC MP4, 480x480 square — Instagram feed aspect ratio.",
+  },
+  {
+    name: "vp9-webm-landscape",
+    file: "fixtures/vp9_landscape_16x9.webm",
+    mime: "video/webm",
+    minProbability: 0,
+    maxProbability: 100,
+    notes: "VP9 WebM, 640x360 — exercises the WebM/EBML decode path and non-MP4 codec.",
   },
 ];
 

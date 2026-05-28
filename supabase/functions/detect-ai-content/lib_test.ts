@@ -233,3 +233,116 @@ Deno.test("isKnownVideoHost rejects unrelated hosts", () => {
     assert(!isKnownVideoHost(url), `should reject ${url}`);
   }
 });
+
+// ---------- validateMediaDataUrl: corrupted / partial upload paths ----------
+
+function dataUrl(mime: string, bytes: Uint8Array): string {
+  return `data:${mime};base64,${encodeBase64(bytes)}`;
+}
+
+// Minimal valid MP4 head: ftyp box at offset 4 + padding to clear the 1KB floor.
+function fakeMp4(extraBytes = 2048): Uint8Array {
+  const head = new Uint8Array([
+    0x00, 0x00, 0x00, 0x20,
+    0x66, 0x74, 0x79, 0x70, // 'ftyp'
+    0x69, 0x73, 0x6f, 0x6d,
+    0x00, 0x00, 0x02, 0x00,
+    0x69, 0x73, 0x6f, 0x6d, 0x69, 0x73, 0x6f, 0x32, 0x61, 0x76, 0x63, 0x31, 0x6d, 0x70, 0x34, 0x31,
+  ]);
+  const out = new Uint8Array(head.length + extraBytes);
+  out.set(head, 0);
+  return out;
+}
+
+function fakeWebm(extraBytes = 2048): Uint8Array {
+  const head = new Uint8Array([0x1a, 0x45, 0xdf, 0xa3]);
+  const out = new Uint8Array(head.length + extraBytes);
+  out.set(head, 0);
+  return out;
+}
+
+function fakeJpeg(extraBytes = 256): Uint8Array {
+  const head = new Uint8Array([0xff, 0xd8, 0xff, 0xe0]);
+  const out = new Uint8Array(head.length + extraBytes);
+  out.set(head, 0);
+  return out;
+}
+
+Deno.test("validateMediaDataUrl rejects missing payload", () => {
+  const r = validateMediaDataUrl("video", undefined);
+  assert(!r.ok && /Missing file data/i.test(r.error));
+});
+
+Deno.test("validateMediaDataUrl rejects non-data-URL strings", () => {
+  const r = validateMediaDataUrl("video", "https://example.com/clip.mp4", "video/mp4");
+  assert(!r.ok && /valid data URL/i.test(r.error));
+});
+
+Deno.test("validateMediaDataUrl rejects non-base64 data URLs", () => {
+  const r = validateMediaDataUrl("image", "data:image/png,hello", "image/png");
+  assert(!r.ok && /base64/i.test(r.error));
+});
+
+Deno.test("validateMediaDataUrl rejects empty base64 payload (aborted upload)", () => {
+  const r = validateMediaDataUrl("video", "data:video/mp4;base64,", "video/mp4");
+  assert(!r.ok && /empty|interrupted/i.test(r.error));
+});
+
+Deno.test("validateMediaDataUrl rejects corrupted base64 (illegal chars)", () => {
+  const r = validateMediaDataUrl("video", "data:video/mp4;base64,!!!not-base64!!!", "video/mp4");
+  assert(!r.ok && /corrupted/i.test(r.error));
+});
+
+Deno.test("validateMediaDataUrl rejects truncated MP4 (under size floor)", () => {
+  const r = validateMediaDataUrl("video", dataUrl("video/mp4", fakeMp4(0)), "video/mp4");
+  assert(!r.ok && /too small|incomplete|corrupted/i.test(r.error));
+});
+
+Deno.test("validateMediaDataUrl rejects MP4 missing the ftyp header", () => {
+  const garbage = new Uint8Array(2048);
+  const r = validateMediaDataUrl("video", dataUrl("video/mp4", garbage), "video/mp4");
+  assert(!r.ok && /MP4 header|corrupted|truncated/i.test(r.error));
+});
+
+Deno.test("validateMediaDataUrl rejects WebM missing the EBML header", () => {
+  const garbage = new Uint8Array(2048);
+  const r = validateMediaDataUrl("video", dataUrl("video/webm", garbage), "video/webm");
+  assert(!r.ok && /WebM header|corrupted|truncated/i.test(r.error));
+});
+
+Deno.test("validateMediaDataUrl rejects image masquerading as video", () => {
+  const r = validateMediaDataUrl(
+    "video",
+    dataUrl("application/octet-stream", fakeJpeg(2048)),
+    "application/octet-stream",
+  );
+  assert(!r.ok && /image, not a video/i.test(r.error));
+});
+
+Deno.test("validateMediaDataUrl accepts a plausible MP4 payload", () => {
+  const r = validateMediaDataUrl("video", dataUrl("video/mp4", fakeMp4()), "video/mp4");
+  assert(r.ok, `expected ok, got ${(r as { error?: string }).error ?? "??"}`);
+});
+
+Deno.test("validateMediaDataUrl accepts a plausible WebM payload", () => {
+  const r = validateMediaDataUrl("video", dataUrl("video/webm", fakeWebm()), "video/webm");
+  assert(r.ok);
+});
+
+Deno.test("validateMediaDataUrl rejects truncated image (under size floor)", () => {
+  const tiny = new Uint8Array([0xff, 0xd8, 0xff]);
+  const r = validateMediaDataUrl("image", dataUrl("image/jpeg", tiny), "image/jpeg");
+  assert(!r.ok && /too small|incomplete|corrupted/i.test(r.error));
+});
+
+Deno.test("validateMediaDataUrl rejects PNG with wrong magic bytes", () => {
+  const garbage = new Uint8Array(512);
+  const r = validateMediaDataUrl("image", dataUrl("image/png", garbage), "image/png");
+  assert(!r.ok && /bad header|corrupted|truncated/i.test(r.error));
+});
+
+Deno.test("validateMediaDataUrl accepts a plausible JPEG payload", () => {
+  const r = validateMediaDataUrl("image", dataUrl("image/jpeg", fakeJpeg()), "image/jpeg");
+  assert(r.ok);
+});
+

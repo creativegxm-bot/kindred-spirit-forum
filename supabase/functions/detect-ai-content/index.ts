@@ -201,6 +201,13 @@ Deno.serve(async (req) => {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
+      const validation = validateMediaDataUrl(body.type, body.fileDataUrl, body.fileMimeType);
+      if (!validation.ok) {
+        return new Response(JSON.stringify({ error: validation.error }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
       userContent = [
         { type: "text", text: `Analyze this ${body.type} for AI-generation likelihood. Examine artifacts, anatomy, lighting, text rendering, physics, and known generator tells. Quote concrete artifacts.` },
         { type: "image_url", image_url: { url: body.fileDataUrl } },

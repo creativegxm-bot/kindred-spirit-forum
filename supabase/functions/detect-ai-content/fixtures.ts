@@ -137,6 +137,9 @@ export const VIDEO_FIXTURES: VideoFixture[] = [
     maxProbability: 95,
     notes: "15s VP9 mandelbrot animation — longer non-MP4 clip with dynamic content.",
   },
+];
+
+
 
 
 export interface UrlRejectionFixture {

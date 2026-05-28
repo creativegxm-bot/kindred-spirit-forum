@@ -8,6 +8,7 @@
 // For end-to-end tests against the deployed function, see index_test.ts.
 
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
+import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
 import {
   aggregateProbability,
   aggregateResults,
@@ -15,6 +16,7 @@ import {
   deriveVerdict,
   extractYouTubeId,
   isKnownVideoHost,
+  validateMediaDataUrl,
   type ModelResult,
 } from "./lib.ts";
 

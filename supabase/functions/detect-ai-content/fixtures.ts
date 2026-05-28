@@ -109,7 +109,38 @@ export const VIDEO_FIXTURES: VideoFixture[] = [
     maxProbability: 95,
     notes: "VP9 WebM, 640x360 — exercises the WebM/EBML decode path and non-MP4 codec.",
   },
+  // --- Longer synthetic clips ---
+  // Catches regressions where the model/handler choke on multi-second inputs
+  // (chunked frame sampling, decode timeouts, base64 size limits). Still
+  // expected to score LOW because the content is a synthetic test pattern.
+  {
+    name: "h264-long-10s",
+    file: "fixtures/long_h264_10s.mp4",
+    mime: "video/mp4",
+    minProbability: 0,
+    maxProbability: 95,
+    notes: "10s H.264 640x360 testsrc — exercises longer-duration video path.",
+  },
+  {
+    name: "h264-long-20s",
+    file: "fixtures/long_h264_20s.mp4",
+    mime: "video/mp4",
+    minProbability: 0,
+    maxProbability: 95,
+    notes: "20s H.264 640x360 testsrc — stress-tests max-duration handling.",
+  },
+  {
+    name: "vp9-long-15s-mandelbrot",
+    file: "fixtures/long_vp9_15s.webm",
+    mime: "video/webm",
+    minProbability: 0,
+    maxProbability: 95,
+    notes: "15s VP9 mandelbrot animation — longer non-MP4 clip with dynamic content.",
+  },
 ];
+
+
+
 
 export interface UrlRejectionFixture {
   name: string;

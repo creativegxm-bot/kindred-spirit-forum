@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
 import MortgageCalculatorBanner from "@/components/MortgageCalculatorBanner";
-import ShopBanner from "@/components/ShopBanner";
+
 import EngagementToolsGrid from "@/components/EngagementToolsGrid";
 import UseCases from "@/components/UseCases";
 import StatsBar from "@/components/StatsBar";

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Calculator, ShoppingBag, BookOpen, Sparkles } from "lucide-react";
+import { Calculator, BookOpen, Sparkles } from "lucide-react";
 
 type Tool = {
   to: string;

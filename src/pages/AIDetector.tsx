@@ -227,7 +227,6 @@ const AIDetector = () => {
 
       <main className="container max-w-5xl mx-auto px-4 py-8">
         <div className="mb-6 space-y-3">
-          <ShopBanner />
           <MortgageCalculatorBanner />
         </div>
         <section className="text-center mb-10">

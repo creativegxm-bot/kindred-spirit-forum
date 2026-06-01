@@ -19,14 +19,6 @@ const tools: Tool[] = [
     accent: "from-blue-500/20 to-sky-500/10 text-sky-400",
   },
   {
-    to: "/shop",
-    title: "Wholesale Shop",
-    desc: "Bulk socks, hats & gloves from a US supplier.",
-    icon: ShoppingBag,
-    accent: "from-orange-500/20 to-amber-500/10 text-orange-400",
-    badge: "NEW",
-  },
-  {
     to: "/blog",
     title: "AI Detection Blog",
     desc: "Guides on spotting AI text, deepfakes & synthetic media.",

@@ -8,8 +8,6 @@ import ResultPage from "./pages/ResultPage";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import MortgageCalculator from "./pages/MortgageCalculator";
-import Shop from "./pages/Shop";
-import ShopProduct from "./pages/ShopProduct";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,8 +24,6 @@ const App = () => (
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/mortgage-calculator" element={<MortgageCalculator />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/shop/:slug" element={<ShopProduct />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

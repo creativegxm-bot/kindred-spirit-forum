@@ -24,8 +24,6 @@ const App = () => (
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/mortgage-calculator" element={<MortgageCalculator />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/shop/:slug" element={<ShopProduct />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

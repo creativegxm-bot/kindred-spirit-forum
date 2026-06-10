@@ -64,9 +64,6 @@ const Lobby = () => {
           );
         })}
 
-        <footer className="text-center text-xs text-muted-foreground pt-8 border-t border-border/40">
-          CardTable — built with ❤️ for card game lovers.
-        </footer>
       </main>
     </div>
   );

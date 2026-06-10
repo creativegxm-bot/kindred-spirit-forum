@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const NotFound = () => (
-  <div className="flex min-h-screen items-center justify-center bg-background">
-    <div className="text-center">
-      <h1 className="mb-4 text-4xl font-bold">404</h1>
-      <p className="mb-4 text-xl text-muted-foreground">Page not found</p>
-      <Link to="/" className="text-primary underline">Back to calculator</Link>
+  <div className="min-h-screen grid place-items-center text-center p-6">
+    <div>
+      <div className="text-6xl mb-2">🃏</div>
+      <h1 className="text-3xl font-bold mb-2">Card not found</h1>
+      <p className="text-muted-foreground mb-4">This page doesn't exist in the deck.</p>
+      <Link to="/"><Button>Back to Lobby</Button></Link>
     </div>
   </div>
 );

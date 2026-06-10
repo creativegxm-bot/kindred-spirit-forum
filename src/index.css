@@ -2,59 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 220 15% 15%;
+    --background: 150 30% 12%;
+    --foreground: 40 30% 96%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 15% 15%;
-    --card-hover: 220 14% 97%;
+    --felt: 150 40% 18%;
+    --felt-dark: 150 45% 10%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 15%;
+    --card: 150 25% 16%;
+    --card-foreground: 40 30% 96%;
 
-    --primary: 16 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 16 100% 60%;
+    --popover: 150 25% 16%;
+    --popover-foreground: 40 30% 96%;
 
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 15% 20%;
+    --primary: 42 95% 55%;
+    --primary-foreground: 150 45% 10%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 10% 45%;
+    --secondary: 150 20% 22%;
+    --secondary-foreground: 40 30% 96%;
 
-    --accent: 16 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    --muted: 150 18% 22%;
+    --muted-foreground: 40 10% 70%;
 
-    --destructive: 0 72% 51%;
+    --accent: 42 95% 55%;
+    --accent-foreground: 150 45% 10%;
+
+    --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 90%;
-    --input: 220 13% 90%;
-    --ring: 16 100% 50%;
+    --border: 150 20% 25%;
+    --input: 150 20% 22%;
+    --ring: 42 95% 55%;
 
-    --radius: 0.75rem;
+    --radius: 0.625rem;
 
-    --upvote: 16 100% 50%;
-    --downvote: 240 60% 55%;
-    --comment: 200 80% 50%;
+    --suit-red: 0 75% 50%;
+    --suit-black: 220 15% 12%;
 
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(220 14% 98%) 100%);
-    --gradient-hover: linear-gradient(135deg, hsl(220 14% 97%) 0%, hsl(220 14% 95%) 100%);
-    --shadow-card: 0 2px 12px -4px rgba(15, 23, 42, 0.08);
-    --shadow-hover: 0 8px 24px -8px rgba(15, 23, 42, 0.14);
-
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 15% 25%;
-    --sidebar-primary: 16 100% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 96%;
-    --sidebar-accent-foreground: 220 15% 15%;
-    --sidebar-border: 220 13% 90%;
-    --sidebar-ring: 16 100% 50%;
+    --sidebar-background: 150 30% 12%;
+    --sidebar-foreground: 40 30% 96%;
+    --sidebar-primary: 42 95% 55%;
+    --sidebar-primary-foreground: 150 45% 10%;
+    --sidebar-accent: 150 20% 22%;
+    --sidebar-accent-foreground: 40 30% 96%;
+    --sidebar-border: 150 20% 25%;
+    --sidebar-ring: 42 95% 55%;
   }
 }
 
@@ -64,58 +59,33 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'IBM Plex Sans', sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', sans-serif;
+    background:
+      radial-gradient(ellipse at top, hsl(150 40% 20%) 0%, hsl(150 45% 10%) 70%);
+    min-height: 100vh;
   }
 }
 
 @layer utilities {
-  .text-gradient {
-    @apply bg-gradient-to-r from-primary to-orange-400 bg-clip-text text-transparent;
+  .felt {
+    background:
+      radial-gradient(ellipse at center, hsl(150 40% 22%) 0%, hsl(150 45% 12%) 100%);
   }
-  
-  .card-gradient {
-    background: var(--gradient-card);
+  .playing-card {
+    @apply rounded-md select-none;
+    background: linear-gradient(180deg, #fefefe 0%, #f1f1f1 100%);
+    color: hsl(var(--suit-black));
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(0,0,0,0.08);
   }
-  
-  .card-hover-gradient {
-    background: var(--gradient-hover);
+  .playing-card.back {
+    background:
+      repeating-linear-gradient(45deg, hsl(220 60% 35%), hsl(220 60% 35%) 6px, hsl(220 70% 28%) 6px, hsl(220 70% 28%) 12px);
+    color: transparent;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4), inset 0 0 0 3px hsl(220 50% 22%), inset 0 0 0 4px hsl(40 95% 55%);
   }
-  
-  .glow-primary {
-    box-shadow: 0 0 20px -5px hsl(var(--primary) / 0.4);
-  }
-  
-  .vote-button {
-    @apply transition-all duration-200 hover:scale-110 active:scale-95;
-  }
-  
-  .animate-slide-up {
-    animation: slideUp 0.3s ease-out;
-  }
-  
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .animate-pulse-subtle {
-    animation: pulseSoft 2s ease-in-out infinite;
-  }
-  
-  @keyframes pulseSoft {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.7;
-    }
+  .playing-card.red { color: hsl(var(--suit-red)); }
+  .pile-slot {
+    @apply rounded-md border-2 border-dashed border-white/15;
   }
 }
-
